@@ -188,6 +188,29 @@
       .detail-box.full{grid-column:auto}
     }
 
+
+    .trip-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .trip-controls{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:end}
+    .trip-field label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}
+    .trip-field select{width:100%;border:1px solid var(--line);border-radius:11px;padding:13px;background:#fff;color:var(--ink);outline:none}
+    .locate-btn,.start-btn{border:0;border-radius:11px;padding:13px 17px;color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
+    .locate-btn{background:#0b63ce}.start-btn{background:#0d8a5a}
+    .locate-btn:disabled,.start-btn:disabled{opacity:.55;cursor:not-allowed}
+    .trip-status{display:flex;align-items:center;gap:11px;margin:16px 0;padding:13px 15px;background:#f5f8fc;border:1px solid var(--line);border-radius:13px}
+    .trip-status strong{display:block;font-size:14px}.trip-status span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+    .status-dot{width:10px;height:10px;border-radius:50%;background:#f59e0b;flex:0 0 auto}.status-dot.live{background:#0d8a5a;box-shadow:0 0 0 5px rgba(13,138,90,.12)}
+    .trip-card{margin-top:16px;background:linear-gradient(135deg,#0b1e36,#0a4778);color:#fff;border-radius:18px;padding:23px;box-shadow:0 18px 45px rgba(7,36,66,.20)}
+    .trip-card-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+    .trip-kicker{font-size:11px;letter-spacing:1.5px;color:#8fd6b8;font-weight:800}.trip-card h3{font-size:34px;line-height:1;margin:7px 0 5px}.trip-card p{margin:0;color:#b9cce0;font-size:13px}
+    .trip-distance{text-align:right}.trip-distance small{display:block;color:#b9cce0;font-size:11px}.trip-distance strong{font:700 34px "Rajdhani";color:#fff}
+    .route-visual{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin:28px 0 18px}.route-point{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:20px}.route-point small{font-size:10px;color:#b9cce0;white-space:nowrap}
+    .route-line{height:7px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden}.route-line div{height:100%;width:0;background:#8fd6b8;border-radius:99px;transition:width .5s}
+    .trip-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.13);border-radius:12px;overflow:hidden}.trip-metrics div{padding:13px;background:rgba(255,255,255,.05)}.trip-metrics small{display:block;color:#9eb4ca;font-size:10px}.trip-metrics b{display:block;font-size:13px;margin-top:4px}
+    .trip-note{margin-top:14px;color:#a9bfd3;font-size:11px;line-height:1.5}.download-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.download-row button{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:12px}.download-row button:hover{background:rgba(255,255,255,.15)}
+    .trip-map-wrap{margin-top:18px;background:#fff;border:1px solid var(--line);padding:10px;border-radius:16px}#tripMap{height:400px;border-radius:12px;overflow:hidden}
+    @media(max-width:850px){.trip-controls{grid-template-columns:1fr 1fr}.trip-field{grid-column:1/-1}.trip-metrics{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.trip-controls{grid-template-columns:1fr}.trip-field{grid-column:auto}.trip-card-top{display:block}.trip-distance{text-align:left;margin-top:15px}.trip-distance strong{font-size:30px}.trip-metrics{grid-template-columns:1fr 1fr}#tripMap{height:320px}}
+
     .grid{
       display:grid;
       grid-template-columns:repeat(3,1fr);
@@ -376,25 +399,60 @@
   </header>
 
   <main>
+
     <section class="section" id="map-section">
       <div class="section-head">
         <div>
-          <h2 data-i18n="mapTitle">ইন্টার‍্যাক্টিভ পর্যটন মানচিত্র</h2>
-          <p data-i18n="mapSub">একটি মার্কারে ক্লিক করে ভ্রমণস্থান সম্পর্কে জানুন।</p>
+          <h2 data-i18n="tripTitle">আমার ভ্রমণ ট্র্যাকার</h2>
+          <p data-i18n="tripSub">আপনি কোথায় আছেন, কোথায় যাচ্ছেন এবং গন্তব্য পর্যন্ত কত দূর বাকি—সব এক জায়গায় দেখুন।</p>
         </div>
       </div>
-      <div class="map-wrap">
-        <div id="map"></div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><strong>৬৪</strong><span data-i18n="districts">জেলা</span></div>
-        <div class="stat"><strong>৮</strong><span data-i18n="divisions">বিভাগ</span></div>
-        <div class="stat"><strong>১০+</strong><span data-i18n="featured">নির্বাচিত ভ্রমণস্থান</span></div>
+      <div class="trip-panel">
+        <div class="trip-controls">
+          <div class="trip-field">
+            <label data-i18n="destinationLabel">গন্তব্য</label>
+            <select id="tripDestination"></select>
+          </div>
+          <button class="locate-btn" id="locateBtn" type="button">📍 <span data-i18n="myLocation">আমার অবস্থান</span></button>
+          <button class="start-btn" id="startTripBtn" type="button">🚀 <span data-i18n="startTrip">ভ্রমণ শুরু</span></button>
+        </div>
+        <div class="trip-status" id="tripStatus">
+          <div class="status-dot"></div>
+          <div>
+            <strong data-i18n="locationWaiting">অবস্থান নির্ধারণ করা হয়নি</strong>
+            <span data-i18n="locationHint">“আমার অবস্থান” চাপলে আপনার বর্তমান অবস্থান নেওয়া হবে।</span>
+          </div>
+        </div>
+        <div class="trip-card" id="tripCard">
+          <div class="trip-card-top">
+            <div>
+              <span class="trip-kicker" data-i18n="liveTrip">LIVE TRIP</span>
+              <h3 id="tripDestinationName">কোথায় যাবেন?</h3>
+              <p id="tripDestinationLocation">একটি গন্তব্য নির্বাচন করুন</p>
+            </div>
+            <div class="trip-distance"><small data-i18n="remaining">বাকি</small><strong id="remainingDistance">—</strong></div>
+          </div>
+          <div class="route-visual">
+            <div class="route-point current"><span>📍</span><small data-i18n="youAreHere">আপনি এখানে</small></div>
+            <div class="route-line"><div id="routeProgress"></div></div>
+            <div class="route-point destination"><span>🏁</span><small data-i18n="destination">গন্তব্য</small></div>
+          </div>
+          <div class="trip-metrics">
+            <div><small data-i18n="currentLocation">বর্তমান অবস্থান</small><b id="currentLocationText">—</b></div>
+            <div><small data-i18n="distanceTravelled">অতিক্রান্ত দূরত্ব</small><b id="travelledDistance">—</b></div>
+            <div><small data-i18n="distanceRemaining">বাকি দূরত্ব</small><b id="remainingDistance2">—</b></div>
+            <div><small data-i18n="lastUpdated">সর্বশেষ আপডেট</small><b id="lastUpdated">—</b></div>
+          </div>
+          <div class="trip-note" data-i18n="tripNote">দূরত্ব সরলরেখা হিসেবে হিসাব করা হয়; বাস্তব সড়কপথ কিছুটা বেশি হতে পারে।</div>
+          <div class="download-row">
+            <button type="button" onclick="downloadTripCard('png')">⬇️ <span data-i18n="downloadPng">PNG ডাউনলোড</span></button>
+            <button type="button" onclick="downloadTripCard('jpg')">⬇️ <span data-i18n="downloadJpg">JPG ডাউনলোড</span></button>
+            <button type="button" onclick="downloadTripCard('pdf')">⬇️ <span data-i18n="downloadPdf">PDF ডাউনলোড</span></button>
+          </div>
+        </div>
+        <div class="trip-map-wrap"><div id="tripMap"></div></div>
       </div>
     </section>
-
-
     <section class="section" id="district-explorer">
       <div class="section-head">
         <div>
@@ -524,7 +582,7 @@
         aboutText2:"এটি প্রজেক্টের প্রথম সংস্করণ। ভবিষ্যতে আরও জেলা, পর্যটনস্থান, ভ্রমণ খরচ এবং পরিকল্পনার টুল যোগ করা যাবে।",
         footerExplore:"বাংলাদেশ ঘুরে দেখুন", footerText:"নতুন জায়গা আবিষ্কার করতে ভালোবাসেন এমন ভ্রমণকারীদের জন্য তৈরি।",
         budget:"আনুমানিক বাজেট", bestTime:"ভ্রমণের সেরা সময়", category:"ধরন", tip:"ভ্রমণ টিপস",
-        googleMaps:"Google Maps-এ দেখুন", districtTitle:"৬৪ জেলার তথ্য", districtSub:"জেলা নির্বাচন করুন এবং জনসংখ্যা, আয়তন, ইতিহাস, খাবার ও দর্শনীয় স্থান দেখুন।", divisionLabel:"বিভাগ", districtLabel:"জেলা", allDivisions:"সব বিভাগ", districtSearchPlaceholder:"জেলার নাম লিখে খুঁজুন...", population:"জনসংখ্যা", area:"আয়তন", famousPlaces:"বিখ্যাত স্থান", famousFood:"বিখ্যাত খাবার", history:"সংক্ষিপ্ত ইতিহাস", showMap:"মানচিত্রে দেখুন", noResult:"কোনো ভ্রমণস্থান পাওয়া যায়নি। অন্য কিছু লিখে খুঁজুন।",
+        googleMaps:"Google Maps-এ দেখুন", tripTitle:"আমার ভ্রমণ ট্র্যাকার", tripSub:"আপনি কোথায় আছেন, কোথায় যাচ্ছেন এবং গন্তব্য পর্যন্ত কত দূর বাকি—সব এক জায়গায় দেখুন।", destinationLabel:"গন্তব্য", myLocation:"আমার অবস্থান", startTrip:"ভ্রমণ শুরু", locationWaiting:"অবস্থান নির্ধারণ করা হয়নি", locationHint:"“আমার অবস্থান” চাপলে আপনার বর্তমান অবস্থান নেওয়া হবে।", liveTrip:"LIVE TRIP", remaining:"বাকি", youAreHere:"আপনি এখানে", destination:"গন্তব্য", currentLocation:"বর্তমান অবস্থান", distanceTravelled:"অতিক্রান্ত দূরত্ব", distanceRemaining:"বাকি দূরত্ব", lastUpdated:"সর্বশেষ আপডেট", tripNote:"দূরত্ব সরলরেখা হিসেবে হিসাব করা হয়; বাস্তব সড়কপথ কিছুটা বেশি হতে পারে।", downloadPng:"PNG ডাউনলোড", downloadJpg:"JPG ডাউনলোড", downloadPdf:"PDF ডাউনলোড", locationDenied:"লোকেশন অনুমতি দেওয়া হয়নি। ব্রাউজারের Location permission চালু করুন।", locationError:"আপনার অবস্থান পাওয়া যায়নি। আবার চেষ্টা করুন।", destinationNeeded:"আগে একটি গন্তব্য নির্বাচন করুন।", tripStarted:"ভ্রমণ ট্র্যাকিং চালু হয়েছে", km:"কিমি", districtTitle:"৬৪ জেলার তথ্য", districtSub:"জেলা নির্বাচন করুন এবং জনসংখ্যা, আয়তন, ইতিহাস, খাবার ও দর্শনীয় স্থান দেখুন।", divisionLabel:"বিভাগ", districtLabel:"জেলা", allDivisions:"সব বিভাগ", districtSearchPlaceholder:"জেলার নাম লিখে খুঁজুন...", population:"জনসংখ্যা", area:"আয়তন", famousPlaces:"বিখ্যাত স্থান", famousFood:"বিখ্যাত খাবার", history:"সংক্ষিপ্ত ইতিহাস", showMap:"মানচিত্রে দেখুন", noResult:"কোনো ভ্রমণস্থান পাওয়া যায়নি। অন্য কিছু লিখে খুঁজুন।",
         beachLabel:"🏖️ সমুদ্রসৈকত", hillLabel:"🏔️ পাহাড়", forestLabel:"🌿 প্রকৃতি", heritageLabel:"🏛️ ঐতিহ্য"
       },
       en: {
@@ -543,7 +601,7 @@
         aboutText2:"This is the first version of the project. More districts, tourist spots, travel costs and useful planning tools can be added over time.",
         footerExplore:"Explore Bangladesh", footerText:"Built for travelers who love discovering new places.",
         budget:"Estimated Budget", bestTime:"Best Time", category:"Category", tip:"Travel Tip",
-        googleMaps:"Open in Google Maps", districtTitle:"64 Districts of Bangladesh", districtSub:"Select a district to explore population, area, history, food and attractions.", divisionLabel:"Division", districtLabel:"District", allDivisions:"All divisions", districtSearchPlaceholder:"Search by district name...", population:"Population", area:"Area", famousPlaces:"Famous places", famousFood:"Famous food", history:"Brief history", showMap:"Show on map", noResult:"No destination found. Try another search.",
+        googleMaps:"Open in Google Maps", tripTitle:"My Trip Tracker", tripSub:"See where you are, where you are going and how far you have left—all in one place.", destinationLabel:"Destination", myLocation:"My Location", startTrip:"Start Trip", locationWaiting:"Location not detected", locationHint:"Tap “My Location” to get your current position.", liveTrip:"LIVE TRIP", remaining:"Remaining", youAreHere:"You are here", destination:"Destination", currentLocation:"Current location", distanceTravelled:"Distance travelled", distanceRemaining:"Distance remaining", lastUpdated:"Last updated", tripNote:"Distance is calculated as a straight line; actual road distance may be longer.", downloadPng:"Download PNG", downloadJpg:"Download JPG", downloadPdf:"Download PDF", locationDenied:"Location permission was denied. Please enable Location permission in your browser.", locationError:"Could not get your location. Please try again.", destinationNeeded:"Please select a destination first.", tripStarted:"Trip tracking is active", km:"km", districtTitle:"64 Districts of Bangladesh", districtSub:"Select a district to explore population, area, history, food and attractions.", divisionLabel:"Division", districtLabel:"District", allDivisions:"All divisions", districtSearchPlaceholder:"Search by district name...", population:"Population", area:"Area", famousPlaces:"Famous places", famousFood:"Famous food", history:"Brief history", showMap:"Show on map", noResult:"No destination found. Try another search.",
         beachLabel:"🏖️ Beach", hillLabel:"🏔️ Hill", forestLabel:"🌿 Nature", heritageLabel:"🏛️ Heritage"
       }
     };
@@ -706,6 +764,16 @@
       document.getElementById("enBtn").classList.toggle("active",lang==="en");
       render(document.querySelector(".filter.active")?.dataset.cat || "all", input.value);
       updateDistrictLanguage();
+      if(document.getElementById("tripDestination")){
+        const selected=document.getElementById("tripDestination").value;
+        populateTripDestinations();
+        document.getElementById("tripDestination").value=selected;
+        updateTripUI();
+      }
+      if(document.getElementById("tripStatus") && !userPosition){
+        document.querySelector("#tripStatus strong").textContent=translations[currentLang].locationWaiting;
+        document.querySelector("#tripStatus span").textContent=translations[currentLang].locationHint;
+      }
     }
 
 const districtData = [
@@ -774,6 +842,55 @@ const districtData = [
 {name:"Netrokona",bn:"নেত্রকোনা",division:"ময়মনসিংহ",area:2794,pop:2324856,lat:24.8706,lng:90.7278,famous:"বিরিশিরি, সোমেশ্বরী",food:"বিরিশিরির পাহাড়ি খাবার, পিঠা",history:"হাওর ও গারো পাহাড়ঘেঁষা প্রাকৃতিক বৈচিত্র্যের জন্য পরিচিত।",tourist:"বিরিশিরি, বিজয়পুরের সাদা মাটি, সোমেশ্বরী নদী"},
 {name:"Sherpur",bn:"শেরপুর",division:"ময়মনসিংহ",area:1365,pop:1501853,lat:25.0205,lng:90.0151,famous:"গজনী অবকাশ, মধুটিলা",food:"পিঠা, মিষ্টি",history:"গারো পাহাড়সংলগ্ন বন ও সীমান্ত সংস্কৃতির জন্য পরিচিত।",tourist:"গজনী অবকাশ কেন্দ্র, মধুটিলা ইকোপার্ক, ঝিনাইগাতী"}
 ];
+
+
+    // ===== BDTrip Trip Tracker =====
+    let userPosition=null, tripStartPosition=null, tripWatchId=null, tripUserMarker=null, tripDestinationMarker=null, tripRouteLine=null;
+    const tripMap=L.map("tripMap",{scrollWheelZoom:false}).setView([23.685,90.3563],7);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(tripMap);
+
+    function populateTripDestinations(){
+      const select=document.getElementById("tripDestination"); select.innerHTML="";
+      places.forEach((p,i)=>{const o=document.createElement("option");o.value="place:"+i;o.textContent=currentLang==="bn"?getPlaceText(p).name:p.name;select.appendChild(o);});
+      const sep=document.createElement("option");sep.disabled=true;sep.textContent=currentLang==="bn"?"──────── জেলা ────────":"──────── Districts ────────";select.appendChild(sep);
+      districtData.forEach((d,i)=>{const o=document.createElement("option");o.value="district:"+i;o.textContent=currentLang==="bn"?d.bn:d.name;select.appendChild(o);});
+    }
+    function getTripDestination(){
+      const val=document.getElementById("tripDestination").value;if(!val)return null;const parts=val.split(":"),type=parts[0],idx=Number(parts[1]);
+      if(type==="place"){const p=places[idx],t=getPlaceText(p);return {lat:p.lat,lng:p.lng,name:t.name,location:t.location};}
+      const d=districtData[idx];return {lat:d.lat,lng:d.lng,name:currentLang==="bn"?d.bn:d.name,location:d.division};
+    }
+    function haversine(a,b){const R=6371,rad=Math.PI/180,dLat=(b.lat-a.lat)*rad,dLon=(b.lng-a.lng)*rad,x=Math.sin(dLat/2)**2+Math.cos(a.lat*rad)*Math.cos(b.lat*rad)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+    function formatKm(km){if(!Number.isFinite(km))return "—";return km<1?Math.round(km*1000)+" m":km.toFixed(km<10?1:0)+" "+translations[currentLang].km;}
+    function formatCoord(p){return p.lat.toFixed(5)+", "+p.lng.toFixed(5);}
+    function updateTripUI(){
+      const dest=getTripDestination();if(!dest)return;
+      document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;
+      if(!userPosition){document.getElementById("remainingDistance").textContent="—";document.getElementById("remainingDistance2").textContent="—";return;}
+      const remaining=haversine(userPosition,dest),travelled=tripStartPosition?haversine(tripStartPosition,userPosition):0,total=tripStartPosition?travelled+remaining:remaining,progress=tripStartPosition&&total>0?Math.max(0,Math.min(100,travelled/total*100)):0;
+      document.getElementById("remainingDistance").textContent=formatKm(remaining);document.getElementById("remainingDistance2").textContent=formatKm(remaining);document.getElementById("travelledDistance").textContent=formatKm(travelled);document.getElementById("currentLocationText").textContent=formatCoord(userPosition);document.getElementById("routeProgress").style.width=progress+"%";document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString(currentLang==="bn"?"bn-BD":"en-US",{hour:"2-digit",minute:"2-digit"});
+      if(tripUserMarker)tripUserMarker.setLatLng([userPosition.lat,userPosition.lng]);if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);
+      if(tripRouteLine)tripRouteLine.setLatLngs([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]]);else tripRouteLine=L.polyline([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]],{color:"#0b63ce",weight:4,dashArray:"8 8"}).addTo(tripMap);
+    }
+    function handlePosition(pos,initial){
+      userPosition={lat:pos.coords.latitude,lng:pos.coords.longitude};const dest=getTripDestination();
+      if(!tripUserMarker)tripUserMarker=L.marker([userPosition.lat,userPosition.lng]).addTo(tripMap).bindTooltip(translations[currentLang].youAreHere);
+      if(dest&&!tripDestinationMarker)tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);
+      document.querySelector(".status-dot").classList.add("live");document.querySelector("#tripStatus strong").textContent=translations[currentLang].tripStarted;document.querySelector("#tripStatus span").textContent=translations[currentLang].currentLocation+": "+formatCoord(userPosition);updateTripUI();
+      if(initial&&dest)tripMap.fitBounds([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]],{padding:[35,35]});
+    }
+    function locateUser(startTrip){
+      if(!navigator.geolocation){alert(translations[currentLang].locationError);return;}const dest=getTripDestination();if(!dest&&startTrip){alert(translations[currentLang].destinationNeeded);return;}
+      const btn=document.getElementById("locateBtn");btn.disabled=true;
+      navigator.geolocation.getCurrentPosition(pos=>{if(startTrip)tripStartPosition={lat:pos.coords.latitude,lng:pos.coords.longitude};handlePosition(pos,true);btn.disabled=false;if(!tripWatchId)tripWatchId=navigator.geolocation.watchPosition(p=>handlePosition(p,false),()=>{},{enableHighAccuracy:true,maximumAge:15000,timeout:20000});},()=>{btn.disabled=false;document.querySelector("#tripStatus strong").textContent=translations[currentLang].locationDenied;document.querySelector("#tripStatus span").textContent=translations[currentLang].locationError;},{enableHighAccuracy:true,maximumAge:0,timeout:15000});
+    }
+    document.getElementById("locateBtn").addEventListener("click",()=>locateUser(false));
+    document.getElementById("startTripBtn").addEventListener("click",()=>{if(!getTripDestination()){alert(translations[currentLang].destinationNeeded);return;}locateUser(true);});
+    document.getElementById("tripDestination").addEventListener("change",()=>{const dest=getTripDestination();if(!dest)return;document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);else tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);if(userPosition)updateTripUI();else tripMap.setView([dest.lat,dest.lng],10);});
+    async function downloadTripCard(type){
+      const card=document.getElementById("tripCard");if(typeof html2canvas==="undefined"){alert("Download library is still loading. Please try again.");return;}const canvas=await html2canvas(card,{scale:2,backgroundColor:"#0b1e36"}),name="bdtrip-trip-"+new Date().toISOString().slice(0,10);
+      if(type==="pdf"){const jsPDF=window.jspdf.jsPDF,pdf=new jsPDF({orientation:"landscape",unit:"px",format:[canvas.width,canvas.height]});pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,canvas.width,canvas.height);pdf.save(name+".pdf");}else{const a=document.createElement("a");a.download=name+"."+type;a.href=canvas.toDataURL(type==="jpg"?"image/jpeg":"image/png",.95);a.click();}
+    }
 
     const map = L.map("map", {scrollWheelZoom:false}).setView([23.685,90.3563], 7);
 
@@ -963,8 +1080,12 @@ const districtData = [
     });
 
     updateDistrictOptions();
+    populateTripDestinations();
     render();
     setLanguage('bn');
   </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
