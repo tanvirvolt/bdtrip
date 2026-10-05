@@ -1,1203 +1,222 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Explore the best tourist destinations of Bangladesh with an interactive map, travel information, budget estimates and more." />
-  <title>BDTrip — Explore Bangladesh</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIINfQ3wQp5qW0fZ0f0xM1h1Q7fK7F5e4J0="
-    crossorigin=""
-  />
-
-  <style>
-    :root{
-      --bg:#f4f7fb;
-      --card:#ffffff;
-      --ink:#10233f;
-      --muted:#66758a;
-      --primary:#0b63ce;
-      --primary-dark:#07499b;
-      --accent:#f59e0b;
-      --line:#e3eaf3;
-      --shadow:0 18px 50px rgba(16,35,63,.10);
-      --radius:20px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font-family:"DM Sans",sans-serif;
-    }
-    h1,h2,h3,.brand{font-family:"Rajdhani",sans-serif}
-    button,input{font:inherit}
-    .hero{
-      min-height:560px;
-      color:#fff;
-      position:relative;
-      overflow:hidden;
-      background:
-        linear-gradient(110deg,rgba(3,22,48,.94),rgba(5,64,116,.72)),
-        url("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1800&q=85")
-        center/cover;
-    }
-    .nav{
-      height:76px;
-      max-width:1180px;
-      margin:auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 20px;
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-size:29px;
-      font-weight:700;
-      letter-spacing:.5px;
-    }
-    .brand-mark{
-      width:38px;height:38px;border-radius:12px;
-      display:grid;place-items:center;
-      background:rgba(255,255,255,.14);
-      border:1px solid rgba(255,255,255,.25);
-    }
-    .nav-links{display:flex;gap:25px;font-size:14px;align-items:center}
-    .lang-toggle{display:flex;gap:4px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);padding:4px;border-radius:10px}
-    .lang-btn{border:0;background:transparent;color:#fff;padding:6px 10px;border-radius:7px;cursor:pointer;font-weight:700;font-size:12px}
-    .lang-btn.active{background:#fff;color:#0b63ce}
-    .nav-links a{color:#fff;text-decoration:none;opacity:.9}
-    .hero-content{
-      max-width:1000px;
-      margin:90px auto 0;
-      padding:0 20px;
-      text-align:center;
-    }
-    .eyebrow{
-      display:inline-flex;
-      padding:8px 13px;
-      border:1px solid rgba(255,255,255,.25);
-      background:rgba(255,255,255,.1);
-      border-radius:99px;
-      font-size:13px;
-      margin-bottom:16px;
-      backdrop-filter:blur(8px);
-    }
-    .hero h1{
-      margin:0;
-      font-size:clamp(52px,9vw,96px);
-      line-height:.9;
-      letter-spacing:1px;
-    }
-    .hero p{
-      max-width:680px;
-      margin:22px auto 30px;
-      color:rgba(255,255,255,.84);
-      font-size:17px;
-      line-height:1.7;
-    }
-    .search{
-      max-width:680px;
-      margin:auto;
-      padding:7px;
-      display:flex;
-      gap:7px;
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 15px 50px rgba(0,0,0,.25);
-    }
-    .search input{
-      flex:1;border:0;outline:0;padding:14px 16px;color:var(--ink);
-      min-width:0;
-    }
-    .search button{
-      border:0;border-radius:11px;padding:0 22px;
-      background:var(--primary);color:#fff;font-weight:700;cursor:pointer;
-    }
-    .section{max-width:1180px;margin:auto;padding:70px 20px}
-    .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:25px}
-    .section-head h2{font-size:38px;margin:0}
-    .section-head p{margin:5px 0 0;color:var(--muted)}
-    .map-wrap{
-      background:var(--card);
-      padding:12px;
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      border:1px solid var(--line);
-    }
-    #map{height:560px;border-radius:14px;overflow:hidden}
-    .filters{
-      display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px
-    }
-    .filter{
-      border:1px solid var(--line);
-      background:#fff;color:var(--muted);
-      padding:9px 15px;border-radius:99px;cursor:pointer;
-    }
-    .filter.active,.filter:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
-
-    .district-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .district-controls{display:grid;grid-template-columns:auto 1fr auto 1.3fr 1.4fr;gap:10px;align-items:center;margin-bottom:18px}
-    .district-controls label{font-size:13px;font-weight:700;color:var(--muted)}
-    .district-controls select,.district-controls input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:#fff;color:var(--ink);outline:none}
-    .district-controls select:focus,.district-controls input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(11,99,206,.10)}
-    .district-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:18px}
-    .district-list{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:14px;padding:8px}
-    .district-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;border-bottom:1px solid #edf1f6;background:#fff;padding:12px 10px;text-align:left;cursor:pointer;color:var(--ink)}
-    .district-item:last-child{border-bottom:0}
-    .district-item:hover,.district-item.active{background:#eef5ff;color:var(--primary)}
-    .district-item strong{font-size:15px}
-    .district-item span{font-size:11px;color:var(--muted)}
-    .district-detail{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
-    .district-cover{min-height:180px;padding:24px;display:flex;align-items:end;color:#fff;background:linear-gradient(120deg,rgba(4,34,69,.94),rgba(11,99,206,.72)),linear-gradient(120deg,#0d1e3a,#0b63ce)}
-    .district-cover h3{font-size:44px;line-height:1;margin:10px 0 6px}
-    .district-cover p{margin:0;color:rgba(255,255,255,.84);line-height:1.55}
-    .detail-badge{display:inline-block;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:6px 10px;font-size:12px}
-    .detail-stats{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
-    .detail-stats div{padding:17px 20px}
-    .detail-stats div+div{border-left:1px solid var(--line)}
-    .detail-stats small{display:block;color:var(--muted);font-size:12px}
-    .detail-stats strong{display:block;font:700 24px "Rajdhani";margin-top:4px}
-    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
-    .detail-box{background:#fff;padding:18px}
-    .detail-box.full{grid-column:1/-1}
-    .detail-box h4{font:700 21px "Rajdhani";margin:0 0 7px}
-    .detail-box p{color:var(--muted);line-height:1.7;margin:0;font-size:14px}
-    .district-map-btn{margin:18px;border:0;border-radius:10px;background:var(--primary);color:#fff;padding:12px 16px;font-weight:700;cursor:pointer}
-    @media(max-width:850px){
-      .district-controls{grid-template-columns:1fr 1fr}
-      .district-controls label{display:none}
-      .district-layout{grid-template-columns:1fr}
-      .district-list{max-height:300px}
-    }
-    @media(max-width:600px){
-      .district-controls{grid-template-columns:1fr}
-      .district-cover h3{font-size:36px}
-      .detail-grid{grid-template-columns:1fr}
-      .detail-box.full{grid-column:auto}
-    }
-
-
-    .trip-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .trip-controls{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:end}
-    .trip-field label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}
-    .trip-field select{width:100%;border:1px solid var(--line);border-radius:11px;padding:13px;background:#fff;color:var(--ink);outline:none}
-    .locate-btn,.start-btn{border:0;border-radius:11px;padding:13px 17px;color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
-    .locate-btn{background:#0b63ce}.start-btn{background:#0d8a5a}
-    .locate-btn:disabled,.start-btn:disabled{opacity:.55;cursor:not-allowed}
-    .trip-status{display:flex;align-items:center;gap:11px;margin:16px 0;padding:13px 15px;background:#f5f8fc;border:1px solid var(--line);border-radius:13px}
-    .trip-status strong{display:block;font-size:14px}.trip-status span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
-    .status-dot{width:10px;height:10px;border-radius:50%;background:#f59e0b;flex:0 0 auto}.status-dot.live{background:#0d8a5a;box-shadow:0 0 0 5px rgba(13,138,90,.12)}
-    .trip-card{margin-top:16px;background:linear-gradient(135deg,#0b1e36,#0a4778);color:#fff;border-radius:18px;padding:23px;box-shadow:0 18px 45px rgba(7,36,66,.20)}
-    .trip-card-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
-    .trip-kicker{font-size:11px;letter-spacing:1.5px;color:#8fd6b8;font-weight:800}.trip-card h3{font-size:34px;line-height:1;margin:7px 0 5px}.trip-card p{margin:0;color:#b9cce0;font-size:13px}
-    .trip-distance{text-align:right}.trip-distance small{display:block;color:#b9cce0;font-size:11px}.trip-distance strong{font:700 34px "Rajdhani";color:#fff}
-    .route-visual{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin:28px 0 18px}.route-point{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:20px}.route-point small{font-size:10px;color:#b9cce0;white-space:nowrap}
-    .route-line{height:7px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden}.route-line div{height:100%;width:0;background:#8fd6b8;border-radius:99px;transition:width .5s}
-    .trip-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.13);border-radius:12px;overflow:hidden}.trip-metrics div{padding:13px;background:rgba(255,255,255,.05)}.trip-metrics small{display:block;color:#9eb4ca;font-size:10px}.trip-metrics b{display:block;font-size:13px;margin-top:4px}
-    .trip-note{margin-top:14px;color:#a9bfd3;font-size:11px;line-height:1.5}.download-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.download-row button{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:12px}.download-row button:hover{background:rgba(255,255,255,.15)}
-    .trip-map-wrap{margin-top:18px;background:#fff;border:1px solid var(--line);padding:10px;border-radius:16px}#tripMap{height:400px;border-radius:12px;overflow:hidden}
-    @media(max-width:850px){.trip-controls{grid-template-columns:1fr 1fr}.trip-field{grid-column:1/-1}.trip-metrics{grid-template-columns:1fr 1fr}}
-    @media(max-width:600px){.trip-controls{grid-template-columns:1fr}.trip-field{grid-column:auto}.trip-card-top{display:block}.trip-distance{text-align:left;margin-top:15px}.trip-distance strong{font-size:30px}.trip-metrics{grid-template-columns:1fr 1fr}#tripMap{height:320px}}
-
-
-    .bdtrip-dashboard{display:grid;grid-template-columns:260px 1fr;gap:12px;background:#fff;border:1px solid #e6e1d6;border-radius:10px;padding:10px;box-shadow:0 10px 30px rgba(28,34,29,.08)}
-    .trip-sidebar{min-width:0;border:1px solid #e9e5dd;border-radius:9px;background:#fff;overflow:hidden}
-    .trip-side-head{padding:9px 10px 8px;border-bottom:1px solid #eee9df}
-    .trip-side-title{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:8px}.trip-side-title b{font-weight:800}.trip-side-title em{margin-left:auto;font-style:normal;font-size:10px;color:#16845d;background:#eaf6f0;padding:3px 7px;border-radius:99px}
-    .trip-search{height:30px;border:1px solid #e6e0d6;border-radius:7px;display:flex;align-items:center;padding:0 8px;color:#aaa}.trip-search input{border:0;outline:0;width:100%;font-size:10px;background:transparent;padding:0 5px}
-    .trip-district-list{height:600px;overflow:auto;padding:8px 8px 12px}.trip-group-title{font-size:9px;font-weight:800;color:#777;margin:8px 3px 5px;display:flex;justify-content:space-between}.trip-pills{display:flex;flex-wrap:wrap;gap:5px}
-    .trip-pill{border:0;background:#f3efe7;color:#5f625e;border-radius:99px;padding:6px 8px;font-size:9px;cursor:pointer;transition:.18s}.trip-pill:hover,.trip-pill.active{background:#087d58;color:#fff}
-    .trip-main{min-width:0;border:1px solid #e9e5dd;border-radius:9px;background:#fff;padding:10px}
-    .trip-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:10px}.trip-color-dots{display:flex;gap:7px;margin-right:auto}.trip-color-dots i{width:17px;height:17px;border-radius:50%;border:1px solid #d7d4cc;background:#172b25}.trip-color-dots i:nth-child(2){background:#202d68}.trip-color-dots i:nth-child(3){background:#f7eee7}.trip-color-dots i:nth-child(4){background:#e6eff9}.trip-color-dots i:nth-child(5){background:#0c7754}
-    .mini-btn{border:1px solid #ded8cd;background:#fff;color:#4d554f;border-radius:7px;padding:7px 10px;font-size:9px;cursor:pointer}.mini-btn.green{color:#087d58}.mini-btn:disabled{opacity:.5}
-    .trip-live-head{display:flex;justify-content:space-between;align-items:end;padding:8px 12px 12px}.trip-live-head small{font-size:8px;color:#777}.trip-live-head h3{font-size:27px;margin:4px 0 2px;line-height:1}.trip-live-head p{font-size:9px;color:#8a8a82;margin:0}.remaining-big{text-align:right}.remaining-big small{display:block}.remaining-big strong{font:700 30px "Rajdhani";color:#087d58}
-    .trip-map-shell{position:relative;border:1px solid #e8e2d7;border-radius:7px;overflow:hidden;background:#f4f0e7}.trip-map-shell #tripMap{height:400px;background:#f5f1e8}.trip-map-shell .leaflet-container{background:#f5f1e8}.trip-district-tooltip{background:transparent;border:0;box-shadow:none;color:#33413a;font-size:8px;font-weight:700}.trip-district-tooltip:before{display:none}
-    .map-overlay-title{position:absolute;left:20px;top:20px;z-index:500;pointer-events:none}.map-overlay-title b{display:block;font:700 27px "Rajdhani";color:#15251e}.map-overlay-title span{font-size:9px;color:#8b8b84}
-    .trip-progress-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:9px 12px}.trip-progress{height:4px;background:#e3dfd4;border-radius:99px;overflow:hidden}.trip-progress span{display:block;height:100%;width:0;background:#087d58;border-radius:99px;transition:.5s}.trip-progress-row b{font-size:9px;color:#777}
-    .trip-summary{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #eee9df;border-bottom:1px solid #eee9df;margin-top:8px}.trip-summary div{padding:9px 10px;border-right:1px solid #eee9df}.trip-summary div:last-child{border-right:0}.trip-summary small{display:block;color:#999;font-size:8px}.trip-summary b{display:block;font-size:10px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .trip-download-title{font-size:10px;font-weight:800;margin:12px 0 7px}.download-row.light{margin:0;display:grid;grid-template-columns:repeat(3,1fr)}.download-row.light button{background:#fff;color:#26332d;border:1px solid #ddd7cd;border-radius:7px;padding:9px;font-size:10px}.download-row.light button:hover{background:#f5f1e9}
-    .trip-status.compact{margin-top:9px;padding:8px 10px;background:#faf9f6;border:1px solid #eee9df}.trip-status.compact strong{font-size:9px}.trip-status.compact span{font-size:8px}
-    .trip-hidden-select{display:none}
-    @media(max-width:850px){.bdtrip-dashboard{grid-template-columns:1fr}.trip-sidebar{order:2}.trip-district-list{height:240px}.trip-main{order:1}.trip-summary{grid-template-columns:1fr 1fr}}
-    @media(max-width:600px){.trip-toolbar{flex-wrap:wrap}.trip-color-dots{width:100%}.trip-live-head{display:block}.remaining-big{text-align:left;margin-top:7px}.trip-map-shell #tripMap{height:330px}.trip-summary{grid-template-columns:1fr 1fr}}
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:20px;
-    }
-    .place{
-      overflow:hidden;background:#fff;border:1px solid var(--line);
-      border-radius:18px;box-shadow:0 8px 25px rgba(16,35,63,.06);
-      transition:.25s;cursor:pointer;
-    }
-    .place:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
-    .place-img{height:190px;width:100%;object-fit:cover;display:block}
-    .place-body{padding:18px}
-    .place-body h3{font-size:25px;margin:0 0 5px}
-    .place-body p{color:var(--muted);font-size:14px;line-height:1.6;margin:7px 0 13px}
-    .tags{display:flex;gap:7px;flex-wrap:wrap}
-    .tag{font-size:12px;padding:6px 9px;border-radius:8px;background:#eef5ff;color:#1659a5}
-    .tag.gold{background:#fff5df;color:#9a6500}
-    .stats{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:22px
-    }
-    .stat{
-      background:#fff;border:1px solid var(--line);border-radius:15px;padding:20px;text-align:center
-    }
-    .stat strong{display:block;font:700 30px "Rajdhani";color:var(--primary)}
-    .stat span{font-size:13px;color:var(--muted)}
-    footer{
-      background:#07182e;color:#b7c6d8;padding:35px 20px;text-align:center;
-    }
-    footer strong{color:#fff}
-    .modal{
-      position:fixed;inset:0;background:rgba(4,18,35,.65);
-      display:none;align-items:center;justify-content:center;
-      padding:20px;z-index:9999;backdrop-filter:blur(5px)
-    }
-    .modal.show{display:flex}
-    .modal-card{
-      max-width:650px;width:100%;max-height:90vh;overflow:auto;
-      background:#fff;border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.3)
-    }
-    .modal-card img{width:100%;height:270px;object-fit:cover}
-    .modal-body{padding:25px}
-    .modal-body h2{font-size:38px;margin:0 0 4px}
-    .modal-body p{line-height:1.7;color:var(--muted)}
-    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
-    .info{background:#f4f7fb;padding:12px;border-radius:12px}
-    .info small{display:block;color:var(--muted);font-size:11px}
-    .info b{display:block;margin-top:3px}
-    .close{
-      position:absolute;right:18px;top:15px;border:0;background:#fff;
-      width:38px;height:38px;border-radius:50%;font-size:23px;cursor:pointer
-    }
-    .empty{padding:30px;text-align:center;color:var(--muted);grid-column:1/-1}
-    @media(max-width:850px){
-      .nav-links{display:none}
-  
-    .district-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .district-controls{display:grid;grid-template-columns:auto 1fr auto 1.3fr 1.4fr;gap:10px;align-items:center;margin-bottom:18px}
-    .district-controls label{font-size:13px;font-weight:700;color:var(--muted)}
-    .district-controls select,.district-controls input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:#fff;color:var(--ink);outline:none}
-    .district-controls select:focus,.district-controls input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(11,99,206,.10)}
-    .district-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:18px}
-    .district-list{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:14px;padding:8px}
-    .district-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;border-bottom:1px solid #edf1f6;background:#fff;padding:12px 10px;text-align:left;cursor:pointer;color:var(--ink)}
-    .district-item:last-child{border-bottom:0}
-    .district-item:hover,.district-item.active{background:#eef5ff;color:var(--primary)}
-    .district-item strong{font-size:15px}
-    .district-item span{font-size:11px;color:var(--muted)}
-    .district-detail{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
-    .district-cover{min-height:180px;padding:24px;display:flex;align-items:end;color:#fff;background:linear-gradient(120deg,rgba(4,34,69,.94),rgba(11,99,206,.72)),linear-gradient(120deg,#0d1e3a,#0b63ce)}
-    .district-cover h3{font-size:44px;line-height:1;margin:10px 0 6px}
-    .district-cover p{margin:0;color:rgba(255,255,255,.84);line-height:1.55}
-    .detail-badge{display:inline-block;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:6px 10px;font-size:12px}
-    .detail-stats{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
-    .detail-stats div{padding:17px 20px}
-    .detail-stats div+div{border-left:1px solid var(--line)}
-    .detail-stats small{display:block;color:var(--muted);font-size:12px}
-    .detail-stats strong{display:block;font:700 24px "Rajdhani";margin-top:4px}
-    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
-    .detail-box{background:#fff;padding:18px}
-    .detail-box.full{grid-column:1/-1}
-    .detail-box h4{font:700 21px "Rajdhani";margin:0 0 7px}
-    .detail-box p{color:var(--muted);line-height:1.7;margin:0;font-size:14px}
-    .district-map-btn{margin:18px;border:0;border-radius:10px;background:var(--primary);color:#fff;padding:12px 16px;font-weight:700;cursor:pointer}
-    @media(max-width:850px){
-      .district-controls{grid-template-columns:1fr 1fr}
-      .district-controls label{display:none}
-      .district-layout{grid-template-columns:1fr}
-      .district-list{max-height:300px}
-    }
-    @media(max-width:600px){
-      .district-controls{grid-template-columns:1fr}
-      .district-cover h3{font-size:36px}
-      .detail-grid{grid-template-columns:1fr}
-      .detail-box.full{grid-column:auto}
-    }
-
-    .grid{grid-template-columns:1fr 1fr}
-      .hero-content{margin-top:65px}
-      #map{height:460px}
-    }
-    @media(max-width:600px){
-      .hero{min-height:590px}
-      .hero h1{font-size:58px}
-      .hero p{font-size:15px}
-      .search{flex-direction:column;background:transparent;box-shadow:none}
-      .search input{border-radius:12px}
-      .search button{height:50px}
-      .section{padding:50px 15px}
-      .section-head{display:block}
-      .section-head h2{font-size:32px}
-  
-    .district-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .district-controls{display:grid;grid-template-columns:auto 1fr auto 1.3fr 1.4fr;gap:10px;align-items:center;margin-bottom:18px}
-    .district-controls label{font-size:13px;font-weight:700;color:var(--muted)}
-    .district-controls select,.district-controls input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:#fff;color:var(--ink);outline:none}
-    .district-controls select:focus,.district-controls input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(11,99,206,.10)}
-    .district-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:18px}
-    .district-list{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:14px;padding:8px}
-    .district-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;border-bottom:1px solid #edf1f6;background:#fff;padding:12px 10px;text-align:left;cursor:pointer;color:var(--ink)}
-    .district-item:last-child{border-bottom:0}
-    .district-item:hover,.district-item.active{background:#eef5ff;color:var(--primary)}
-    .district-item strong{font-size:15px}
-    .district-item span{font-size:11px;color:var(--muted)}
-    .district-detail{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
-    .district-cover{min-height:180px;padding:24px;display:flex;align-items:end;color:#fff;background:linear-gradient(120deg,rgba(4,34,69,.94),rgba(11,99,206,.72)),linear-gradient(120deg,#0d1e3a,#0b63ce)}
-    .district-cover h3{font-size:44px;line-height:1;margin:10px 0 6px}
-    .district-cover p{margin:0;color:rgba(255,255,255,.84);line-height:1.55}
-    .detail-badge{display:inline-block;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:6px 10px;font-size:12px}
-    .detail-stats{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
-    .detail-stats div{padding:17px 20px}
-    .detail-stats div+div{border-left:1px solid var(--line)}
-    .detail-stats small{display:block;color:var(--muted);font-size:12px}
-    .detail-stats strong{display:block;font:700 24px "Rajdhani";margin-top:4px}
-    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
-    .detail-box{background:#fff;padding:18px}
-    .detail-box.full{grid-column:1/-1}
-    .detail-box h4{font:700 21px "Rajdhani";margin:0 0 7px}
-    .detail-box p{color:var(--muted);line-height:1.7;margin:0;font-size:14px}
-    .district-map-btn{margin:18px;border:0;border-radius:10px;background:var(--primary);color:#fff;padding:12px 16px;font-weight:700;cursor:pointer}
-    @media(max-width:850px){
-      .district-controls{grid-template-columns:1fr 1fr}
-      .district-controls label{display:none}
-      .district-layout{grid-template-columns:1fr}
-      .district-list{max-height:300px}
-    }
-    @media(max-width:600px){
-      .district-controls{grid-template-columns:1fr}
-      .district-cover h3{font-size:36px}
-      .detail-grid{grid-template-columns:1fr}
-      .detail-box.full{grid-column:auto}
-    }
-
-    .grid{grid-template-columns:1fr}
-      .stats{grid-template-columns:1fr}
-      #map{height:420px}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BDTrip — বাংলাদেশের কতটুকু ঘুরেছেন? ম্যাপ, জেলা গাইড ও ট্রিপ প্ল্যানার</title>
+<meta name="description" content="BDTrip এ ৬৪ জেলার ম্যাপে আপনার ঘোরা ও ঘুরতে চাওয়া জেলা চিহ্নিত করুন, জেলা গাইড দেখুন, ট্রিপ বাজেট হিসাব করুন এবং ম্যাপ PNG, JPG বা PDF ডাউনলোড করুন।">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BDTrip — বাংলাদেশের কতটুকু ঘুরেছেন?">
+<meta property="og:description" content="৬৪ জেলার ম্যাপ, জেলা গাইড, বাজেট ক্যালকুলেটর ও শেয়ারযোগ্য ট্রাভেল ম্যাপ।">
+<meta name="theme-color" content="#0b3d3a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230b3d3a'/%3E%3Cpath d='M16 5a7 7 0 00-7 7c0 5 7 14 7 14s7-9 7-14a7 7 0 00-7-7z' fill='%23ffb703'/%3E%3Ccircle cx='16' cy='12' r='2.6' fill='%230b3d3a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <header class="hero" id="home">
-    <nav class="nav">
-      <div class="brand"><span class="brand-mark">🇧🇩</span> BDTrip</div>
-      <div class="nav-links">
-        <a href="#map-section" data-i18n="navMap">মানচিত্র</a>
-        <a href="#destinations" data-i18n="navDest">ভ্রমণস্থান</a>
-        <a href="#about" data-i18n="navAbout">পরিচিতি</a>
-        <div class="lang-toggle">
-          <button class="lang-btn active" id="bnBtn" onclick="setLanguage('bn')">বাংলা</button>
-          <button class="lang-btn" id="enBtn" onclick="setLanguage('en')">EN</button>
+
+<header class="nav" id="top">
+  <a class="brand" href="#top" aria-label="BDTrip হোম">
+    <span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 00-7.500 7.500C8.500 17 16 27 16 27s7.500-10 7.500-15.500A7.500 7.500 0 0016 4z" fill="#ffb703"/><circle cx="16" cy="11.500" r="2.800" fill="#0b3d3a"/></svg></span>
+    <span class="wordmark">BD<b>Trip</b></span>
+  </a>
+  <nav class="links" aria-label="প্রধান মেনু">
+    <a href="#tool">ম্যাপ</a>
+    <a href="#guide">জেলা গাইড</a>
+    <a href="#budget">বাজেট</a>
+    <a href="#checklist">চেকলিস্ট</a>
+    <a href="#faq">প্রশ্নোত্তর</a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blob b1" aria-hidden="true"></div>
+    <div class="blob b2" aria-hidden="true"></div>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="tag">৬৪ জেলা · ৮ বিভাগ · সম্পূর্ণ ফ্রি</span>
+        <h1>বাংলাদেশের <em>কতটুকু</em> ঘুরে দেখেছেন?</h1>
+        <p>যেসব জেলায় গিয়েছেন সেগুলো রাঙিয়ে নিন, যেখানে যেতে চান সেগুলো উইশলিস্টে রাখুন। জেলা গাইড দেখুন, ট্রিপের বাজেট হিসাব করুন, তারপর সুন্দর একটি ট্রাভেল ম্যাপ ডাউনলোড করে শেয়ার করুন।</p>
+        <div class="hero-cta">
+          <a class="cta" href="#tool">ম্যাপ বানানো শুরু করুন</a>
+          <a class="cta ghost" href="#guide">জেলা গাইড দেখুন</a>
         </div>
       </div>
-    </nav>
-
-    <div class="hero-content">
-      <div class="eyebrow" data-i18n="eyebrow">🇧🇩 বাংলাদেশের সৌন্দর্য আবিষ্কার করুন</div>
-      <h1 data-i18n-html="heroTitle">ঘুরে দেখুন<br>বাংলাদেশ</h1>
-      <p data-i18n="heroText">সুন্দর ভ্রমণস্থান খুঁজুন, আপনার পরবর্তী ভ্রমণ পরিকল্পনা করুন এবং বাংলাদেশের বিশেষ জায়গাগুলো আবিষ্কার করুন।</p>
-
-      <div class="search">
-        <input id="searchInput" type="search" placeholder="কক্সবাজার, বান্দরবান, সাজেক খুঁজুন..." data-placeholder-key="searchPlaceholder" autocomplete="off">
-        <button onclick="runSearch()" data-i18n="exploreBtn">ঘুরে দেখুন</button>
-      </div>
+      <aside class="score" aria-live="polite">
+        <div class="ring" id="heroRing" style="--p:0"><div class="ring-in"><b id="heroCount">০</b><span>/৬৪ জেলা</span></div></div>
+        <div class="score-txt">
+          <small>আপনার ভ্রমণ লেভেল</small>
+          <strong id="heroLevel">নতুন ভ্রমণকারী</strong>
+          <span id="heroNext">প্রথম জেলাটি বেছে নিন</span>
+        </div>
+      </aside>
     </div>
-  </header>
+  </section>
 
-  <main>
+  <!-- TOOL -->
+  <section class="tool" id="tool">
+    <aside class="card picker">
+      <div class="picker-head">
+        <h2>জেলা বাছাই</h2>
+        <span class="count-pill" id="countPill">০/৬৪</span>
+      </div>
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search" type="search" placeholder="জেলা খুঁজুন (বাংলা বা English)" autocomplete="off">
+      </label>
+      <div class="bulk">
+        <button type="button" id="selAll">সব ঘুরেছি</button>
+        <button type="button" id="clrAll">সব মুছুন</button>
+      </div>
+      <div id="groups" class="groups"></div>
+      <p class="none" id="noResult" hidden>কোনো জেলা পাওয়া যায়নি।</p>
+    </aside>
 
-
-    <section class="section" id="map-section">
-      <div class="section-head">
-        <div>
-          <h2 data-i18n="tripTitle">আমার ভ্রমণ ট্র্যাকার</h2>
-          <p data-i18n="tripSub">জেলা বা গন্তব্য বেছে নিন, আপনার অবস্থান দেখুন এবং কতটা পথ বাকি তা জানুন।</p>
+    <section class="stage">
+      <div class="card controls">
+        <div class="seg" role="radiogroup" aria-label="বাছাই মোড">
+          <button type="button" id="modeV" role="radio" class="active">ঘুরেছি</button>
+          <button type="button" id="modeW" role="radio">ঘুরতে চাই</button>
+        </div>
+        <p class="hint">মোড বেছে নিয়ে তালিকা বা ম্যাপে ক্লিক করুন। আবার ক্লিক করলে মুছে যাবে। কোনো জেলায় ক্লিক করলে নিচে <a href="#guide" class="inl">জেলা গাইড</a> দেখাবে।</p>
+        <div class="row">
+          <span class="lbl">রঙ</span>
+          <div class="themes" id="themes" role="radiogroup" aria-label="রঙের থিম"></div>
+        </div>
+        <div class="row inputs">
+          <input id="nameInput" type="text" maxlength="28" placeholder="আপনার নাম (ঐচ্ছিক)">
+          <label class="check"><input id="labelToggle" type="checkbox" checked> জেলার নাম দেখান</label>
         </div>
       </div>
 
-      <div class="bdtrip-dashboard">
-        <aside class="trip-sidebar">
-          <div class="trip-side-head">
-            <div class="trip-side-title"><span>🗺️</span><b data-i18n="districtBrowse">জেলা ঘুরে দেখুন</b><em>০ / ৬৪</em></div>
-            <div class="trip-search"><span>⌕</span><input id="tripDistrictSearch" placeholder="জেলা খুঁজুন..." autocomplete="off"></div>
-          </div>
-          <div id="tripDistrictList" class="trip-district-list"></div>
-        </aside>
-
-        <div class="trip-main">
-          <div class="trip-toolbar">
-            <div class="trip-color-dots"><i></i><i></i><i></i><i></i><i></i></div>
-            <button class="mini-btn" id="locateBtn" type="button">📍 <span data-i18n="myLocation">আমার অবস্থান</span></button>
-            <button class="mini-btn green" id="startTripBtn" type="button">🚀 <span data-i18n="startTrip">ভ্রমণ শুরু</span></button>
-          </div>
-
-          <div class="trip-live-head">
+      <div class="card mapcard-wrap">
+        <div class="canvas-card" id="mapCard">
+          <div class="mc-top">
             <div>
-              <small data-i18n="liveTrip">LIVE TRIP</small>
-              <h3 id="tripDestinationName">আমার বাংলাদেশ</h3>
-              <p id="tripDestinationLocation">একটি গন্তব্য নির্বাচন করুন</p>
+              <small>BDTrip · ভ্রমণ ম্যাপ</small>
+              <h3 id="mapTitle">আমার বাংলাদেশ</h3>
             </div>
-            <div class="remaining-big"><small data-i18n="remaining">বাকি</small><strong id="remainingDistance">—</strong></div>
+            <div class="mc-count"><b id="bigCount">০</b><span>/৬৪</span></div>
           </div>
-
-          <div class="trip-map-shell">
-            <div id="tripMap"></div>
-            <div class="map-overlay-title">
-              <b id="tripMapTitle">আমার বাংলাদেশ</b>
-              <span id="tripMapSub">গন্তব্য নির্বাচন করে ভ্রমণ শুরু করুন</span>
-            </div>
+          <svg id="map" viewBox="0 0 600 848" role="img" aria-label="বাংলাদেশের জেলা ম্যাপ"></svg>
+          <div class="progress"><i id="bar"></i></div>
+          <div class="mc-meta"><span id="pctText">০% সম্পন্ন</span><span id="divText"></span></div>
+          <div class="legend">
+            <span><i class="dot v"></i>ঘুরেছি <b id="legV">০</b></span>
+            <span><i class="dot w"></i>ঘুরতে চাই <b id="legW">০</b></span>
           </div>
+          <div class="mc-foot"><span class="mark sm">BD</span> BDTrip</div>
+        </div>
+        <div class="tip" id="tip" hidden></div>
+      </div>
 
-          <div class="trip-progress-row">
-            <div class="trip-progress"><span id="routeProgress"></span></div>
-            <b id="remainingDistance2">—</b>
-          </div>
-
-          <div class="trip-summary">
-            <div><small data-i18n="currentLocation">বর্তমান অবস্থান</small><b id="currentLocationText">—</b></div>
-            <div><small data-i18n="distanceTravelled">অতিক্রান্ত দূরত্ব</small><b id="travelledDistance">—</b></div>
-            <div><small data-i18n="distanceRemaining">বাকি দূরত্ব</small><b id="summaryRemaining">—</b></div>
-            <div><small data-i18n="lastUpdated">সর্বশেষ আপডেট</small><b id="lastUpdated">—</b></div>
-          </div>
-
-          <div class="trip-download-title" data-i18n="downloadTrip">আপনার ভ্রমণ স্ট্যাটাস ডাউনলোড করুন</div>
-          <div class="download-row light">
-            <button type="button" onclick="downloadTripCard('png')">↓ PNG</button>
-            <button type="button" onclick="downloadTripCard('jpg')">↓ JPG</button>
-            <button type="button" onclick="downloadTripCard('pdf')">↓ PDF</button>
-          </div>
-
-          <div class="trip-status compact" id="tripStatus">
-            <div class="status-dot"></div>
-            <div><strong data-i18n="locationWaiting">অবস্থান নির্ধারণ করা হয়নি</strong><span data-i18n="locationHint">“আমার অবস্থান” চাপলে আপনার বর্তমান অবস্থান নেওয়া হবে।</span></div>
-          </div>
-
-          <select id="tripDestination" class="trip-hidden-select" aria-hidden="true"></select>
+      <div class="card dl">
+        <h4>আপনার ম্যাপ ডাউনলোড বা শেয়ার করুন</h4>
+        <div class="dl-btns">
+          <button class="btn primary" data-fmt="png">↓ PNG</button>
+          <button class="btn" data-fmt="jpg">↓ JPG</button>
+          <button class="btn" data-fmt="pdf">↓ PDF</button>
+        </div>
+        <div class="share-row">
+          <button class="btn share" id="shareBtn">শেয়ার করুন</button>
+          <a class="btn wa" id="waBtn" target="_blank" rel="noopener">WhatsApp</a>
+          <button class="btn" id="copyBtn">টেক্সট কপি</button>
         </div>
       </div>
     </section>
-    <section class="section" id="district-explorer">
-      <div class="section-head">
-        <div>
-          <h2 data-i18n="districtTitle">৬৪ জেলার তথ্য</h2>
-          <p data-i18n="districtSub">জেলা নির্বাচন করুন এবং জনসংখ্যা, আয়তন, ইতিহাস, খাবার ও দর্শনীয় স্থান দেখুন।</p>
-        </div>
-      </div>
+  </section>
 
-      <div class="district-panel">
-        <div class="district-controls">
-          <label for="divisionSelect" data-i18n="divisionLabel">বিভাগ</label>
-          <select id="divisionSelect">
-            <option value="all" data-i18n="allDivisions">সব বিভাগ</option>
-          </select>
-
-          <label for="districtSelect" data-i18n="districtLabel">জেলা</label>
-          <select id="districtSelect"></select>
-
-          <input id="districtSearch" type="search" placeholder="জেলার নাম লিখে খুঁজুন..." data-placeholder-key="districtSearchPlaceholder">
-        </div>
-
-        <div class="district-layout">
-          <div class="district-list" id="districtList"></div>
-
-          <article class="district-detail" id="districtDetail" aria-live="polite">
-            <div class="district-cover">
-              <div>
-                <span class="detail-badge" id="detailDivision"></span>
-                <h3 id="detailName"></h3>
-                <p id="detailTourist"></p>
-              </div>
-            </div>
-            <div class="detail-stats">
-              <div><small data-i18n="population">জনসংখ্যা</small><strong id="detailPopulation"></strong></div>
-              <div><small data-i18n="area">আয়তন</small><strong id="detailArea"></strong></div>
-            </div>
-            <div class="detail-grid">
-              <div class="detail-box"><h4 data-i18n="famousPlaces">বিখ্যাত স্থান</h4><p id="detailFamous"></p></div>
-              <div class="detail-box"><h4 data-i18n="famousFood">বিখ্যাত খাবার</h4><p id="detailFood"></p></div>
-              <div class="detail-box full"><h4 data-i18n="history">সংক্ষিপ্ত ইতিহাস</h4><p id="detailHistory"></p></div>
-            </div>
-            <button class="district-map-btn" id="districtMapBtn" type="button">📍 <span data-i18n="showMap">মানচিত্রে দেখুন</span></button>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="destinations">
-      <div class="section-head">
-        <div>
-          <h2 data-i18n="popularTitle">জনপ্রিয় ভ্রমণস্থান</h2>
-          <p data-i18n="popularSub">বাংলাদেশের জনপ্রিয় কিছু জায়গা দিয়ে শুরু করুন।</p>
-        </div>
-      </div>
-
-      <div class="filters" id="filters">
-        <button class="filter active" data-cat="all" data-i18n="all">সব</button>
-        <button class="filter" data-cat="beach" data-i18n="beach">🏖️ সমুদ্রসৈকত</button>
-        <button class="filter" data-cat="hill" data-i18n="hill">🏔️ পাহাড়</button>
-        <button class="filter" data-cat="forest" data-i18n="forest">🌿 বন ও প্রকৃতি</button>
-        <button class="filter" data-cat="heritage" data-i18n="heritage">🏛️ ঐতিহ্য</button>
-      </div>
-
-      <div class="grid" id="placeGrid"></div>
-    </section>
-
-    <section class="section" id="about">
-      <div class="section-head">
-        <div>
-          <h2 data-i18n="aboutTitle">BDTrip সম্পর্কে</h2>
-          <p data-i18n="aboutSub">বাংলাদেশ ভ্রমণ আবিষ্কারের একটি সহজ প্ল্যাটফর্ম।</p>
-        </div>
-      </div>
-      <div style="background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;line-height:1.8;color:var(--muted)">
-        <span data-i18n="aboutText">ইন্টার‍্যাক্টিভ মানচিত্র ও সহজ ভ্রমণ তথ্যের মাধ্যমে BDTrip আপনাকে বাংলাদেশের বিভিন্ন ভ্রমণস্থান আবিষ্কার করতে সাহায্য করে।</span>
-        <span data-i18n="aboutText2">এটি প্রজেক্টের প্রথম সংস্করণ। ভবিষ্যতে আরও জেলা, পর্যটনস্থান, ভ্রমণ খরচ এবং পরিকল্পনার টুল যোগ করা যাবে।</span>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <strong>BDTrip</strong> — <span data-i18n="footerExplore">বাংলাদেশ ঘুরে দেখুন</span> 🇧🇩<br>
-    <small data-i18n="footerText">নতুন জায়গা আবিষ্কার করতে ভালোবাসেন এমন ভ্রমণকারীদের জন্য তৈরি।</small>
-  </footer>
-
-  <div class="modal" id="modal" onclick="closeModal(event)">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <button class="close" onclick="hideModal()">×</button>
-      <img id="modalImg" src="" alt="">
-      <div class="modal-body">
-        <h2 id="modalTitle"></h2>
-        <div id="modalLocation" class="tag" style="display:inline-block"></div>
-        <p id="modalDesc"></p>
-        <div class="info-grid">
-          <div class="info"><small data-i18n="budget">আনুমানিক বাজেট</small><b id="modalBudget"></b></div>
-          <div class="info"><small data-i18n="bestTime">ভ্রমণের সেরা সময়</small><b id="modalTime"></b></div>
-          <div class="info"><small data-i18n="category">ধরন</small><b id="modalCategory"></b></div>
-          <div class="info"><small data-i18n="tip">ভ্রমণ টিপস</small><b id="modalTip"></b></div>
-        </div>
-        <a id="mapsLink" target="_blank" rel="noopener" style="display:inline-block;background:#0b63ce;color:#fff;text-decoration:none;padding:12px 17px;border-radius:10px;font-weight:700">📍 <span data-i18n="googleMaps">Google Maps-এ দেখুন</span></a>
+  <!-- GUIDE -->
+  <section class="block" id="guide">
+    <div class="block-head">
+      <h2>জেলা গাইড</h2>
+      <p>ম্যাপ বা তালিকা থেকে যেকোনো জেলা বেছে নিন, সেখানকার ঘোরার জায়গা, সেরা সময় আর বিখ্যাত খাবার দেখুন।</p>
+    </div>
+    <div class="guide-grid">
+      <article class="card guide-card" id="guideCard" aria-live="polite">
+        <p class="placeholder">একটি জেলা বেছে নিন, এখানে তার গাইড দেখাবে।</p>
+      </article>
+      <div class="card divs">
+        <h3>বিভাগ অনুযায়ী অগ্রগতি</h3>
+        <div id="divStats"></div>
       </div>
     </div>
-  </div>
+    <div class="card wish" id="wishBox">
+      <h3>আমার ট্রিপ লিস্ট <span class="mini" id="wishCount"></span></h3>
+      <div id="wishList" class="wish-list"></div>
+    </div>
+    <p class="note">তথ্য সাধারণ ধারণার জন্য। যাত্রার আগে খোলা থাকার সময়, মৌসুম, যাতায়াত ও স্থানীয় নিয়ম যাচাই করে নিন। পার্বত্য এলাকা ও সেন্টমার্টিনের মতো জায়গায় অনুমতি বা বিশেষ নিয়ম থাকতে পারে।</p>
+  </section>
 
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin="">
-  </script>
+  <!-- BUDGET -->
+  <section class="block" id="budget">
+    <div class="block-head">
+      <h2>ট্রিপ বাজেট ক্যালকুলেটর</h2>
+      <p>নিজের হিসাব বসান, মোট ও জনপ্রতি খরচ দেখুন।</p>
+    </div>
+    <div class="budget card">
+      <div class="b-grid">
+        <label>সদস্য সংখ্যা<input type="number" id="b_people" min="1" value="2" inputmode="numeric"></label>
+        <label>কত দিনের ট্রিপ<input type="number" id="b_days" min="1" value="3" inputmode="numeric"></label>
+        <label>রুম সংখ্যা<input type="number" id="b_rooms" min="0" value="1" inputmode="numeric"></label>
+        <label>যাতায়াত (জনপ্রতি, যাওয়া-আসা) ৳<input type="number" id="b_travel" min="0" placeholder="যেমন: 1500" inputmode="numeric"></label>
+        <label>হোটেল (রুম প্রতি, রাত প্রতি) ৳<input type="number" id="b_hotel" min="0" placeholder="যেমন: 2000" inputmode="numeric"></label>
+        <label>খাবার (জনপ্রতি, দিন প্রতি) ৳<input type="number" id="b_food" min="0" placeholder="যেমন: 600" inputmode="numeric"></label>
+        <label>লোকাল ট্রান্সপোর্ট ও টিকিট (মোট) ৳<input type="number" id="b_other" min="0" placeholder="যেমন: 1000" inputmode="numeric"></label>
+        <label class="check wide"><input type="checkbox" id="b_buf" checked> জরুরি খরচের জন্য ১০% বাফার যোগ করুন</label>
+      </div>
+      <div class="b-out">
+        <div><small>মোট খরচ</small><b id="o_total">৳০</b></div>
+        <div><small>জনপ্রতি</small><b id="o_pp">৳০</b></div>
+        <div><small>দিন প্রতি</small><b id="o_pd">৳০</b></div>
+      </div>
+      <p class="note">হোটেল রাত = দিন − ১। দামের কোনো ডিফল্ট ধরা হয়নি, আপনার নিজের হিসাব দিন।</p>
+    </div>
+  </section>
 
-  <script>
-    
-    const translations = {
-      bn: {
-        navMap:"মানচিত্র", navDest:"ভ্রমণস্থান", navAbout:"পরিচিতি",
-        eyebrow:"🇧🇩 বাংলাদেশের সৌন্দর্য আবিষ্কার করুন",
-        heroTitle:"ঘুরে দেখুন<br>বাংলাদেশ",
-        heroText:"সুন্দর ভ্রমণস্থান খুঁজুন, আপনার পরবর্তী ভ্রমণ পরিকল্পনা করুন এবং বাংলাদেশের বিশেষ জায়গাগুলো আবিষ্কার করুন।",
-        searchPlaceholder:"কক্সবাজার, বান্দরবান, সাজেক খুঁজুন...",
-        exploreBtn:"ঘুরে দেখুন", mapTitle:"ইন্টার‍্যাক্টিভ পর্যটন মানচিত্র",
-        mapSub:"একটি মার্কারে ক্লিক করে ভ্রমণস্থান সম্পর্কে জানুন।",
-        districts:"জেলা", divisions:"বিভাগ", featured:"নির্বাচিত ভ্রমণস্থান",
-        popularTitle:"জনপ্রিয় ভ্রমণস্থান", popularSub:"বাংলাদেশের জনপ্রিয় কিছু জায়গা দিয়ে শুরু করুন।",
-        all:"সব", beach:"🏖️ সমুদ্রসৈকত", hill:"🏔️ পাহাড়", forest:"🌿 বন ও প্রকৃতি", heritage:"🏛️ ঐতিহ্য",
-        aboutTitle:"BDTrip সম্পর্কে", aboutSub:"বাংলাদেশ ভ্রমণ আবিষ্কারের একটি সহজ প্ল্যাটফর্ম।",
-        aboutText:"ইন্টার‍্যাক্টিভ মানচিত্র ও সহজ ভ্রমণ তথ্যের মাধ্যমে BDTrip আপনাকে বাংলাদেশের বিভিন্ন ভ্রমণস্থান আবিষ্কার করতে সাহায্য করে।",
-        aboutText2:"এটি প্রজেক্টের প্রথম সংস্করণ। ভবিষ্যতে আরও জেলা, পর্যটনস্থান, ভ্রমণ খরচ এবং পরিকল্পনার টুল যোগ করা যাবে।",
-        footerExplore:"বাংলাদেশ ঘুরে দেখুন", footerText:"নতুন জায়গা আবিষ্কার করতে ভালোবাসেন এমন ভ্রমণকারীদের জন্য তৈরি।",
-        budget:"আনুমানিক বাজেট", bestTime:"ভ্রমণের সেরা সময়", category:"ধরন", tip:"ভ্রমণ টিপস",
-        googleMaps:"Google Maps-এ দেখুন", tripTitle:"আমার ভ্রমণ ট্র্যাকার", tripSub:"আপনি কোথায় আছেন, কোথায় যাচ্ছেন এবং গন্তব্য পর্যন্ত কত দূর বাকি—সব এক জায়গায় দেখুন।", destinationLabel:"গন্তব্য", myLocation:"আমার অবস্থান", startTrip:"ভ্রমণ শুরু", locationWaiting:"অবস্থান নির্ধারণ করা হয়নি", locationHint:"“আমার অবস্থান” চাপলে আপনার বর্তমান অবস্থান নেওয়া হবে।", liveTrip:"LIVE TRIP", remaining:"বাকি", youAreHere:"আপনি এখানে", destination:"গন্তব্য", currentLocation:"বর্তমান অবস্থান", distanceTravelled:"অতিক্রান্ত দূরত্ব", distanceRemaining:"বাকি দূরত্ব", lastUpdated:"সর্বশেষ আপডেট", tripNote:"দূরত্ব সরলরেখা হিসেবে হিসাব করা হয়; বাস্তব সড়কপথ কিছুটা বেশি হতে পারে।", downloadPng:"PNG ডাউনলোড", downloadJpg:"JPG ডাউনলোড", downloadPdf:"PDF ডাউনলোড", locationDenied:"লোকেশন অনুমতি দেওয়া হয়নি। ব্রাউজারের Location permission চালু করুন।", locationError:"আপনার অবস্থান পাওয়া যায়নি। আবার চেষ্টা করুন।", destinationNeeded:"আগে একটি গন্তব্য নির্বাচন করুন।", tripStarted:"ভ্রমণ ট্র্যাকিং চালু হয়েছে", km:"কিমি", districtTitle:"৬৪ জেলার তথ্য", districtSub:"জেলা নির্বাচন করুন এবং জনসংখ্যা, আয়তন, ইতিহাস, খাবার ও দর্শনীয় স্থান দেখুন।", divisionLabel:"বিভাগ", districtLabel:"জেলা", allDivisions:"সব বিভাগ", districtSearchPlaceholder:"জেলার নাম লিখে খুঁজুন...", population:"জনসংখ্যা", area:"আয়তন", famousPlaces:"বিখ্যাত স্থান", famousFood:"বিখ্যাত খাবার", history:"সংক্ষিপ্ত ইতিহাস", showMap:"মানচিত্রে দেখুন", noResult:"কোনো ভ্রমণস্থান পাওয়া যায়নি। অন্য কিছু লিখে খুঁজুন।",
-        beachLabel:"🏖️ সমুদ্রসৈকত", hillLabel:"🏔️ পাহাড়", forestLabel:"🌿 প্রকৃতি", heritageLabel:"🏛️ ঐতিহ্য"
-      },
-      en: {
-        navMap:"Map", navDest:"Destinations", navAbout:"About",
-        eyebrow:"🇧🇩 Discover the beauty of Bangladesh",
-        heroTitle:"EXPLORE<br>BANGLADESH",
-        heroText:"Find beautiful destinations, plan your next adventure and discover the places that make Bangladesh special.",
-        searchPlaceholder:"Search Cox's Bazar, Bandarban, Sajek...",
-        exploreBtn:"Explore", mapTitle:"Interactive Tourist Map",
-        mapSub:"Click a marker to explore a destination.",
-        districts:"Districts", divisions:"Divisions", featured:"Featured destinations",
-        popularTitle:"Popular Destinations", popularSub:"Start with some of Bangladesh's most loved places.",
-        all:"All", beach:"🏖️ Beach", hill:"🏔️ Hill", forest:"🌿 Forest", heritage:"🏛️ Heritage",
-        aboutTitle:"About BDTrip", aboutSub:"A simple travel discovery project for Bangladesh.",
-        aboutText:"BDTrip helps travelers discover destinations across Bangladesh through an interactive map and easy-to-read travel information.",
-        aboutText2:"This is the first version of the project. More districts, tourist spots, travel costs and useful planning tools can be added over time.",
-        footerExplore:"Explore Bangladesh", footerText:"Built for travelers who love discovering new places.",
-        budget:"Estimated Budget", bestTime:"Best Time", category:"Category", tip:"Travel Tip",
-        googleMaps:"Open in Google Maps", tripTitle:"My Trip Tracker", tripSub:"See where you are, where you are going and how far you have left—all in one place.", destinationLabel:"Destination", myLocation:"My Location", startTrip:"Start Trip", locationWaiting:"Location not detected", locationHint:"Tap “My Location” to get your current position.", liveTrip:"LIVE TRIP", remaining:"Remaining", youAreHere:"You are here", destination:"Destination", currentLocation:"Current location", distanceTravelled:"Distance travelled", distanceRemaining:"Distance remaining", lastUpdated:"Last updated", tripNote:"Distance is calculated as a straight line; actual road distance may be longer.", downloadPng:"Download PNG", downloadJpg:"Download JPG", downloadPdf:"Download PDF", locationDenied:"Location permission was denied. Please enable Location permission in your browser.", locationError:"Could not get your location. Please try again.", destinationNeeded:"Please select a destination first.", tripStarted:"Trip tracking is active", km:"km", districtTitle:"64 Districts of Bangladesh", districtSub:"Select a district to explore population, area, history, food and attractions.", divisionLabel:"Division", districtLabel:"District", allDivisions:"All divisions", districtSearchPlaceholder:"Search by district name...", population:"Population", area:"Area", famousPlaces:"Famous places", famousFood:"Famous food", history:"Brief history", showMap:"Show on map", noResult:"No destination found. Try another search.",
-        beachLabel:"🏖️ Beach", hillLabel:"🏔️ Hill", forestLabel:"🌿 Nature", heritageLabel:"🏛️ Heritage"
-      }
-    };
+  <!-- CHECKLIST + TIPS -->
+  <section class="block" id="checklist">
+    <div class="block-head">
+      <h2>ট্রিপ চেকলিস্ট ও টিপস</h2>
+      <p>টিক দিন, আপনার ব্রাউজারে সেভ থাকবে।</p>
+    </div>
+    <div class="two">
+      <div class="card"><h3>যাওয়ার আগে</h3><ul id="checkList" class="checks"></ul></div>
+      <div class="card tips">
+        <h3>কাজের টিপস</h3>
+        <ul>
+          <li><b>জরুরি সেবা:</b> জাতীয় জরুরি সেবা নম্বর ৯৯৯।</li>
+          <li><b>নগদ টাকা রাখুন:</b> দূরের এলাকায় নেটওয়ার্ক ও মোবাইল ব্যাংকিং সবসময় পাওয়া যায় না।</li>
+          <li><b>আগে বুকিং:</b> কক্সবাজার, সিলেট, বান্দরবানে ছুটির সময় হোটেল ও টিকিট আগে থেকে নিন।</li>
+          <li><b>বর্ষায় সাবধান:</b> পাহাড়ি পথ ও ঝর্ণায় বৃষ্টির পর ঝুঁকি বাড়ে, আবহাওয়া দেখে বের হোন।</li>
+          <li><b>স্থানীয়দের সম্মান করুন:</b> আবর্জনা ফেলবেন না, ছবি তোলার আগে অনুমতি নিন।</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-    const localizedPlaces = {
-      "Cox's Bazar": {bn:{name:"কক্সবাজার", location:"কক্সবাজার, চট্টগ্রাম বিভাগ", desc:"বিশ্বের দীর্ঘতম প্রাকৃতিক বালুকাময় সমুদ্রসৈকতগুলোর একটি। সমুদ্রভ্রমণের জন্য বাংলাদেশের অন্যতম জনপ্রিয় গন্তব্য।", budget:"৳২,৫০০–৳৬,০০০", time:"অক্টোবর–মার্চ", tip:"সূর্যোদয় ও সূর্যাস্ত—দুটিই দেখার জন্য সময় রাখুন।"}, en:{}},
-      "Bandarban": {bn:{name:"বান্দরবান", location:"বান্দরবান, চট্টগ্রাম বিভাগ", desc:"পাহাড়, ঝরনা, ভিউপয়েন্ট ও অ্যাডভেঞ্চার ট্রেইলের জন্য বিখ্যাত একটি অসাধারণ গন্তব্য।", budget:"৳২,৫০০–৳৭,০০০", time:"অক্টোবর–মার্চ", tip:"পাহাড়ে যাওয়ার আগে স্থানীয় যাতায়াত ও ট্রেইলের অবস্থা জেনে নিন।"}, en:{}},
-      "Sajek Valley": {bn:{name:"সাজেক ভ্যালি", location:"রাঙামাটি, চট্টগ্রাম বিভাগ", desc:"মেঘ, সূর্যোদয় এবং পাহাড়ি প্রাকৃতিক দৃশ্যের জন্য জনপ্রিয় একটি মনোরম পাহাড়ি গন্তব্য।", budget:"৳২,৫০০–৳৬,৫০০", time:"অক্টোবর–মার্চ", tip:"ছুটির দিনের তুলনায় কর্মদিবসে সাধারণত ভিড় কম থাকে।"}, en:{}},
-      "Ratargul Swamp Forest": {bn:{name:"রাতারগুল সোয়াম্প ফরেস্ট", location:"সিলেট", desc:"নৌকায় ঘুরে দেখা যায় এমন অনন্য জলাবন, যেখানে সবুজ প্রকৃতির এক ভিন্ন রূপ উপভোগ করা যায়।", budget:"৳১,৫০০–৳৪,০০০", time:"জুন–সেপ্টেম্বর", tip:"মৌসুমভেদে পানির উচ্চতা বদলায়, তাই যাওয়ার আগে পরিস্থিতি জেনে নিন।"}, en:{}},
-      "Kuakata": {bn:{name:"কুয়াকাটা", location:"পটুয়াখালী, বরিশাল বিভাগ", desc:"প্রশস্ত সমুদ্রসৈকত এবং সূর্যোদয় ও সূর্যাস্ত দেখার সুযোগের জন্য বিখ্যাত।", budget:"৳২,০০০–৳৫,০০০", time:"অক্টোবর–মার্চ", tip:"সৈকতের কাছাকাছি থাকলে ভোরের দৃশ্য সহজে উপভোগ করতে পারবেন।"}, en:{}},
-      "Sreemangal": {bn:{name:"শ্রীমঙ্গল", location:"মৌলভীবাজার, সিলেট বিভাগ", desc:"চা-বাগান, বনভূমি ও শান্ত সবুজ প্রকৃতির জন্য জনপ্রিয় একটি নিরিবিলি গন্তব্য।", budget:"৳১,৮০০–৳৫,০০০", time:"অক্টোবর–মার্চ", tip:"চা-বাগানের সঙ্গে কাছের প্রকৃতি-আকর্ষণগুলোও একসাথে ঘুরে দেখুন।"}, en:{}},
-      "Sonargaon": {bn:{name:"সোনারগাঁও", location:"নারায়ণগঞ্জ, ঢাকা বিভাগ", desc:"বাংলার সমৃদ্ধ ইতিহাস, সংস্কৃতি ও স্থাপত্যের গুরুত্বপূর্ণ নিদর্শনসমৃদ্ধ ঐতিহাসিক এলাকা।", budget:"৳৮০০–৳২,৫০০", time:"নভেম্বর–ফেব্রুয়ারি", tip:"সকালে গেলে ঐতিহাসিক স্থানগুলো আরাম করে ঘুরে দেখা যায়।"}, en:{}},
-      "Saint Martin's Island": {bn:{name:"সেন্ট মার্টিন দ্বীপ", location:"টেকনাফ, কক্সবাজার", desc:"বাংলাদেশের বিখ্যাত প্রবাল দ্বীপ, স্বচ্ছ সমুদ্র ও শান্ত দ্বীপের পরিবেশের জন্য পরিচিত।", budget:"৳৪,০০০–৳৯,০০০", time:"নভেম্বর–ফেব্রুয়ারি", tip:"মৌসুমি জাহাজ চলাচল ও বর্তমান ভ্রমণ বিধিনিষেধ আগে যাচাই করুন।"}, en:{}},
-      "Bichanakandi": {bn:{name:"বিছানাকান্দি", location:"সিলেট", desc:"পাথর, পাহাড়ি ঝরনা ও সবুজ প্রকৃতির অপূর্ব মিলনে তৈরি একটি মনোমুগ্ধকর সীমান্তবর্তী এলাকা।", budget:"৳১,৫০০–৳৪,০০০", time:"জুন–সেপ্টেম্বর", tip:"ভেজা পাথর ও পানির জন্য উপযোগী জুতা ব্যবহার করুন।"}, en:{}},
-      "Paharpur": {bn:{name:"পাহাড়পুর", location:"নওগাঁ, রাজশাহী বিভাগ", desc:"বাংলাদেশের প্রাচীন ঐতিহ্যের গুরুত্বপূর্ণ প্রত্নতাত্ত্বিক নিদর্শন এবং ঐতিহাসিক স্থাপনা।", budget:"৳১,০০০–৳৩,০০০", time:"নভেম্বর–ফেব্রুয়ারি", tip:"মূল স্থাপনার পাশাপাশি প্রত্নতাত্ত্বিক জাদুঘর দেখার জন্য সময় রাখুন।"}, en:{}}
-    };
+  <section class="block faq" id="faq">
+    <div class="block-head"><h2>প্রশ্নোত্তর</h2></div>
+    <details><summary>আমার বাছাই করা তথ্য কি সংরক্ষিত থাকে?</summary><p>হ্যাঁ, শুধু আপনার ব্রাউজারে সেভ থাকে। আমরা কোনো তথ্য সার্ভারে পাঠাই না।</p></details>
+    <details><summary>"ঘুরেছি" আর "ঘুরতে চাই" এর মধ্যে পার্থক্য কী?</summary><p>"ঘুরেছি" মোডে যেসব জেলায় গিয়েছেন সেগুলো গাঢ় রঙে, আর "ঘুরতে চাই" মোডে ভবিষ্যতের ট্রিপের জেলাগুলো আলাদা রঙে দেখাবে। ডাউনলোড করা ম্যাপে দুটোই থাকে।</p></details>
+    <details><summary>ম্যাপ কোন সাইজে ডাউনলোড হয়?</summary><p>১০৮০×১৩৫০ পিক্সেলের হাই-কোয়ালিটি ছবি (ইনস্টাগ্রাম পোর্ট্রেট), PDF এ A4 সাইজ।</p></details>
+    <details><summary>এটা কি ফ্রি?</summary><p>হ্যাঁ, সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।</p></details>
+  </section>
+</main>
 
-    let currentLang = "bn";
+<footer class="foot">
+  <span>© <span id="yr"></span> BDTrip</span>
+  <span>ম্যাপ ডেটা: geoBoundaries (CC BY 4.0)</span>
+</footer>
+<div class="toast" id="toast" role="status" hidden></div>
 
-    const places = [
-      {
-        name:"Cox's Bazar",
-        location:"Cox's Bazar, Chattogram Division",
-        lat:21.4272, lng:92.0058,
-        cat:"beach",
-        image:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=85",
-        desc:"Home to one of the world's longest natural sandy sea beaches and a classic destination for a coastal getaway.",
-        budget:"৳2,500–৳6,000",
-        time:"October–March",
-        tip:"Sunrise and sunset are both worth planning for."
-      },
-      {
-        name:"Bandarban",
-        location:"Bandarban, Chattogram Division",
-        lat:22.1953, lng:92.2184,
-        cat:"hill",
-        image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
-        desc:"A hill destination known for dramatic landscapes, viewpoints, waterfalls and adventurous trails.",
-        budget:"৳2,500–৳7,000",
-        time:"October–March",
-        tip:"Check local transport and trail conditions before heading into the hills."
-      },
-      {
-        name:"Sajek Valley",
-        location:"Rangamati, Chattogram Division",
-        lat:23.3816, lng:92.2935,
-        cat:"hill",
-        image:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
-        desc:"A scenic hill destination famous for clouds, sunrise views and peaceful mountain landscapes.",
-        budget:"৳2,500–৳6,500",
-        time:"October–March",
-        tip:"Weekdays are usually calmer than peak holiday periods."
-      },
-      {
-        name:"Ratargul Swamp Forest",
-        location:"Sylhet",
-        lat:25.0088, lng:91.9606,
-        cat:"forest",
-        image:"https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85",
-        desc:"A beautiful freshwater swamp forest where boat rides reveal a unique green landscape.",
-        budget:"৳1,500–৳4,000",
-        time:"June–September",
-        tip:"Water levels can change by season, so check conditions before visiting."
-      },
-      {
-        name:"Kuakata",
-        location:"Patuakhali, Barishal Division",
-        lat:21.8167, lng:90.1167,
-        cat:"beach",
-        image:"https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1000&q=85",
-        desc:"A coastal destination known for its wide beach and views of both sunrise and sunset.",
-        budget:"৳2,000–৳5,000",
-        time:"October–March",
-        tip:"Stay near the beach if you want easy access for early-morning views."
-      },
-      {
-        name:"Sreemangal",
-        location:"Moulvibazar, Sylhet Division",
-        lat:24.3065, lng:91.7296,
-        cat:"forest",
-        image:"https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=85",
-        desc:"A green escape surrounded by tea gardens, forest trails and peaceful countryside.",
-        budget:"৳1,800–৳5,000",
-        time:"October–March",
-        tip:"Combine tea gardens with nearby nature attractions for a fuller trip."
-      },
-      {
-        name:"Sonargaon",
-        location:"Narayanganj, Dhaka Division",
-        lat:23.6528, lng:90.5997,
-        cat:"heritage",
-        image:"https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1000&q=85",
-        desc:"An important historic area offering a glimpse into Bengal's rich cultural and architectural heritage.",
-        budget:"৳800–৳2,500",
-        time:"November–February",
-        tip:"Go early to explore the heritage sites comfortably."
-      },
-      {
-        name:"Saint Martin's Island",
-        location:"Teknaf, Cox's Bazar",
-        lat:20.6275, lng:92.3228,
-        cat:"beach",
-        image:"https://images.unsplash.com/photo-1505881502353-a1986add3762?auto=format&fit=crop&w=1000&q=85",
-        desc:"Bangladesh's famous coral island, known for clear coastal scenery and a relaxed island atmosphere.",
-        budget:"৳4,000–৳9,000",
-        time:"November–February",
-        tip:"Check seasonal vessel schedules and current travel restrictions."
-      },
-      {
-        name:"Bichanakandi",
-        location:"Sylhet",
-        lat:25.1833, lng:91.9833,
-        cat:"forest",
-        image:"https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1000&q=85",
-        desc:"A scenic border-area landscape featuring rocks, streams and green hills.",
-        budget:"৳1,500–৳4,000",
-        time:"June–September",
-        tip:"Wear footwear suitable for wet rocks and flowing water."
-      },
-      {
-        name:"Paharpur",
-        location:"Naogaon, Rajshahi Division",
-        lat:25.0313, lng:88.9766,
-        cat:"heritage",
-        image:"https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1000&q=85",
-        desc:"A major archaeological site and a remarkable part of Bangladesh's ancient heritage.",
-        budget:"৳1,000–৳3,000",
-        time:"November–February",
-        tip:"Plan enough time to visit the archaeological museum and main ruins."
-      }
-    ];
-
-
-    function getPlaceText(p){
-      const d = localizedPlaces[p.name] && localizedPlaces[p.name][currentLang];
-      return {
-        name: d?.name || p.name,
-        location: d?.location || p.location,
-        desc: d?.desc || p.desc,
-        budget: d?.budget || p.budget,
-        time: d?.time || p.time,
-        tip: d?.tip || p.tip
-      };
-    }
-
-    function setLanguage(lang){
-      currentLang = lang;
-      document.documentElement.lang = lang === "bn" ? "bn" : "en";
-      document.querySelectorAll("[data-i18n]").forEach(el=>{
-        const key = el.dataset.i18n;
-        if(translations[lang][key] !== undefined) el.textContent = translations[lang][key];
-      });
-      document.querySelectorAll("[data-i18n-html]").forEach(el=>{
-        const key = el.dataset.i18nHtml;
-        if(translations[lang][key] !== undefined) el.innerHTML = translations[lang][key];
-      });
-      const input = document.getElementById("searchInput");
-      input.placeholder = translations[lang].searchPlaceholder;
-      document.getElementById("bnBtn").classList.toggle("active",lang==="bn");
-      document.getElementById("enBtn").classList.toggle("active",lang==="en");
-      render(document.querySelector(".filter.active")?.dataset.cat || "all", input.value);
-      updateDistrictLanguage();
-      if(document.getElementById("tripDestination")){
-        const selected=document.getElementById("tripDestination").value;
-        populateTripDestinations();
-        document.getElementById("tripDestination").value=selected;
-        updateTripUI();
-      }
-      if(document.getElementById("tripStatus") && !userPosition){
-        document.querySelector("#tripStatus strong").textContent=translations[currentLang].locationWaiting;
-        document.querySelector("#tripStatus span").textContent=translations[currentLang].locationHint;
-      }
-    }
-
-const districtData = [
-{name:"Dhaka",bn:"ঢাকা",division:"ঢাকা",area:1464,pop:14734701,lat:23.8103,lng:90.4125,famous:"পুরান ঢাকা, লালবাগ কেল্লা, আহসান মঞ্জিল",food:"বিরিয়ানি, বাকরখানি, কাচ্চি",history:"বাংলার প্রাচীন নগরকেন্দ্র; মুঘল আমলে ঢাকার গুরুত্ব দ্রুত বাড়ে।",tourist:"লালবাগ কেল্লা, আহসান মঞ্জিল, জাতীয় সংসদ ভবন"},
-{name:"Faridpur",bn:"ফরিদপুর",division:"ঢাকা",area:2053,pop:2162876,lat:23.6071,lng:89.8429,famous:"পদ্মার চর, ফরিদপুর শহর",food:"খেজুরের গুড়, ভাঙ্গার মিষ্টি",history:"ঐতিহাসিক ফরিদপুর অঞ্চল পদ্মা-ভাঙন ও নদীকেন্দ্রিক জনপদের জন্য পরিচিত।",tourist:"জসীমউদ্দীনের পল্লীভবন, পদ্মার চর, মধুখালী"},
-{name:"Tangail",bn:"টাঙ্গাইল",division:"ঢাকা",area:3414,pop:4037608,lat:24.2513,lng:89.9167,famous:"টাঙ্গাইল শাড়ি, মধুপুর গড়",food:"চমচম, টাঙ্গাইল শাড়ি-সংলগ্ন ঐতিহ্যবাহী খাবার",history:"ঐতিহ্যবাহী তাঁতশিল্প ও মধুপুর গড়ের প্রাকৃতিক ভূপ্রকৃতির জন্য পরিচিত।",tourist:"মধুপুর জাতীয় উদ্যান, আতিয়া মসজিদ, করটিয়া জমিদারবাড়ি"},
-{name:"Gazipur",bn:"গাজীপুর",division:"ঢাকা",area:1806,pop:5263474,lat:24.0023,lng:90.4264,famous:"ভাওয়াল, জাতীয় উদ্যান",food:"কাঁঠাল, দেশি মিষ্টি",history:"ভাওয়াল অঞ্চলের বনভূমি ও জমিদারি ইতিহাসে গাজীপুরের বিশেষ পরিচিতি আছে।",tourist:"ভাওয়াল জাতীয় উদ্যান, বঙ্গবন্ধু সাফারি পার্ক, নুহাশ পল্লী"},
-{name:"Narayanganj",bn:"নারায়ণগঞ্জ",division:"ঢাকা",area:684,pop:3909138,lat:23.6238,lng:90.5,famous:"সোনারগাঁও, পানাম নগর",food:"রসমালাই, মিষ্টি",history:"শীতলক্ষ্যা নদীকেন্দ্রিক বাণিজ্য ও প্রাচীন সোনারগাঁওয়ের ঐতিহ্যের সঙ্গে যুক্ত।",tourist:"পানাম নগর, লোক ও কারুশিল্প জাদুঘর, মেঘনা নদী"},
-{name:"Kishoreganj",bn:"কিশোরগঞ্জ",division:"ঢাকা",area:2689,pop:3267630,lat:24.4449,lng:90.7766,famous:"ইটনা-মিঠামইন হাওর, শোলাকিয়া",food:"অষ্টগ্রামের পনির, পিঠা",history:"হাওরাঞ্চল ও শোলাকিয়া ঈদগাহের ঐতিহ্যের জন্য পরিচিত।",tourist:"মিঠামইন হাওর, নিকলী হাওর, শোলাকিয়া"},
-{name:"Narsingdi",bn:"নরসিংদী",division:"ঢাকা",area:1150,pop:2584452,lat:23.9322,lng:90.7151,famous:"মাধবদী, বেলাব",food:"লটকন, তাঁতের কাপড়",history:"শিল্প ও তাঁতবাণিজ্যের পাশাপাশি প্রাচীন উয়ারী-বটেশ্বর প্রত্নস্থলের জন্য গুরুত্বপূর্ণ।",tourist:"উয়ারী-বটেশ্বর, ড্রিম হলিডে পার্ক, মেঘনা নদী"},
-{name:"Munshiganj",bn:"মুন্সিগঞ্জ",division:"ঢাকা",area:1004,pop:1625418,lat:23.5422,lng:90.5305,famous:"বিক্রমপুর, পদ্মা",food:"ভাগ্যকুলের মিষ্টি, রসগোল্লা",history:"প্রাচীন বিক্রমপুর ছিল বঙ্গের গুরুত্বপূর্ণ শিক্ষা ও সংস্কৃতির কেন্দ্র।",tourist:"ইদ্রাকপুর কেল্লা, অতীশ দীপঙ্করের জন্মস্থান, পদ্মা"},
-{name:"Manikganj",bn:"মানিকগঞ্জ",division:"ঢাকা",area:1384,pop:1558024,lat:23.8617,lng:90.0003,famous:"বালিয়াটি জমিদারবাড়ি, মানিকগঞ্জ",food:"খেজুরের গুড়, মিষ্টি",history:"পদ্মা-যমুনা অববাহিকার জনপদ এবং জমিদারি স্থাপত্যের ঐতিহ্য বহন করে।",tourist:"বালিয়াটি জমিদারবাড়ি, তেওতা জমিদারবাড়ি, আরিচা"},
-{name:"Gopalganj",bn:"গোপালগঞ্জ",division:"ঢাকা",area:1469,pop:1295053,lat:23.0051,lng:89.8266,famous:"টুঙ্গিপাড়া, মধুমতি",food:"খেজুরের গুড়, পিঠা",history:"টুঙ্গিপাড়া ও বঙ্গবন্ধুর জন্মভূমির কারণে বাংলাদেশের ইতিহাসে বিশেষ গুরুত্বপূর্ণ।",tourist:"টুঙ্গিপাড়া সমাধিসৌধ, মধুমতি নদী, ওড়াকান্দি"},
-{name:"Shariatpur",bn:"শরীয়তপুর",division:"ঢাকা",area:1174,pop:1294561,lat:23.2423,lng:90.4348,famous:"পদ্মা-মেঘনা, জাজিরা",food:"ইলিশ, পিঠা",history:"পদ্মা ও মেঘনা নদীর তীরবর্তী নদীমাতৃক জনপদ।",tourist:"জাজিরা, পদ্মার চর, নড়িয়া"},
-{name:"Madaripur",bn:"মাদারীপুর",division:"ঢাকা",area:1125,pop:1293027,lat:23.1641,lng:90.1897,famous:"আড়িয়াল খাঁ নদী, শিবচর",food:"রসগোল্লা, খেজুরের গুড়",history:"নদীকেন্দ্রিক জনপদ ও প্রাচীন বাণিজ্যপথের সঙ্গে মাদারীপুরের ইতিহাস জড়িত।",tourist:"শকুনী লেক, আড়িয়াল খাঁ, শিবচর"},
-{name:"Rajbari",bn:"রাজবাড়ী",division:"ঢাকা",area:1092,pop:1189821,lat:23.7574,lng:89.6445,famous:"গোয়ালন্দ, পদ্মা",food:"চমচম, দুধের মিষ্টি",history:"গোয়ালন্দ ঘাট ও পদ্মা নদীকেন্দ্রিক যোগাযোগে ঐতিহাসিক গুরুত্ব রয়েছে।",tourist:"গোয়ালন্দ ঘাট, পদ্মার চর, বালিয়াকান্দি"},
-{name:"Chattogram",bn:"চট্টগ্রাম",division:"চট্টগ্রাম",area:5283,pop:9169464,lat:22.3569,lng:91.7832,famous:"পতেঙ্গা, চট্টগ্রাম বন্দর",food:"মেজবান, কালাভুনা",history:"প্রাচীন সমুদ্রবন্দর ও বাংলাদেশের প্রধান বাণিজ্যিক নগরগুলোর একটি।",tourist:"পতেঙ্গা সমুদ্রসৈকত, ফয়'স লেক, বাটালি হিল"},
-{name:"Cumilla",bn:"কুমিল্লা",division:"চট্টগ্রাম",area:3146,pop:6212216,lat:23.4607,lng:91.1809,famous:"ময়নামতি, শালবন বিহার",food:"রসমালাই, খাদি",history:"প্রাচীন সমতটের রাজধানী ও বৌদ্ধ প্রত্নঐতিহ্যের গুরুত্বপূর্ণ অঞ্চল।",tourist:"শালবন বিহার, ময়নামতি জাদুঘর, লালমাই পাহাড়"},
-{name:"Noakhali",bn:"নোয়াখালী",division:"চট্টগ্রাম",area:3686,pop:3625252,lat:22.8696,lng:91.0995,famous:"নিঝুম দ্বীপ, হাতিয়া",food:"নারকেল, সন্দেশ",history:"মেঘনা মোহনা ও দ্বীপাঞ্চলভিত্তিক ইতিহাস ও সংস্কৃতির জন্য পরিচিত।",tourist:"নিঝুম দ্বীপ, হাতিয়া, নোয়াখালী সুবর্ণচর"},
-{name:"Rangamati",bn:"রাঙামাটি",division:"চট্টগ্রাম",area:6116,pop:647587,lat:22.6533,lng:92.175,famous:"কাপ্তাই হ্রদ, ঝুলন্ত সেতু",food:"বাঁশের খাবার, পাহাড়ি ফল",history:"পার্বত্য চট্টগ্রামের বৃহত্তম জেলা; পাহাড়ি জনগোষ্ঠীর সমৃদ্ধ সংস্কৃতি রয়েছে।",tourist:"কাপ্তাই হ্রদ, ঝুলন্ত সেতু, সাজেক"},
-{name:"Bandarban",bn:"বান্দরবান",division:"চট্টগ্রাম",area:4479,pop:481109,lat:22.1953,lng:92.2184,famous:"নীলগিরি, বগালেক, নাফাখুম",food:"বাঁশকোড়ল, পাহাড়ি ফল",history:"পার্বত্য চট্টগ্রামের পাহাড়ি জনপদ ও বৈচিত্র্যময় জাতিগোষ্ঠীর সংস্কৃতির জন্য বিখ্যাত।",tourist:"নীলগিরি, নাফাখুম, বগালেক, চিম্বুক"},
-{name:"Khagrachhari",bn:"খাগড়াছড়ি",division:"চট্টগ্রাম",area:2749,pop:714119,lat:23.1193,lng:91.9847,famous:"আলুটিলা, রিছাং ঝরনা",food:"বাঁশকোড়ল, পাহাড়ি ফল",history:"পার্বত্য চট্টগ্রামের পাহাড়, বন ও আদিবাসী সংস্কৃতির বৈচিত্র্যের জন্য পরিচিত।",tourist:"আলুটিলা গুহা, রিছাং ঝরনা, সাজেক"},
-{name:"Brahmanbaria",bn:"ব্রাহ্মণবাড়িয়া",division:"চট্টগ্রাম",area:1881,pop:3306559,lat:23.9571,lng:91.1115,famous:"তিতাস নদী, হারিপুর জমিদারবাড়ি",food:"ছানামুখী মিষ্টি, তালের পিঠা",history:"তিতাস নদী ও লোকসংগীতের ঐতিহ্যের সঙ্গে জেলাটির পরিচয় গভীরভাবে যুক্ত।",tourist:"হারিপুর জমিদারবাড়ি, তিতাস নদী, নবীনগর"},
-{name:"Cox's Bazar",bn:"কক্সবাজার",division:"চট্টগ্রাম",area:2492,pop:2823265,lat:21.4272,lng:92.0058,famous:"সমুদ্রসৈকত, ইনানী, মহেশখালী",food:"শুঁটকি, সামুদ্রিক মাছ",history:"দীর্ঘ সমুদ্রসৈকত ও উপকূলীয় বাণিজ্যের জন্য আন্তর্জাতিকভাবে পরিচিত।",tourist:"কক্সবাজার সৈকত, ইনানী, হিমছড়ি, মহেশখালী"},
-{name:"Chandpur",bn:"চাঁদপুর",division:"চট্টগ্রাম",area:1645,pop:2635748,lat:23.2333,lng:90.6712,famous:"মেঘনা, ইলিশের জন্য বিখ্যাত",food:"ইলিশ, ইলিশের নানা পদ",history:"মেঘনা-ডাকাতিয়া নদীর মিলনভূমি এবং ইলিশের জন্য বিখ্যাত নদীবন্দর।",tourist:"মোলহেড, বড় স্টেশন, মেঘনা নদী"},
-{name:"Lakshmipur",bn:"লক্ষ্মীপুর",division:"চট্টগ্রাম",area:1440,pop:1938111,lat:22.944,lng:90.8412,famous:"মেঘনা উপকূল, রামগতি",food:"সুপারি, নারকেল, ইলিশ",history:"মেঘনা মোহনা ও উপকূলীয় কৃষি-বাণিজ্যের ঐতিহ্য রয়েছে।",tourist:"রামগতি, মেঘনা উপকূল, কমলনগর"},
-{name:"Feni",bn:"ফেনী",division:"চট্টগ্রাম",area:990,pop:1648896,lat:23.0159,lng:91.3976,famous:"মুহুরী প্রকল্প, বিজয় সিংহ দীঘি",food:"ফেনীর খাজা, মিষ্টি",history:"চট্টগ্রাম-নোয়াখালী অঞ্চলের যোগাযোগের গুরুত্বপূর্ণ জনপদ হিসেবে বিকশিত।",tourist:"মুহুরী প্রকল্প, বিজয় সিংহ দীঘি, সোনাগাজী"},
-{name:"Rajshahi",bn:"রাজশাহী",division:"রাজশাহী",area:2425,pop:2915013,lat:24.3745,lng:88.6042,famous:"পদ্মা, বরেন্দ্র অঞ্চল",food:"আম, ফজলি, রেশম",history:"প্রাচীন গৌড়-বরেন্দ্র অঞ্চলের সাংস্কৃতিক ধারার সঙ্গে রাজশাহীর ইতিহাস যুক্ত।",tourist:"পদ্মার পাড়, বরেন্দ্র জাদুঘর, পুঠিয়া"},
-{name:"Bogura",bn:"বগুড়া",division:"রাজশাহী",area:2899,pop:3734300,lat:24.8465,lng:89.3773,famous:"মহাস্থানগড়",food:"দই, কটকটি",history:"প্রাচীন পুন্ড্রবর্ধনের রাজধানী মহাস্থানগড়ের জন্য ঐতিহাসিকভাবে গুরুত্বপূর্ণ।",tourist:"মহাস্থানগড়, গোকুল মেধ, ভাসু বিহার"},
-{name:"Pabna",bn:"পাবনা",division:"রাজশাহী",area:2376,pop:2909622,lat:24.0064,lng:89.2372,famous:"হার্ডিঞ্জ ব্রিজ, পাকশী",food:"পাবনার দই, মিষ্টি",history:"ঐতিহাসিক রেল যোগাযোগ ও পদ্মা নদীর তীরের পাকশী অঞ্চলের জন্য পরিচিত।",tourist:"হার্ডিঞ্জ ব্রিজ, পাকশী, ঈশ্বরদী"},
-{name:"Joypurhat",bn:"জয়পুরহাট",division:"রাজশাহী",area:1012,pop:956430,lat:25.0968,lng:89.0227,famous:"আলতাদিঘী, পাহাড়পুরের নিকটবর্তী অঞ্চল",food:"চাল, দুধের মিষ্টি",history:"বরেন্দ্রভূমির উত্তরাঞ্চলের কৃষিনির্ভর ঐতিহ্যবাহী জনপদ।",tourist:"আলতাদিঘী জাতীয় উদ্যান, জামালগঞ্জ"},
-{name:"Sirajganj",bn:"সিরাজগঞ্জ",division:"রাজশাহী",area:2402,pop:3357708,lat:24.4534,lng:89.7,famous:"যমুনা, রবীন্দ্র কাচারিবাড়ি",food:"দই, তাঁতের শাড়ি",history:"যমুনা নদীকেন্দ্রিক বাণিজ্য ও তাঁতশিল্পের জন্য পরিচিত।",tourist:"রবীন্দ্র কাচারিবাড়ি, যমুনা নদী, নবরত্ন মন্দির"},
-{name:"Naogaon",bn:"নওগাঁ",division:"রাজশাহী",area:3436,pop:2784598,lat:24.7936,lng:88.9318,famous:"পাহাড়পুর, বরেন্দ্র অঞ্চল",food:"আম, চাল",history:"প্রাচীন বৌদ্ধ সভ্যতার গুরুত্বপূর্ণ নিদর্শন ও বরেন্দ্র সংস্কৃতির অংশ।",tourist:"পাহাড়পুর বৌদ্ধ বিহার, কুসুম্বা মসজিদ, আলতাদিঘী"},
-{name:"Natore",bn:"নাটোর",division:"রাজশাহী",area:1900,pop:1859921,lat:24.4206,lng:89.0,famous:"উত্তরা গণভবন, চলনবিল",food:"কাঁচাগোল্লা",history:"নাটোর রাজবাড়ি ও জমিদারি ঐতিহ্যের জন্য বিখ্যাত।",tourist:"উত্তরা গণভবন, চলনবিল, নাটোর রাজবাড়ি"},
-{name:"Chapai Nawabganj",bn:"চাঁপাইনবাবগঞ্জ",division:"রাজশাহী",area:1703,pop:1835527,lat:24.5965,lng:88.2775,famous:"আমের রাজধানী, সোনা মসজিদ",food:"ফজলি আম, ক্ষীরসাপাত আম",history:"গৌড়ের প্রাচীন রাজধানী ও আমচাষের ঐতিহ্যে সমৃদ্ধ।",tourist:"সোনা মসজিদ, ছোট সোনা মসজিদ, কানসাট আমবাজার"},
-{name:"Jashore",bn:"যশোর",division:"খুলনা",area:2607,pop:3076849,lat:23.1664,lng:89.2081,famous:"বেনাপোল, মাইকেল মধুসূদনের জন্মস্থান",food:"খেজুরের গুড়, মিষ্টি",history:"দক্ষিণ-পশ্চিমাঞ্চলের পুরোনো প্রশাসনিক ও বাণিজ্যিক কেন্দ্র।",tourist:"মাইকেল মধুসূদন দত্তের বাড়ি, বেনাপোল, গদখালি"},
-{name:"Khulna",bn:"খুলনা",division:"খুলনা",area:4394,pop:2613385,lat:22.8456,lng:89.5403,famous:"সুন্দরবন, রূপসা",food:"চুইঝাল, চিংড়ি",history:"সুন্দরবন সংলগ্ন শিল্প ও নদীবন্দরনির্ভর গুরুত্বপূর্ণ নগর।",tourist:"সুন্দরবন, রূপসা সেতু, খানজাহান আলীর মাজার"},
-{name:"Kushtia",bn:"কুষ্টিয়া",division:"খুলনা",area:1609,pop:2149692,lat:23.9013,lng:89.1206,famous:"লালন শাহ, রবীন্দ্রনাথ",food:"তিলের খাজা, কুলফি",history:"বাউল সংস্কৃতি ও রবীন্দ্র ঐতিহ্যের জন্য বাংলাদেশের অন্যতম সাংস্কৃতিক জেলা।",tourist:"লালন আখড়া, শিলাইদহ কুঠিবাড়ি, হার্ডিঞ্জ ব্রিজ"},
-{name:"Satkhira",bn:"সাতক্ষীরা",division:"খুলনা",area:3817,pop:2196581,lat:22.7185,lng:89.0705,famous:"সুন্দরবন, উপকূল",food:"সন্দেশ, চিংড়ি",history:"সুন্দরবনের পশ্চিমাংশ ও উপকূলীয় জনপদের সঙ্গে গভীরভাবে যুক্ত।",tourist:"সুন্দরবন, কালিগঞ্জ, বুড়িগোয়ালিনী"},
-{name:"Jhenaidah",bn:"ঝিনাইদহ",division:"খুলনা",area:1965,pop:1771304,lat:23.5448,lng:89.1539,famous:"বারোবাজার, নলডাঙ্গা",food:"মিষ্টি, খেজুরের গুড়",history:"দক্ষিণ-পশ্চিমের ঐতিহাসিক জনপদ ও পুরাকীর্তির জন্য পরিচিত।",tourist:"বারোবাজার, শৈলকূপা, নলডাঙ্গা"},
-{name:"Bagerhat",bn:"বাগেরহাট",division:"খুলনা",area:3959,pop:1613079,lat:22.6602,lng:89.7895,famous:"ষাট গম্বুজ মসজিদ, খানজাহান আলী",food:"চিংড়ি, নারকেল",history:"খান জাহান আলীর নগর ও মসজিদনগরী বিশ্ব ঐতিহ্যের অংশ।",tourist:"ষাট গম্বুজ মসজিদ, খানজাহান আলীর মাজার, সুন্দরবন"},
-{name:"Chuadanga",bn:"চুয়াডাঙ্গা",division:"খুলনা",area:1174,pop:1234066,lat:23.6402,lng:88.8418,famous:"দামুড়হুদা, মাথাভাঙ্গা নদী",food:"খেজুরের গুড়, মিষ্টি",history:"বাংলাদেশের পশ্চিম সীমান্তের কৃষিপ্রধান ঐতিহাসিক জনপদ।",tourist:"মাথাভাঙ্গা নদী, দামুড়হুদা"},
-{name:"Magura",bn:"মাগুরা",division:"খুলনা",area:1039,pop:1033115,lat:23.4873,lng:89.4195,famous:"নদী ও গ্রামীণ প্রকৃতি",food:"খেজুরের গুড়, মিষ্টি",history:"নদী ও কৃষিভিত্তিক গ্রামীণ সংস্কৃতির জন্য পরিচিত।",tourist:"মহম্মদপুর, নবগঙ্গা নদী"},
-{name:"Narail",bn:"নড়াইল",division:"খুলনা",area:968,pop:788673,lat:23.1725,lng:89.5127,famous:"চিত্রা নদী, এস এম সুলতান",food:"চুইঝাল, মিষ্টি",history:"চিত্রশিল্পী এস এম সুলতানের স্মৃতি ও নদীমাতৃক সংস্কৃতির জন্য পরিচিত।",tourist:"এস এম সুলতান কমপ্লেক্স, চিত্রা নদী, জমিদারবাড়ি"},
-{name:"Meherpur",bn:"মেহেরপুর",division:"খুলনা",area:742,pop:705356,lat:23.7622,lng:88.6318,famous:"মুজিবনগর",food:"খেজুরের গুড়, মিষ্টি",history:"মুজিবনগর সরকারের শপথস্থলের কারণে মুক্তিযুদ্ধের ইতিহাসে অত্যন্ত গুরুত্বপূর্ণ।",tourist:"মুজিবনগর স্মৃতিসৌধ, আমঝুপি নীলকুঠি"},
-{name:"Barishal",bn:"বরিশাল",division:"বরিশাল",area:2785,pop:2570450,lat:22.701,lng:90.3535,famous:"কীর্তনখোলা, দুর্গাসাগর",food:"আমড়া, পেয়ারা",history:"নদী-খালবেষ্টিত জনপদ ও ব্রিটিশ আমলের বন্দরনগর হিসেবে বিকশিত।",tourist:"দুর্গাসাগর, কীর্তনখোলা নদী, ভাসমান পেয়ারা বাজার"},
-{name:"Patuakhali",bn:"পটুয়াখালী",division:"বরিশাল",area:3221,pop:1727254,lat:22.3596,lng:90.329,famous:"কুয়াকাটা, লেম্বুর বন",food:"নারকেল, সামুদ্রিক মাছ",history:"উপকূলীয় নদী ও সমুদ্রনির্ভর জনপদ; কুয়াকাটা জেলার প্রধান আকর্ষণ।",tourist:"কুয়াকাটা, ফাতরার চর, লেম্বুর বন"},
-{name:"Bhola",bn:"ভোলা",division:"বরিশাল",area:3403,pop:1932514,lat:22.6859,lng:90.6482,famous:"মনপুরা, চর কুকরি-মুকরি",food:"ইলিশ, নারকেল",history:"মেঘনা ও তেঁতুলিয়া নদীর দ্বীপ-উপকূলীয় জনপদ।",tourist:"মনপুরা, চর কুকরি-মুকরি, ঢালচর"},
-{name:"Pirojpur",bn:"পিরোজপুর",division:"বরিশাল",area:1278,pop:1198193,lat:22.5841,lng:89.972,famous:"স্বরূপকাঠির পেয়ারা বাগান",food:"পেয়ারা, নারকেল",history:"নদী ও খালের জাল এবং পেয়ারা চাষের জন্য পরিচিত।",tourist:"স্বরূপকাঠি ভাসমান বাজার, পেয়ারা বাগান"},
-{name:"Barguna",bn:"বরগুনা",division:"বরিশাল",area:1831,pop:1010530,lat:22.0953,lng:90.1121,famous:"পাথরঘাটা, হরিণঘাটা",food:"শুঁটকি, সামুদ্রিক মাছ",history:"দক্ষিণ উপকূলের জেলেপাড়া ও বনভূমির সঙ্গে জড়িত।",tourist:"হরিণঘাটা, পাথরঘাটা, লালদিয়া"},
-{name:"Jhalokati",bn:"ঝালকাঠি",division:"বরিশাল",area:707,pop:661161,lat:22.6406,lng:90.1987,famous:"সুগন্ধা নদী, পেয়ারা বাগান",food:"পেয়ারা, আমড়া",history:"নদীবন্দর ও পেয়ারা-আমড়া চাষের জন্য পরিচিত।",tourist:"ভিমরুলি ভাসমান পেয়ারা বাজার, সুগন্ধা নদী"},
-{name:"Sylhet",bn:"সিলেট",division:"সিলেট",area:3452,pop:3857037,lat:24.8949,lng:91.8687,famous:"জাফলং, রাতারগুল, শাহজালাল",food:"সাতকরা, চা, শুঁটকি",history:"সুফি ঐতিহ্য, চা-বাগান ও পাহাড়-নদীর প্রাকৃতিক দৃশ্যের জন্য বিখ্যাত।",tourist:"জাফলং, রাতারগুল, শাহজালাল (র.) মাজার"},
-{name:"Sunamganj",bn:"সুনামগঞ্জ",division:"সিলেট",area:3747,pop:2695495,lat:25.0658,lng:91.395,famous:"টাঙ্গুয়ার হাওর, হাছন রাজা",food:"হাওরের মাছ, শুঁটকি",history:"হাওরসংস্কৃতি ও বাউল-লোকসংগীতের ঐতিহ্যে সমৃদ্ধ।",tourist:"টাঙ্গুয়ার হাওর, যাদুকাটা নদী, বারিক্কা টিলা"},
-{name:"Habiganj",bn:"হবিগঞ্জ",division:"সিলেট",area:2637,pop:2358886,lat:24.3745,lng:91.4156,famous:"সাতছড়ি, চা-বাগান",food:"চা, সাতকরা",history:"চা-বাগান ও বনাঞ্চলের জন্য পরিচিত সিলেট অঞ্চলের একটি জেলা।",tourist:"সাতছড়ি জাতীয় উদ্যান, রেমা-কালেঙ্গা, চুনারুঘাট"},
-{name:"Moulvibazar",bn:"মৌলভীবাজার",division:"সিলেট",area:2799,pop:2123445,lat:24.4829,lng:91.7774,famous:"শ্রীমঙ্গল, লাউয়াছড়া",food:"চা, সাতকরা",history:"বাংলাদেশের চা-শিল্পের অন্যতম প্রধান অঞ্চল।",tourist:"লাউয়াছড়া জাতীয় উদ্যান, মাধবকুণ্ড জলপ্রপাত, চা-বাগান"},
-{name:"Rangpur",bn:"রংপুর",division:"রংপুর",area:2401,pop:3169615,lat:25.7439,lng:89.2752,famous:"তাজহাট, কারমাইকেল কলেজ",food:"হাঁড়িভাঙা আম, মিষ্টি",history:"উত্তরবঙ্গের ঐতিহাসিক প্রশাসনিক ও সাংস্কৃতিক কেন্দ্র।",tourist:"তাজহাট জমিদারবাড়ি, কারমাইকেল কলেজ, ভিন্নজগত"},
-{name:"Nilphamari",bn:"নীলফামারী",division:"রংপুর",area:1547,pop:3092567,lat:25.9318,lng:88.856,famous:"নীলসাগর, সৈয়দপুর",food:"হাঁড়িভাঙা আম, পিঠা",history:"তিস্তা অববাহিকার কৃষিপ্রধান জেলা; সৈয়দপুর রেলওয়ে ঐতিহ্যের জন্য পরিচিত।",tourist:"নীলসাগর, সৈয়দপুর রেলওয়ে কারখানা, চিনি মসজিদ"},
-{name:"Dinajpur",bn:"দিনাজপুর",division:"রংপুর",area:3444,pop:3315238,lat:25.6279,lng:88.6332,famous:"কান্তজিউ মন্দির, রামসাগর",food:"লিচু, কাঁঠাল",history:"উত্তরবঙ্গের প্রাচীন জনপদ ও জমিদারি-প্রত্নঐতিহ্যে সমৃদ্ধ।",tourist:"কান্তজিউ মন্দির, রামসাগর, নয়াবাদ মসজিদ"},
-{name:"Thakurgaon",bn:"ঠাকুরগাঁও",division:"রংপুর",area:1781,pop:1533894,lat:26.0337,lng:88.4617,famous:"রাজবাড়ি, টাঙ্গন নদী",food:"ধান, আখ, পিঠা",history:"উত্তর-পশ্চিম সীমান্তের কৃষিপ্রধান ঐতিহ্যবাহী অঞ্চল।",tourist:"রাজা টংকনাথের রাজবাড়ি, টাঙ্গন নদী"},
-{name:"Gaibandha",bn:"গাইবান্ধা",division:"রংপুর",area:2115,pop:2562232,lat:25.3288,lng:89.528,famous:"তিস্তা-ব্রহ্মপুত্র চর",food:"ভুট্টা, মিষ্টি",history:"ব্রহ্মপুত্র ও তিস্তার চরাঞ্চলভিত্তিক নদীমাতৃক জনপদ।",tourist:"বালাসী ঘাট, তিস্তা নদী, চরাঞ্চল"},
-{name:"Kurigram",bn:"কুড়িগ্রাম",division:"রংপুর",area:2245,pop:2329161,lat:25.8054,lng:89.6362,famous:"ধরলা, ব্রহ্মপুত্র, চর",food:"চমচম, পিঠা",history:"উত্তর সীমান্তের নদী ও চরাঞ্চলের জন্য পরিচিত।",tourist:"ধরলা নদী, ফুলবাড়ী, চরাঞ্চল"},
-{name:"Lalmonirhat",bn:"লালমনিরহাট",division:"রংপুর",area:1247,pop:1428406,lat:25.916,lng:89.448,famous:"তিস্তা ব্যারেজ, তিনবিঘা করিডোর",food:"ভুট্টা, পিঠা",history:"তিস্তা নদী ও সীমান্তভূমির সঙ্গে যুক্ত একটি গুরুত্বপূর্ণ জেলা।",tourist:"তিস্তা ব্যারেজ, তিনবিঘা করিডোর, বুড়িমারী"},
-{name:"Panchagarh",bn:"পঞ্চগড়",division:"রংপুর",area:1405,pop:1179843,lat:26.3411,lng:88.5542,famous:"তেঁতুলিয়া, কাঞ্চনজঙ্ঘা দৃশ্য",food:"চা, কমলা",history:"বাংলাদেশের সর্বউত্তরের জেলা; চা চাষ ও হিমালয় দৃশ্যের জন্য বিখ্যাত।",tourist:"তেঁতুলিয়া, বাংলাবান্ধা, কাঞ্চনজঙ্ঘা ভিউ"},
-{name:"Mymensingh",bn:"ময়মনসিংহ",division:"ময়মনসিংহ",area:4395,pop:5899052,lat:24.7471,lng:90.4203,famous:"ব্রহ্মপুত্র, শিল্পাচার্য জয়নুল",food:"মুক্তাগাছার মণ্ডা",history:"ব্রহ্মপুত্র তীরের ঐতিহাসিক শিক্ষানগর ও শিল্পসংস্কৃতির কেন্দ্র।",tourist:"জয়নুল আবেদিন সংগ্রহশালা, বাংলাদেশ কৃষি বিশ্ববিদ্যালয়, মুক্তাগাছা জমিদারবাড়ি"},
-{name:"Jamalpur",bn:"জামালপুর",division:"ময়মনসিংহ",area:2115,pop:2499737,lat:24.9375,lng:89.937,famous:"দেওয়ানগঞ্জ, যমুনা",food:"পিঠা, মিষ্টি",history:"ব্রহ্মপুত্র-যমুনা অববাহিকার কৃষিপ্রধান জনপদ।",tourist:"যমুনার চর, দেওয়ানগঞ্জ, লাউচাপড়া"},
-{name:"Netrokona",bn:"নেত্রকোনা",division:"ময়মনসিংহ",area:2794,pop:2324856,lat:24.8706,lng:90.7278,famous:"বিরিশিরি, সোমেশ্বরী",food:"বিরিশিরির পাহাড়ি খাবার, পিঠা",history:"হাওর ও গারো পাহাড়ঘেঁষা প্রাকৃতিক বৈচিত্র্যের জন্য পরিচিত।",tourist:"বিরিশিরি, বিজয়পুরের সাদা মাটি, সোমেশ্বরী নদী"},
-{name:"Sherpur",bn:"শেরপুর",division:"ময়মনসিংহ",area:1365,pop:1501853,lat:25.0205,lng:90.0151,famous:"গজনী অবকাশ, মধুটিলা",food:"পিঠা, মিষ্টি",history:"গারো পাহাড়সংলগ্ন বন ও সীমান্ত সংস্কৃতির জন্য পরিচিত।",tourist:"গজনী অবকাশ কেন্দ্র, মধুটিলা ইকোপার্ক, ঝিনাইগাতী"}
-];
-
-
-    // ===== BDTrip Trip Tracker =====
-    let userPosition=null, tripStartPosition=null, tripWatchId=null, tripUserMarker=null, tripDestinationMarker=null, tripRouteLine=null;
-    const tripMap=L.map("tripMap",{zoomControl:false,scrollWheelZoom:false,doubleClickZoom:false,dragging:false,boxZoom:false,keyboard:false,touchZoom:false}).setView([23.685,90.3563],7);
-    const tripBangladeshBounds=[[20.58,88.0],[26.65,92.7]];
-    let tripDistrictLayer=null;
-    let tripGeoFeatures=[];
-    const TRIP_GEOJSON_URL="https://gis.dghs.gov.bd/server/rest/services/Hosted/bgd_admbnda_adm2_bbs_20201113/FeatureServer/0/query?where=1%3D1&outFields=adm2_en%2Cadm1_en&outSR=4326&f=geojson";
-
-    function normalizeDistrictName(v){
-      return String(v||"").toLowerCase().replace(/district|zilla|zila/g,"").replace(/[^a-z0-9\u0980-\u09ff]/g,"");
-    }
-    function tripFeatureDistrictIndex(props){
-      const raw=props?.adm2_en||props?.ADM2_EN||props?.district||"";
-      const n=normalizeDistrictName(raw);
-      let i=districtData.findIndex(d=>normalizeDistrictName(d.name)===n);
-      if(i<0){
-        const aliases={comilla:"cumilla",chittagram:"chattogram",barisal:"barishal",bogra:"bogura",jessore:"jashore"};
-        const a=aliases[n];
-        if(a)i=districtData.findIndex(d=>normalizeDistrictName(d.name)===a);
-      }
-      return i;
-    }
-    function tripDistrictStyle(feature){
-      const i=tripFeatureDistrictIndex(feature.properties);
-      const selected=getTripDestination();
-      const raw=feature.properties?.adm2_en||"";
-      const isSelected=selected && normalizeDistrictName(selected.name)===normalizeDistrictName(raw);
-      return {color:"#fff",weight:0.9,fillColor:isSelected?"#0b8a62":"#ded9cc",fillOpacity:isSelected?1:.92};
-    }
-    function loadTripBangladeshMap(){
-      fetch(TRIP_GEOJSON_URL)
-        .then(r=>{if(!r.ok)throw new Error("map fetch failed");return r.json();})
-        .then(data=>{
-          tripGeoFeatures=data.features||[];
-          tripDistrictLayer=L.geoJSON(data,{
-            style:tripDistrictStyle,
-            onEachFeature:(feature,layer)=>{
-              const i=tripFeatureDistrictIndex(feature.properties);
-              const name=i>=0?districtData[i].bn:(feature.properties?.adm2_en||"District");
-              layer.bindTooltip(name,{direction:"center",className:"trip-district-tooltip"});
-              layer.on("click",()=>{
-                if(i>=0){
-                  const sel=document.getElementById("tripDestination");
-                  const opt=Array.from(sel.options).find(o=>o.value==="district:"+i);
-                  if(opt){sel.value=opt.value;sel.dispatchEvent(new Event("change"));}
-                }
-              });
-              layer.on("mouseover",()=>layer.setStyle({weight:1.4,fillColor:"#b8dfcf",fillOpacity:1}));
-              layer.on("mouseout",()=>tripDistrictLayer.resetStyle(layer));
-            }
-          }).addTo(tripMap);
-          try{tripMap.fitBounds(tripDistrictLayer.getBounds(),{padding:[8,8]});}catch(e){tripMap.fitBounds(tripBangladeshBounds,{padding:[8,8]});}
-          updateTripMapSelection();
-        })
-        .catch(()=>{tripMap.fitBounds(tripBangladeshBounds,{padding:[8,8]});});
-    }
-    function updateTripMapSelection(){
-      if(tripDistrictLayer)tripDistrictLayer.eachLayer(layer=>layer.setStyle(tripDistrictStyle(layer.feature)));
-      const dest=getTripDestination();
-      document.getElementById("tripMapTitle").textContent=dest?dest.name:"আমার বাংলাদেশ";
-      document.getElementById("tripMapSub").textContent=dest?dest.location:"গন্তব্য নির্বাচন করে ভ্রমণ শুরু করুন";
-    }
-    loadTripBangladeshMap();
-
-    function populateTripDestinations(){
-      const select=document.getElementById("tripDestination"); select.innerHTML="";
-      places.forEach((p,i)=>{const o=document.createElement("option");o.value="place:"+i;o.textContent=currentLang==="bn"?getPlaceText(p).name:p.name;select.appendChild(o);});
-      const sep=document.createElement("option");sep.disabled=true;sep.textContent=currentLang==="bn"?"──────── জেলা ────────":"──────── Districts ────────";select.appendChild(sep);
-      districtData.forEach((d,i)=>{const o=document.createElement("option");o.value="district:"+i;o.textContent=currentLang==="bn"?d.bn:d.name;select.appendChild(o);});
-    }
-    function getTripDestination(){
-      const val=document.getElementById("tripDestination").value;if(!val)return null;const parts=val.split(":"),type=parts[0],idx=Number(parts[1]);
-      if(type==="place"){const p=places[idx],t=getPlaceText(p);return {lat:p.lat,lng:p.lng,name:t.name,location:t.location};}
-      const d=districtData[idx];return {lat:d.lat,lng:d.lng,name:currentLang==="bn"?d.bn:d.name,location:d.division};
-    }
-    function haversine(a,b){const R=6371,rad=Math.PI/180,dLat=(b.lat-a.lat)*rad,dLon=(b.lng-a.lng)*rad,x=Math.sin(dLat/2)**2+Math.cos(a.lat*rad)*Math.cos(b.lat*rad)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
-    function formatKm(km){if(!Number.isFinite(km))return "—";return km<1?Math.round(km*1000)+" m":km.toFixed(km<10?1:0)+" "+translations[currentLang].km;}
-    function formatCoord(p){return p.lat.toFixed(5)+", "+p.lng.toFixed(5);}
-    function updateTripUI(){
-      const dest=getTripDestination();if(!dest)return;
-      document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;updateTripMapSelection();
-      if(!userPosition){document.getElementById("remainingDistance").textContent="—";document.getElementById("remainingDistance2").textContent="—";return;}
-      const remaining=haversine(userPosition,dest),travelled=tripStartPosition?haversine(tripStartPosition,userPosition):0,total=tripStartPosition?travelled+remaining:remaining,progress=tripStartPosition&&total>0?Math.max(0,Math.min(100,travelled/total*100)):0;
-      document.getElementById("remainingDistance").textContent=formatKm(remaining);document.getElementById("remainingDistance2").textContent=formatKm(remaining);document.getElementById("summaryRemaining").textContent=formatKm(remaining);document.getElementById("summaryRemaining").textContent=formatKm(remaining);document.getElementById("travelledDistance").textContent=formatKm(travelled);document.getElementById("currentLocationText").textContent=formatCoord(userPosition);document.getElementById("routeProgress").style.width=progress+"%";document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString(currentLang==="bn"?"bn-BD":"en-US",{hour:"2-digit",minute:"2-digit"});
-      if(tripUserMarker)tripUserMarker.setLatLng([userPosition.lat,userPosition.lng]);if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);
-      if(tripRouteLine)tripRouteLine.setLatLngs([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]]);else tripRouteLine=L.polyline([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]],{color:"#0b63ce",weight:4,dashArray:"8 8"}).addTo(tripMap);
-    }
-    function handlePosition(pos,initial){
-      userPosition={lat:pos.coords.latitude,lng:pos.coords.longitude};const dest=getTripDestination();
-      if(!tripUserMarker)tripUserMarker=L.marker([userPosition.lat,userPosition.lng]).addTo(tripMap).bindTooltip(translations[currentLang].youAreHere);
-      if(dest&&!tripDestinationMarker)tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);
-      document.querySelector(".status-dot").classList.add("live");document.querySelector("#tripStatus strong").textContent=translations[currentLang].tripStarted;document.querySelector("#tripStatus span").textContent=translations[currentLang].currentLocation+": "+formatCoord(userPosition);updateTripUI();
-      if(initial&&dest)tripMap.fitBounds([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]],{padding:[35,35]});
-    }
-    function locateUser(startTrip){
-      if(!navigator.geolocation){alert(translations[currentLang].locationError);return;}const dest=getTripDestination();if(!dest&&startTrip){alert(translations[currentLang].destinationNeeded);return;}
-      const btn=document.getElementById("locateBtn");btn.disabled=true;
-      navigator.geolocation.getCurrentPosition(pos=>{if(startTrip)tripStartPosition={lat:pos.coords.latitude,lng:pos.coords.longitude};handlePosition(pos,true);btn.disabled=false;if(!tripWatchId)tripWatchId=navigator.geolocation.watchPosition(p=>handlePosition(p,false),()=>{},{enableHighAccuracy:true,maximumAge:15000,timeout:20000});},()=>{btn.disabled=false;document.querySelector("#tripStatus strong").textContent=translations[currentLang].locationDenied;document.querySelector("#tripStatus span").textContent=translations[currentLang].locationError;},{enableHighAccuracy:true,maximumAge:0,timeout:15000});
-    }
-    document.getElementById("locateBtn").addEventListener("click",()=>locateUser(false));
-    document.getElementById("startTripBtn").addEventListener("click",()=>{if(!getTripDestination()){alert(translations[currentLang].destinationNeeded);return;}locateUser(true);});
-    document.getElementById("tripDistrictSearch").addEventListener("input",renderTripDistrictPills);
-    function renderTripDistrictPills(){
-      const q=document.getElementById("tripDistrictSearch").value.trim().toLowerCase();
-      const wrap=document.getElementById("tripDistrictList");
-      const groups={};
-      districtData.forEach((d,i)=>{if(!q||d.bn.toLowerCase().includes(q)||d.name.toLowerCase().includes(q)){(groups[d.division]??=[]).push({d,i});}});
-      wrap.innerHTML=Object.keys(groups).map(div=>'<div class="trip-group-title"><span>'+div+'</span><span>'+groups[div].length+'</span></div><div class="trip-pills">'+groups[div].map(x=>'<button class="trip-pill" data-index="'+x.i+'">'+x.d.bn+'</button>').join('')+'</div>').join('');
-      wrap.querySelectorAll('.trip-pill').forEach(btn=>btn.addEventListener('click',()=>{
-        const i=Number(btn.dataset.index), d=districtData[i], sel=document.getElementById("tripDestination");
-        const opt=Array.from(sel.options).find(o=>o.value==="district:"+i); if(opt){sel.value=opt.value; sel.dispatchEvent(new Event("change"));}
-        document.querySelectorAll('.trip-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-      }));
-    }
-        document.getElementById("tripDestination").addEventListener("change",()=>{const dest=getTripDestination();if(!dest)return;document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);else tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);if(userPosition)updateTripUI();else tripMap.setView([dest.lat,dest.lng],9); updateTripMapSelection();});
-    async function downloadTripCard(type){
-      const card=document.getElementById("tripCard");if(typeof html2canvas==="undefined"){alert("Download library is still loading. Please try again.");return;}const canvas=await html2canvas(card,{scale:2,backgroundColor:"#0b1e36"}),name="bdtrip-trip-"+new Date().toISOString().slice(0,10);
-      if(type==="pdf"){const jsPDF=window.jspdf.jsPDF,pdf=new jsPDF({orientation:"landscape",unit:"px",format:[canvas.width,canvas.height]});pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,canvas.width,canvas.height);pdf.save(name+".pdf");}else{const a=document.createElement("a");a.download=name+"."+type;a.href=canvas.toDataURL(type==="jpg"?"image/jpeg":"image/png",.95);a.click();}
-    }
-
-    const map = L.map("map", {scrollWheelZoom:false}).setView([23.685,90.3563], 7);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom:19,
-      attribution:'&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    const markers = {};
-    const blueIcon = L.divIcon({
-      className:"custom-pin",
-      html:'<div style="width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#0b63ce;border:3px solid #fff;box-shadow:0 5px 12px rgba(0,0,0,.25)"></div>',
-      iconSize:[28,28],
-      iconAnchor:[14,28]
-    });
-
-    places.forEach((p,i)=>{
-      const marker=L.marker([p.lat,p.lng],{icon:blueIcon}).addTo(map);
-      marker.bindTooltip(p.name,{direction:"top",offset:[0,-20]});
-      marker.on("click",()=>showPlace(i));
-      markers[p.name.toLowerCase()] = marker;
-    });
-
-
-    const districtMarkers = {};
-    const divisionSelect = document.getElementById("divisionSelect");
-    const districtSelect = document.getElementById("districtSelect");
-    const districtList = document.getElementById("districtList");
-    const districtSearch = document.getElementById("districtSearch");
-
-    const divisions = [...new Set(districtData.map(d=>d.division))];
-    divisions.forEach(div=>{
-      const o=document.createElement("option");
-      o.value=div;o.textContent=div;
-      divisionSelect.appendChild(o);
-    });
-
-    districtData.forEach((d,i)=>{
-      const m=L.circleMarker([d.lat,d.lng],{
-        radius:6, color:"#fff", weight:2, fillColor:"#f59e0b", fillOpacity:.95
-      }).addTo(map);
-      m.bindTooltip(d.bn,{direction:"top"});
-      m.on("click",()=>selectDistrict(i,true));
-      districtMarkers[d.name]=m;
-    });
-
-    function updateDistrictOptions(){
-      const div=divisionSelect.value;
-      const q=districtSearch.value.trim().toLowerCase();
-      const filtered=districtData.filter(d=>
-        (div==="all" || d.division===div) &&
-        (!q || d.bn.toLowerCase().includes(q) || d.name.toLowerCase().includes(q))
-      );
-      districtSelect.innerHTML=filtered.map(d=>`<option value="${d.name}">${d.bn} — ${d.name}</option>`).join("");
-      renderDistrictList(filtered);
-      if(filtered.length) selectDistrict(districtData.indexOf(filtered[0]),false);
-    }
-
-    function renderDistrictList(items){
-      districtList.innerHTML=items.map(d=>{
-        const i=districtData.indexOf(d);
-        return `<button type="button" class="district-item" data-index="${i}">
-          <strong>${d.bn}</strong><span>${d.division}</span>
-        </button>`;
-      }).join("") || `<div class="empty">${translations[currentLang].noResult}</div>`;
-      districtList.querySelectorAll(".district-item").forEach(btn=>{
-        btn.addEventListener("click",()=>selectDistrict(Number(btn.dataset.index),true));
-      });
-    }
-
-    function formatNumber(n){
-      return new Intl.NumberFormat(currentLang==="bn"?"bn-BD":"en-US").format(n);
-    }
-
-    function selectDistrict(index, moveMap){
-      const d=districtData[index];
-      if(!d) return;
-      districtSelect.value=d.name;
-      document.getElementById("detailDivision").textContent=d.division;
-      document.getElementById("detailName").textContent=d.bn;
-      document.getElementById("detailTourist").textContent=d.tourist;
-      document.getElementById("detailPopulation").textContent=formatNumber(d.pop);
-      document.getElementById("detailArea").textContent=formatNumber(d.area)+" km²";
-      document.getElementById("detailFamous").textContent=d.famous;
-      document.getElementById("detailFood").textContent=d.food;
-      document.getElementById("detailHistory").textContent=d.history;
-      districtList.querySelectorAll(".district-item").forEach(b=>b.classList.toggle("active",Number(b.dataset.index)===index));
-      if(moveMap){
-        map.setView([d.lat,d.lng],10);
-        districtMarkers[d.name]?.openTooltip();
-        document.getElementById("map-section").scrollIntoView({behavior:"smooth"});
-      }
-    }
-
-    divisionSelect.addEventListener("change",updateDistrictOptions);
-    districtSelect.addEventListener("change",()=>{
-      const i=districtData.findIndex(d=>d.name===districtSelect.value);
-      selectDistrict(i,true);
-    });
-    districtSearch.addEventListener("input",updateDistrictOptions);
-
-    document.getElementById("districtMapBtn").addEventListener("click",()=>{
-      const i=districtData.findIndex(d=>d.name===districtSelect.value);
-      selectDistrict(i,true);
-    });
-
-    function updateDistrictLanguage(){
-      document.querySelector('[data-i18n="districtTitle"]').textContent=translations[currentLang].districtTitle;
-      document.querySelector('[data-i18n="districtSub"]').textContent=translations[currentLang].districtSub;
-      document.querySelector('[data-i18n="divisionLabel"]').textContent=translations[currentLang].divisionLabel;
-      document.querySelector('[data-i18n="districtLabel"]').textContent=translations[currentLang].districtLabel;
-      districtSearch.placeholder=translations[currentLang].districtSearchPlaceholder;
-      const selected=districtSelect.value;
-      updateDistrictOptions();
-      if(selected){
-        const i=districtData.findIndex(d=>d.name===selected);
-        if(i>=0) selectDistrict(i,false);
-      }
-    }
-
-
-    function cardHTML(p,i){
-      const t=getPlaceText(p);
-      const label = p.cat==="beach" ? translations[currentLang].beachLabel :
-                    p.cat==="hill" ? translations[currentLang].hillLabel :
-                    p.cat==="forest" ? translations[currentLang].forestLabel :
-                    translations[currentLang].heritageLabel;
-      return `
-        <article class="place" onclick="showPlace(${i})">
-          <img class="place-img" src="${p.image}" alt="${t.name}" loading="lazy">
-          <div class="place-body">
-            <h3>${t.name}</h3>
-            <p>${t.desc}</p>
-            <div class="tags">
-              <span class="tag">${label}</span>
-              <span class="tag gold">💰 ${t.budget}</span>
-            </div>
-          </div>
-        </article>`;
-    }
-
-    function showPlace(i){
-      const p=places[i], t=getPlaceText(p);
-      document.getElementById("modalImg").src=p.image;
-      document.getElementById("modalImg").alt=t.name;
-      document.getElementById("modalTitle").textContent=t.name;
-      document.getElementById("modalLocation").textContent="📍 "+t.location;
-      document.getElementById("modalDesc").textContent=t.desc;
-      document.getElementById("modalBudget").textContent=t.budget;
-      document.getElementById("modalTime").textContent=t.time;
-      document.getElementById("modalCategory").textContent =
-        p.cat==="beach" ? translations[currentLang].beachLabel.replace(/^🏖️ /,"") :
-        p.cat==="hill" ? translations[currentLang].hillLabel.replace(/^🏔️ /,"") :
-        p.cat==="forest" ? translations[currentLang].forestLabel.replace(/^🌿 /,"") :
-        translations[currentLang].heritageLabel.replace(/^🏛️ /,"");
-      document.getElementById("modalTip").textContent=t.tip;
-      document.getElementById("mapsLink").innerHTML="📍 "+translations[currentLang].googleMaps;
-      document.getElementById("mapsLink").href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.lat+","+p.lng)}`;
-      document.getElementById("modal").classList.add("show");
-      map.setView([p.lat,p.lng],11);
-    }
-
-    function hideModal(){document.getElementById("modal").classList.remove("show")}
-    function closeModal(e){if(e.target.id==="modal")hideModal()}
-
-    function runSearch(){
-      const q=document.getElementById("searchInput").value;
-      render("all",q);
-      document.getElementById("destinations").scrollIntoView({behavior:"smooth"});
-      const found=places.find(p=>p.name.toLowerCase().includes(q.trim().toLowerCase()));
-      if(found){
-        map.setView([found.lat,found.lng],11);
-        markers[found.name.toLowerCase()]?.openTooltip();
-      }
-    }
-
-    document.getElementById("searchInput").addEventListener("keydown",e=>{
-      if(e.key==="Enter")runSearch();
-    });
-
-    document.querySelectorAll(".filter").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        render(btn.dataset.cat,document.getElementById("searchInput").value);
-      });
-    });
-
-    updateDistrictOptions();
-    populateTripDestinations();
-    renderTripDistrictPills();
-    render();
-    setLanguage('bn');
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="vendor/jspdf.umd.min.js" defer></script>
+<script src="data.js"></script>
+<script src="info.js"></script>
+<script src="app.js" defer></script>
 </body>
 </html>
