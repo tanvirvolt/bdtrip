@@ -211,6 +211,28 @@
     @media(max-width:850px){.trip-controls{grid-template-columns:1fr 1fr}.trip-field{grid-column:1/-1}.trip-metrics{grid-template-columns:1fr 1fr}}
     @media(max-width:600px){.trip-controls{grid-template-columns:1fr}.trip-field{grid-column:auto}.trip-card-top{display:block}.trip-distance{text-align:left;margin-top:15px}.trip-distance strong{font-size:30px}.trip-metrics{grid-template-columns:1fr 1fr}#tripMap{height:320px}}
 
+
+    .bdtrip-dashboard{display:grid;grid-template-columns:260px 1fr;gap:12px;background:#fff;border:1px solid #e6e1d6;border-radius:10px;padding:10px;box-shadow:0 10px 30px rgba(28,34,29,.08)}
+    .trip-sidebar{min-width:0;border:1px solid #e9e5dd;border-radius:9px;background:#fff;overflow:hidden}
+    .trip-side-head{padding:9px 10px 8px;border-bottom:1px solid #eee9df}
+    .trip-side-title{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:8px}.trip-side-title b{font-weight:800}.trip-side-title em{margin-left:auto;font-style:normal;font-size:10px;color:#16845d;background:#eaf6f0;padding:3px 7px;border-radius:99px}
+    .trip-search{height:30px;border:1px solid #e6e0d6;border-radius:7px;display:flex;align-items:center;padding:0 8px;color:#aaa}.trip-search input{border:0;outline:0;width:100%;font-size:10px;background:transparent;padding:0 5px}
+    .trip-district-list{height:600px;overflow:auto;padding:8px 8px 12px}.trip-group-title{font-size:9px;font-weight:800;color:#777;margin:8px 3px 5px;display:flex;justify-content:space-between}.trip-pills{display:flex;flex-wrap:wrap;gap:5px}
+    .trip-pill{border:0;background:#f3efe7;color:#5f625e;border-radius:99px;padding:6px 8px;font-size:9px;cursor:pointer;transition:.18s}.trip-pill:hover,.trip-pill.active{background:#087d58;color:#fff}
+    .trip-main{min-width:0;border:1px solid #e9e5dd;border-radius:9px;background:#fff;padding:10px}
+    .trip-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:10px}.trip-color-dots{display:flex;gap:7px;margin-right:auto}.trip-color-dots i{width:17px;height:17px;border-radius:50%;border:1px solid #d7d4cc;background:#172b25}.trip-color-dots i:nth-child(2){background:#202d68}.trip-color-dots i:nth-child(3){background:#f7eee7}.trip-color-dots i:nth-child(4){background:#e6eff9}.trip-color-dots i:nth-child(5){background:#0c7754}
+    .mini-btn{border:1px solid #ded8cd;background:#fff;color:#4d554f;border-radius:7px;padding:7px 10px;font-size:9px;cursor:pointer}.mini-btn.green{color:#087d58}.mini-btn:disabled{opacity:.5}
+    .trip-live-head{display:flex;justify-content:space-between;align-items:end;padding:8px 12px 12px}.trip-live-head small{font-size:8px;color:#777}.trip-live-head h3{font-size:27px;margin:4px 0 2px;line-height:1}.trip-live-head p{font-size:9px;color:#8a8a82;margin:0}.remaining-big{text-align:right}.remaining-big small{display:block}.remaining-big strong{font:700 30px "Rajdhani";color:#087d58}
+    .trip-map-shell{position:relative;border:1px solid #e8e2d7;border-radius:7px;overflow:hidden;background:#f4f0e7}.trip-map-shell #tripMap{height:400px;filter:saturate(.55) contrast(.95)}
+    .map-overlay-title{position:absolute;left:20px;top:20px;z-index:500;pointer-events:none}.map-overlay-title b{display:block;font:700 27px "Rajdhani";color:#15251e}.map-overlay-title span{font-size:9px;color:#8b8b84}
+    .trip-progress-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:9px 12px}.trip-progress{height:4px;background:#e3dfd4;border-radius:99px;overflow:hidden}.trip-progress span{display:block;height:100%;width:0;background:#087d58;border-radius:99px;transition:.5s}.trip-progress-row b{font-size:9px;color:#777}
+    .trip-summary{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #eee9df;border-bottom:1px solid #eee9df;margin-top:8px}.trip-summary div{padding:9px 10px;border-right:1px solid #eee9df}.trip-summary div:last-child{border-right:0}.trip-summary small{display:block;color:#999;font-size:8px}.trip-summary b{display:block;font-size:10px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .trip-download-title{font-size:10px;font-weight:800;margin:12px 0 7px}.download-row.light{margin:0;display:grid;grid-template-columns:repeat(3,1fr)}.download-row.light button{background:#fff;color:#26332d;border:1px solid #ddd7cd;border-radius:7px;padding:9px;font-size:10px}.download-row.light button:hover{background:#f5f1e9}
+    .trip-status.compact{margin-top:9px;padding:8px 10px;background:#faf9f6;border:1px solid #eee9df}.trip-status.compact strong{font-size:9px}.trip-status.compact span{font-size:8px}
+    .trip-hidden-select{display:none}
+    @media(max-width:850px){.bdtrip-dashboard{grid-template-columns:1fr}.trip-sidebar{order:2}.trip-district-list{height:240px}.trip-main{order:1}.trip-summary{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.trip-toolbar{flex-wrap:wrap}.trip-color-dots{width:100%}.trip-live-head{display:block}.remaining-big{text-align:left;margin-top:7px}.trip-map-shell #tripMap{height:330px}.trip-summary{grid-template-columns:1fr 1fr}}
+
     .grid{
       display:grid;
       grid-template-columns:repeat(3,1fr);
@@ -400,57 +422,74 @@
 
   <main>
 
+
     <section class="section" id="map-section">
       <div class="section-head">
         <div>
           <h2 data-i18n="tripTitle">আমার ভ্রমণ ট্র্যাকার</h2>
-          <p data-i18n="tripSub">আপনি কোথায় আছেন, কোথায় যাচ্ছেন এবং গন্তব্য পর্যন্ত কত দূর বাকি—সব এক জায়গায় দেখুন।</p>
+          <p data-i18n="tripSub">জেলা বা গন্তব্য বেছে নিন, আপনার অবস্থান দেখুন এবং কতটা পথ বাকি তা জানুন।</p>
         </div>
       </div>
-      <div class="trip-panel">
-        <div class="trip-controls">
-          <div class="trip-field">
-            <label data-i18n="destinationLabel">গন্তব্য</label>
-            <select id="tripDestination"></select>
+
+      <div class="bdtrip-dashboard">
+        <aside class="trip-sidebar">
+          <div class="trip-side-head">
+            <div class="trip-side-title"><span>🗺️</span><b data-i18n="districtBrowse">জেলা ঘুরে দেখুন</b><em>০ / ৬৪</em></div>
+            <div class="trip-search"><span>⌕</span><input id="tripDistrictSearch" placeholder="জেলা খুঁজুন..." autocomplete="off"></div>
           </div>
-          <button class="locate-btn" id="locateBtn" type="button">📍 <span data-i18n="myLocation">আমার অবস্থান</span></button>
-          <button class="start-btn" id="startTripBtn" type="button">🚀 <span data-i18n="startTrip">ভ্রমণ শুরু</span></button>
-        </div>
-        <div class="trip-status" id="tripStatus">
-          <div class="status-dot"></div>
-          <div>
-            <strong data-i18n="locationWaiting">অবস্থান নির্ধারণ করা হয়নি</strong>
-            <span data-i18n="locationHint">“আমার অবস্থান” চাপলে আপনার বর্তমান অবস্থান নেওয়া হবে।</span>
+          <div id="tripDistrictList" class="trip-district-list"></div>
+        </aside>
+
+        <div class="trip-main">
+          <div class="trip-toolbar">
+            <div class="trip-color-dots"><i></i><i></i><i></i><i></i><i></i></div>
+            <button class="mini-btn" id="locateBtn" type="button">📍 <span data-i18n="myLocation">আমার অবস্থান</span></button>
+            <button class="mini-btn green" id="startTripBtn" type="button">🚀 <span data-i18n="startTrip">ভ্রমণ শুরু</span></button>
           </div>
-        </div>
-        <div class="trip-card" id="tripCard">
-          <div class="trip-card-top">
+
+          <div class="trip-live-head">
             <div>
-              <span class="trip-kicker" data-i18n="liveTrip">LIVE TRIP</span>
-              <h3 id="tripDestinationName">কোথায় যাবেন?</h3>
+              <small data-i18n="liveTrip">LIVE TRIP</small>
+              <h3 id="tripDestinationName">আমার বাংলাদেশ</h3>
               <p id="tripDestinationLocation">একটি গন্তব্য নির্বাচন করুন</p>
             </div>
-            <div class="trip-distance"><small data-i18n="remaining">বাকি</small><strong id="remainingDistance">—</strong></div>
+            <div class="remaining-big"><small data-i18n="remaining">বাকি</small><strong id="remainingDistance">—</strong></div>
           </div>
-          <div class="route-visual">
-            <div class="route-point current"><span>📍</span><small data-i18n="youAreHere">আপনি এখানে</small></div>
-            <div class="route-line"><div id="routeProgress"></div></div>
-            <div class="route-point destination"><span>🏁</span><small data-i18n="destination">গন্তব্য</small></div>
+
+          <div class="trip-map-shell">
+            <div id="tripMap"></div>
+            <div class="map-overlay-title">
+              <b id="tripMapTitle">আমার বাংলাদেশ</b>
+              <span id="tripMapSub">গন্তব্য নির্বাচন করে ভ্রমণ শুরু করুন</span>
+            </div>
           </div>
-          <div class="trip-metrics">
+
+          <div class="trip-progress-row">
+            <div class="trip-progress"><span id="routeProgress"></span></div>
+            <b id="remainingDistance2">—</b>
+          </div>
+
+          <div class="trip-summary">
             <div><small data-i18n="currentLocation">বর্তমান অবস্থান</small><b id="currentLocationText">—</b></div>
             <div><small data-i18n="distanceTravelled">অতিক্রান্ত দূরত্ব</small><b id="travelledDistance">—</b></div>
-            <div><small data-i18n="distanceRemaining">বাকি দূরত্ব</small><b id="remainingDistance2">—</b></div>
+            <div><small data-i18n="distanceRemaining">বাকি দূরত্ব</small><b id="summaryRemaining">—</b></div>
             <div><small data-i18n="lastUpdated">সর্বশেষ আপডেট</small><b id="lastUpdated">—</b></div>
           </div>
-          <div class="trip-note" data-i18n="tripNote">দূরত্ব সরলরেখা হিসেবে হিসাব করা হয়; বাস্তব সড়কপথ কিছুটা বেশি হতে পারে।</div>
-          <div class="download-row">
-            <button type="button" onclick="downloadTripCard('png')">⬇️ <span data-i18n="downloadPng">PNG ডাউনলোড</span></button>
-            <button type="button" onclick="downloadTripCard('jpg')">⬇️ <span data-i18n="downloadJpg">JPG ডাউনলোড</span></button>
-            <button type="button" onclick="downloadTripCard('pdf')">⬇️ <span data-i18n="downloadPdf">PDF ডাউনলোড</span></button>
+
+          <div class="trip-download-title" data-i18n="downloadTrip">আপনার ভ্রমণ স্ট্যাটাস ডাউনলোড করুন</div>
+          <div class="download-row light">
+            <button type="button" onclick="downloadTripCard('png')">↓ PNG</button>
+            <button type="button" onclick="downloadTripCard('jpg')">↓ JPG</button>
+            <button type="button" onclick="downloadTripCard('pdf')">↓ PDF</button>
           </div>
+
+          <div class="trip-status compact" id="tripStatus">
+            <div class="status-dot"></div>
+            <div><strong data-i18n="locationWaiting">অবস্থান নির্ধারণ করা হয়নি</strong><span data-i18n="locationHint">“আমার অবস্থান” চাপলে আপনার বর্তমান অবস্থান নেওয়া হবে।</span></div>
+          </div>
+
+          <select id="tripDestination" class="trip-hidden-select" aria-hidden="true"></select>
         </div>
-        <div class="trip-map-wrap"><div id="tripMap"></div></div>
       </div>
     </section>
     <section class="section" id="district-explorer">
@@ -868,7 +907,7 @@ const districtData = [
       document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;
       if(!userPosition){document.getElementById("remainingDistance").textContent="—";document.getElementById("remainingDistance2").textContent="—";return;}
       const remaining=haversine(userPosition,dest),travelled=tripStartPosition?haversine(tripStartPosition,userPosition):0,total=tripStartPosition?travelled+remaining:remaining,progress=tripStartPosition&&total>0?Math.max(0,Math.min(100,travelled/total*100)):0;
-      document.getElementById("remainingDistance").textContent=formatKm(remaining);document.getElementById("remainingDistance2").textContent=formatKm(remaining);document.getElementById("travelledDistance").textContent=formatKm(travelled);document.getElementById("currentLocationText").textContent=formatCoord(userPosition);document.getElementById("routeProgress").style.width=progress+"%";document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString(currentLang==="bn"?"bn-BD":"en-US",{hour:"2-digit",minute:"2-digit"});
+      document.getElementById("remainingDistance").textContent=formatKm(remaining);document.getElementById("remainingDistance2").textContent=formatKm(remaining);document.getElementById("summaryRemaining").textContent=formatKm(remaining);document.getElementById("summaryRemaining").textContent=formatKm(remaining);document.getElementById("travelledDistance").textContent=formatKm(travelled);document.getElementById("currentLocationText").textContent=formatCoord(userPosition);document.getElementById("routeProgress").style.width=progress+"%";document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString(currentLang==="bn"?"bn-BD":"en-US",{hour:"2-digit",minute:"2-digit"});
       if(tripUserMarker)tripUserMarker.setLatLng([userPosition.lat,userPosition.lng]);if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);
       if(tripRouteLine)tripRouteLine.setLatLngs([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]]);else tripRouteLine=L.polyline([[userPosition.lat,userPosition.lng],[dest.lat,dest.lng]],{color:"#0b63ce",weight:4,dashArray:"8 8"}).addTo(tripMap);
     }
@@ -886,7 +925,20 @@ const districtData = [
     }
     document.getElementById("locateBtn").addEventListener("click",()=>locateUser(false));
     document.getElementById("startTripBtn").addEventListener("click",()=>{if(!getTripDestination()){alert(translations[currentLang].destinationNeeded);return;}locateUser(true);});
-    document.getElementById("tripDestination").addEventListener("change",()=>{const dest=getTripDestination();if(!dest)return;document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);else tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);if(userPosition)updateTripUI();else tripMap.setView([dest.lat,dest.lng],10);});
+    document.getElementById("tripDistrictSearch").addEventListener("input",renderTripDistrictPills);
+    function renderTripDistrictPills(){
+      const q=document.getElementById("tripDistrictSearch").value.trim().toLowerCase();
+      const wrap=document.getElementById("tripDistrictList");
+      const groups={};
+      districtData.forEach((d,i)=>{if(!q||d.bn.toLowerCase().includes(q)||d.name.toLowerCase().includes(q)){(groups[d.division]??=[]).push({d,i});}});
+      wrap.innerHTML=Object.keys(groups).map(div=>'<div class="trip-group-title"><span>'+div+'</span><span>'+groups[div].length+'</span></div><div class="trip-pills">'+groups[div].map(x=>'<button class="trip-pill" data-index="'+x.i+'">'+x.d.bn+'</button>').join('')+'</div>').join('');
+      wrap.querySelectorAll('.trip-pill').forEach(btn=>btn.addEventListener('click',()=>{
+        const i=Number(btn.dataset.index), d=districtData[i], sel=document.getElementById("tripDestination");
+        const opt=Array.from(sel.options).find(o=>o.value==="district:"+i); if(opt){sel.value=opt.value; sel.dispatchEvent(new Event("change"));}
+        document.querySelectorAll('.trip-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+      }));
+    }
+        document.getElementById("tripDestination").addEventListener("change",()=>{const dest=getTripDestination();if(!dest)return;document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);else tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);if(userPosition)updateTripUI();else tripMap.setView([dest.lat,dest.lng],10);});
     async function downloadTripCard(type){
       const card=document.getElementById("tripCard");if(typeof html2canvas==="undefined"){alert("Download library is still loading. Please try again.");return;}const canvas=await html2canvas(card,{scale:2,backgroundColor:"#0b1e36"}),name="bdtrip-trip-"+new Date().toISOString().slice(0,10);
       if(type==="pdf"){const jsPDF=window.jspdf.jsPDF,pdf=new jsPDF({orientation:"landscape",unit:"px",format:[canvas.width,canvas.height]});pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,canvas.width,canvas.height);pdf.save(name+".pdf");}else{const a=document.createElement("a");a.download=name+"."+type;a.href=canvas.toDataURL(type==="jpg"?"image/jpeg":"image/png",.95);a.click();}
@@ -1081,6 +1133,7 @@ const districtData = [
 
     updateDistrictOptions();
     populateTripDestinations();
+    renderTripDistrictPills();
     render();
     setLanguage('bn');
   </script>
