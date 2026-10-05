@@ -1,0 +1,20 @@
+{
+  "name": "BDTrip",
+  "short_name": "BDTrip",
+  "description": "বাংলাদেশের ৬৪ জেলার ট্রাভেল ম্যাপ, জেলা গাইড ও ট্রিপ প্ল্যানিং টুল।",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbf7ef",
+  "theme_color": "#0b3d3a",
+  "lang": "bn-BD",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
