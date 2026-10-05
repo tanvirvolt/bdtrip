@@ -223,7 +223,7 @@
     .trip-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:10px}.trip-color-dots{display:flex;gap:7px;margin-right:auto}.trip-color-dots i{width:17px;height:17px;border-radius:50%;border:1px solid #d7d4cc;background:#172b25}.trip-color-dots i:nth-child(2){background:#202d68}.trip-color-dots i:nth-child(3){background:#f7eee7}.trip-color-dots i:nth-child(4){background:#e6eff9}.trip-color-dots i:nth-child(5){background:#0c7754}
     .mini-btn{border:1px solid #ded8cd;background:#fff;color:#4d554f;border-radius:7px;padding:7px 10px;font-size:9px;cursor:pointer}.mini-btn.green{color:#087d58}.mini-btn:disabled{opacity:.5}
     .trip-live-head{display:flex;justify-content:space-between;align-items:end;padding:8px 12px 12px}.trip-live-head small{font-size:8px;color:#777}.trip-live-head h3{font-size:27px;margin:4px 0 2px;line-height:1}.trip-live-head p{font-size:9px;color:#8a8a82;margin:0}.remaining-big{text-align:right}.remaining-big small{display:block}.remaining-big strong{font:700 30px "Rajdhani";color:#087d58}
-    .trip-map-shell{position:relative;border:1px solid #e8e2d7;border-radius:7px;overflow:hidden;background:#f4f0e7}.trip-map-shell #tripMap{height:400px;filter:saturate(.55) contrast(.95)}
+    .trip-map-shell{position:relative;border:1px solid #e8e2d7;border-radius:7px;overflow:hidden;background:#f4f0e7}.trip-map-shell #tripMap{height:400px;background:#f5f1e8}.trip-map-shell .leaflet-container{background:#f5f1e8}.trip-district-tooltip{background:transparent;border:0;box-shadow:none;color:#33413a;font-size:8px;font-weight:700}.trip-district-tooltip:before{display:none}
     .map-overlay-title{position:absolute;left:20px;top:20px;z-index:500;pointer-events:none}.map-overlay-title b{display:block;font:700 27px "Rajdhani";color:#15251e}.map-overlay-title span{font-size:9px;color:#8b8b84}
     .trip-progress-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:9px 12px}.trip-progress{height:4px;background:#e3dfd4;border-radius:99px;overflow:hidden}.trip-progress span{display:block;height:100%;width:0;background:#087d58;border-radius:99px;transition:.5s}.trip-progress-row b{font-size:9px;color:#777}
     .trip-summary{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #eee9df;border-bottom:1px solid #eee9df;margin-top:8px}.trip-summary div{padding:9px 10px;border-right:1px solid #eee9df}.trip-summary div:last-child{border-right:0}.trip-summary small{display:block;color:#999;font-size:8px}.trip-summary b{display:block;font-size:10px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -885,8 +885,67 @@ const districtData = [
 
     // ===== BDTrip Trip Tracker =====
     let userPosition=null, tripStartPosition=null, tripWatchId=null, tripUserMarker=null, tripDestinationMarker=null, tripRouteLine=null;
-    const tripMap=L.map("tripMap",{scrollWheelZoom:false}).setView([23.685,90.3563],7);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(tripMap);
+    const tripMap=L.map("tripMap",{zoomControl:false,scrollWheelZoom:false,doubleClickZoom:false,dragging:false,boxZoom:false,keyboard:false,touchZoom:false}).setView([23.685,90.3563],7);
+    const tripBangladeshBounds=[[20.58,88.0],[26.65,92.7]];
+    let tripDistrictLayer=null;
+    let tripGeoFeatures=[];
+    const TRIP_GEOJSON_URL="https://gis.dghs.gov.bd/server/rest/services/Hosted/bgd_admbnda_adm2_bbs_20201113/FeatureServer/0/query?where=1%3D1&outFields=adm2_en%2Cadm1_en&outSR=4326&f=geojson";
+
+    function normalizeDistrictName(v){
+      return String(v||"").toLowerCase().replace(/district|zilla|zila/g,"").replace(/[^a-z0-9\u0980-\u09ff]/g,"");
+    }
+    function tripFeatureDistrictIndex(props){
+      const raw=props?.adm2_en||props?.ADM2_EN||props?.district||"";
+      const n=normalizeDistrictName(raw);
+      let i=districtData.findIndex(d=>normalizeDistrictName(d.name)===n);
+      if(i<0){
+        const aliases={comilla:"cumilla",chittagram:"chattogram",barisal:"barishal",bogra:"bogura",jessore:"jashore"};
+        const a=aliases[n];
+        if(a)i=districtData.findIndex(d=>normalizeDistrictName(d.name)===a);
+      }
+      return i;
+    }
+    function tripDistrictStyle(feature){
+      const i=tripFeatureDistrictIndex(feature.properties);
+      const selected=getTripDestination();
+      const raw=feature.properties?.adm2_en||"";
+      const isSelected=selected && normalizeDistrictName(selected.name)===normalizeDistrictName(raw);
+      return {color:"#fff",weight:0.9,fillColor:isSelected?"#0b8a62":"#ded9cc",fillOpacity:isSelected?1:.92};
+    }
+    function loadTripBangladeshMap(){
+      fetch(TRIP_GEOJSON_URL)
+        .then(r=>{if(!r.ok)throw new Error("map fetch failed");return r.json();})
+        .then(data=>{
+          tripGeoFeatures=data.features||[];
+          tripDistrictLayer=L.geoJSON(data,{
+            style:tripDistrictStyle,
+            onEachFeature:(feature,layer)=>{
+              const i=tripFeatureDistrictIndex(feature.properties);
+              const name=i>=0?districtData[i].bn:(feature.properties?.adm2_en||"District");
+              layer.bindTooltip(name,{direction:"center",className:"trip-district-tooltip"});
+              layer.on("click",()=>{
+                if(i>=0){
+                  const sel=document.getElementById("tripDestination");
+                  const opt=Array.from(sel.options).find(o=>o.value==="district:"+i);
+                  if(opt){sel.value=opt.value;sel.dispatchEvent(new Event("change"));}
+                }
+              });
+              layer.on("mouseover",()=>layer.setStyle({weight:1.4,fillColor:"#b8dfcf",fillOpacity:1}));
+              layer.on("mouseout",()=>tripDistrictLayer.resetStyle(layer));
+            }
+          }).addTo(tripMap);
+          try{tripMap.fitBounds(tripDistrictLayer.getBounds(),{padding:[8,8]});}catch(e){tripMap.fitBounds(tripBangladeshBounds,{padding:[8,8]});}
+          updateTripMapSelection();
+        })
+        .catch(()=>{tripMap.fitBounds(tripBangladeshBounds,{padding:[8,8]});});
+    }
+    function updateTripMapSelection(){
+      if(tripDistrictLayer)tripDistrictLayer.eachLayer(layer=>layer.setStyle(tripDistrictStyle(layer.feature)));
+      const dest=getTripDestination();
+      document.getElementById("tripMapTitle").textContent=dest?dest.name:"আমার বাংলাদেশ";
+      document.getElementById("tripMapSub").textContent=dest?dest.location:"গন্তব্য নির্বাচন করে ভ্রমণ শুরু করুন";
+    }
+    loadTripBangladeshMap();
 
     function populateTripDestinations(){
       const select=document.getElementById("tripDestination"); select.innerHTML="";
@@ -904,7 +963,7 @@ const districtData = [
     function formatCoord(p){return p.lat.toFixed(5)+", "+p.lng.toFixed(5);}
     function updateTripUI(){
       const dest=getTripDestination();if(!dest)return;
-      document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;
+      document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;updateTripMapSelection();
       if(!userPosition){document.getElementById("remainingDistance").textContent="—";document.getElementById("remainingDistance2").textContent="—";return;}
       const remaining=haversine(userPosition,dest),travelled=tripStartPosition?haversine(tripStartPosition,userPosition):0,total=tripStartPosition?travelled+remaining:remaining,progress=tripStartPosition&&total>0?Math.max(0,Math.min(100,travelled/total*100)):0;
       document.getElementById("remainingDistance").textContent=formatKm(remaining);document.getElementById("remainingDistance2").textContent=formatKm(remaining);document.getElementById("summaryRemaining").textContent=formatKm(remaining);document.getElementById("summaryRemaining").textContent=formatKm(remaining);document.getElementById("travelledDistance").textContent=formatKm(travelled);document.getElementById("currentLocationText").textContent=formatCoord(userPosition);document.getElementById("routeProgress").style.width=progress+"%";document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString(currentLang==="bn"?"bn-BD":"en-US",{hour:"2-digit",minute:"2-digit"});
@@ -938,7 +997,7 @@ const districtData = [
         document.querySelectorAll('.trip-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
       }));
     }
-        document.getElementById("tripDestination").addEventListener("change",()=>{const dest=getTripDestination();if(!dest)return;document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);else tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);if(userPosition)updateTripUI();else tripMap.setView([dest.lat,dest.lng],10);});
+        document.getElementById("tripDestination").addEventListener("change",()=>{const dest=getTripDestination();if(!dest)return;document.getElementById("tripDestinationName").textContent=dest.name;document.getElementById("tripDestinationLocation").textContent=dest.location;if(tripDestinationMarker)tripDestinationMarker.setLatLng([dest.lat,dest.lng]);else tripDestinationMarker=L.marker([dest.lat,dest.lng]).addTo(tripMap).bindTooltip(dest.name);if(userPosition)updateTripUI();else tripMap.setView([dest.lat,dest.lng],9); updateTripMapSelection();});
     async function downloadTripCard(type){
       const card=document.getElementById("tripCard");if(typeof html2canvas==="undefined"){alert("Download library is still loading. Please try again.");return;}const canvas=await html2canvas(card,{scale:2,backgroundColor:"#0b1e36"}),name="bdtrip-trip-"+new Date().toISOString().slice(0,10);
       if(type==="pdf"){const jsPDF=window.jspdf.jsPDF,pdf=new jsPDF({orientation:"landscape",unit:"px",format:[canvas.width,canvas.height]});pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,canvas.width,canvas.height);pdf.save(name+".pdf");}else{const a=document.createElement("a");a.download=name+"."+type;a.href=canvas.toDataURL(type==="jpg"?"image/jpeg":"image/png",.95);a.click();}
