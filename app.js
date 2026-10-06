@@ -395,8 +395,23 @@
         if (fmt === 'png') download(cv.toDataURL('image/png'), base + '.png');
         else if (fmt === 'jpg') download(cv.toDataURL('image/jpeg', 0.93), base + '.jpg');
         else {
-          const J = window.jspdf && window.jspdf.jsPDF;
-          if (!J) throw new Error('PDF লাইব্রেরি লোড হয়নি। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
+          const loadJsPDF = () => new Promise((resolve, reject) => {
+            if (window.jspdf && window.jspdf.jsPDF) return resolve(window.jspdf.jsPDF);
+            const existing = document.querySelector('script[data-jspdf-loader]');
+            if (existing) {
+              existing.addEventListener('load', () => resolve(window.jspdf && window.jspdf.jsPDF), { once:true });
+              existing.addEventListener('error', reject, { once:true });
+              return;
+            }
+            const s = document.createElement('script');
+            s.src = 'vendor/jspdf.umd.min.js';
+            s.async = true;
+            s.dataset.jspdfLoader = 'true';
+            s.onload = () => window.jspdf && window.jspdf.jsPDF ? resolve(window.jspdf.jsPDF) : reject(new Error('PDF লাইব্রেরি লোড হয়নি।'));
+            s.onerror = () => reject(new Error('PDF লাইব্রেরি লোড করা যায়নি।'));
+            document.head.appendChild(s);
+          });
+          const J = await loadJsPDF();
           const pdf = new J({ orientation: 'portrait', unit: 'mm', format: 'a4' });
           const ph = 210 * (H / W);
           pdf.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, (297 - ph) / 2, 210, ph);
