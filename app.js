@@ -59,6 +59,51 @@
     if (st === 'w') state.w.add(id);
   }
 
+  // ---------- share-link codec ----------
+  const SHARE_BITS = 2;
+  const bytesToB64Url = (bytes) => {
+    let s = ''; for (const b of bytes) s += String.fromCharCode(b);
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+  };
+  const b64UrlToBytes = (str) => {
+    const s = atob(str.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - str.length % 4) % 4));
+    return Uint8Array.from(s, ch => ch.charCodeAt(0));
+  };
+  const encodeShare = () => {
+    const bytes = new Uint8Array(Math.ceil(total * SHARE_BITS / 8));
+    D.districts.forEach((d, i) => {
+      const st = statusOf(d.id), val = st === 'v' ? 1 : st === 'w' ? 2 : 0;
+      const bit = i * SHARE_BITS, bi = bit >> 3, off = bit & 7;
+      bytes[bi] |= val << off;
+    });
+    return bytesToB64Url(bytes);
+  };
+  const decodeShare = (code) => {
+    try {
+      const bytes = b64UrlToBytes(code);
+      if (bytes.length < Math.ceil(total * SHARE_BITS / 8)) return null;
+      const shared = { v:new Set(), w:new Set() };
+      D.districts.forEach((d, i) => {
+        const bit = i * SHARE_BITS, bi = bit >> 3, off = bit & 7;
+        const val = (bytes[bi] >> off) & 3;
+        if (val === 1) shared.v.add(d.id);
+        if (val === 2) shared.w.add(d.id);
+      });
+      return shared;
+    } catch (_) { return null; }
+  };
+  const shareCode = new URLSearchParams(location.search).get('m') || (location.pathname.match(/^\/m\/([A-Za-z0-9_-]{10,40})\/?$/) || [])[1] || '';
+  const sharedState = shareCode ? decodeShare(shareCode) : null;
+  const qp = new URLSearchParams(location.search);
+  const districtParam = Number(qp.get('district') || 0);
+  const markParam = qp.get('mark');
+  if (districtParam && byId.has(districtParam) && (markParam === 'v' || markParam === 'w')) {
+    setStatus(districtParam, markParam);
+    state.cur = districtParam;
+    window.BDTripCurrentDistrict = districtParam;
+    save();
+  }
+
   // ---------- map ----------
   const svg = $('#map');
   svg.setAttribute('viewBox', `0 0 ${D.w} ${D.h}`);
@@ -290,8 +335,9 @@
   }
 
   // ---------- export ----------
-  const W = 1080, H = 1350;
-  async function render() {
+  async function render(preset = 'portrait') {
+    const PRESETS = { portrait:{W:1080,H:1350}, story:{W:1080,H:1920}, square:{W:1080,H:1080}, a3:{W:1191,H:1684} };
+    const { W, H } = PRESETS[preset] || PRESETS.portrait;
     try {
       await Promise.all([
         document.fonts.load('800 60px "Noto Sans Bengali"', 'বাংলাদেশ'),
@@ -324,7 +370,7 @@
     c.fillStyle = t.v; c.font = '800 120px "Noto Sans Bengali", sans-serif';
     c.fillText(bn(n), W - 70 - tw - 8, 165);
 
-    const ax = 100, ay = 205, aw = W - 200, ah = 880;
+    const ax = 70, ay = 210, aw = W - 140, ah = Math.max(430, H * 0.62);
     const sc = Math.min(aw / D.w, ah / D.h);
     const ox = ax + (aw - D.w * sc) / 2, oy = ay + (ah - D.h * sc) / 2;
     c.save();
@@ -349,18 +395,18 @@
       });
     }
 
-    const pct = n / total, bx = 70, bw = W - 140, by = 1118;
+    const pct = n / total, bx = 70, bw = W - 140, by = H - 225;
     c.fillStyle = 'rgba(128,128,128,.22)'; c.beginPath(); c.roundRect(bx, by, bw, 10, 5); c.fill();
     if (n) { c.fillStyle = t.v; c.beginPath(); c.roundRect(bx, by, Math.max(10, bw * pct), 10, 5); c.fill(); }
     c.textAlign = 'left'; c.fillStyle = mut; c.font = '500 24px "Hind Siliguri", sans-serif';
-    c.fillText(`${bn(n)}টি জেলা ভ্রমণ · ${bn(Math.round(pct * 100))}% সম্পন্ন`, 70, 1168);
+    c.fillText(`${bn(n)}টি জেলা ভ্রমণ · ${bn(Math.round(pct * 100))}% সম্পন্ন`, 70, H - 175);
 
     // legend
     c.font = '600 24px "Hind Siliguri", sans-serif';
     const l1 = `ঘুরেছি ${bn(n)}`, l2 = `ঘুরতে চাই ${bn(wn)}`;
     c.textAlign = 'left';
     const w1 = c.measureText(l1).width, w2 = c.measureText(l2).width;
-    const lw = 22 + w1 + 44 + 22 + w2, lx = (W - lw) / 2, ly = 1215;
+    const lw = 22 + w1 + 44 + 22 + w2, lx = (W - lw) / 2, ly = H - 128;
     c.fillStyle = t.v; c.beginPath(); c.arc(lx + 8, ly - 8, 8, 0, 7); c.fill();
     c.fillStyle = ink; c.fillText(l1, lx + 22, ly);
     const x2 = lx + 22 + w1 + 44;
@@ -371,8 +417,8 @@
     c.font = '800 34px "Poppins", sans-serif';
     const a = 'BD', b = 'Trip';
     const wa = c.measureText(a).width, wb = c.measureText(b).width, bx0 = (W - wa - wb) / 2;
-    c.fillStyle = ink; c.fillText(a, bx0, 1295);
-    c.fillStyle = t.v; c.fillText(b, bx0 + wa, 1295);
+    c.fillStyle = ink; c.fillText(a, bx0, H - 48);
+    c.fillStyle = t.v; c.fillText(b, bx0 + wa, H - 48);
     return cv;
   }
 
@@ -427,10 +473,60 @@
     });
   });
 
+  document.querySelectorAll('.export-presets [data-preset]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const preset = btn.dataset.preset, label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'তৈরি হচ্ছে...';
+      try {
+        const cv = await render(preset);
+        if (preset === 'a3') {
+          const loadJsPDF = () => new Promise((resolve, reject) => {
+            if (window.jspdf && window.jspdf.jsPDF) return resolve(window.jspdf.jsPDF);
+            const s = document.createElement('script'); s.src='vendor/jspdf.umd.min.js'; s.async=true;
+            s.onload=()=>window.jspdf?.jsPDF ? resolve(window.jspdf.jsPDF) : reject(new Error('PDF লাইব্রেরি লোড হয়নি।'));
+            s.onerror=reject; document.head.appendChild(s);
+          });
+          const J = await loadJsPDF();
+          const pdf = new J({orientation:'portrait', unit:'mm', format:'a3'});
+          const mmH = 297 * (1684 / 1191);
+          pdf.addImage(cv.toDataURL('image/jpeg', .95), 'JPEG', 0, (420-mmH)/2, 297, mmH);
+          pdf.save('bdtrip-a3-poster.pdf');
+        } else download(cv.toDataURL('image/png'), 'bdtrip-' + preset + '.png');
+      } catch (err) { toast(err.message || 'এক্সপোর্ট করা যায়নি।'); }
+      finally { btn.disabled=false; btn.textContent=label; }
+    });
+  });
+
   // ---------- share ----------
+  const shareUrl = () => location.origin + '/m/' + encodeShare();
+  const showSharedComparison = () => {
+    if (!sharedState) return;
+    const common = [...sharedState.v].filter(id => state.v.has(id)).length;
+    const missing = [...sharedState.v].filter(id => !state.v.has(id)).length;
+    const el = $('#shareCompare');
+    $('#sharedVisited').textContent = bn(sharedState.v.size);
+    $('#sharedCommon').textContent = bn(common);
+    $('#sharedMissing').textContent = bn(missing);
+    $('#shareCompareText').textContent = 'আপনার সাথে মিল ' + bn(common) + 'টি জেলা। আপনার বন্ধু যেসব জেলা ঘুরেছেন কিন্তু আপনি যাননি: ' + bn(missing) + 'টি।';
+    el.hidden = false;
+  };
+  $('#shareCompareClose')?.addEventListener('click', () => { $('#shareCompare').hidden = true; });
+  $('#sharedStartBtn')?.addEventListener('click', () => { $('#shareCompare').hidden = true; document.querySelector('#tool')?.scrollIntoView({behavior:'smooth'}); });
+  const copyShareLink = async () => {
+    const ok = await copyText(shareUrl());
+    toast(ok ? 'শেয়ার লিংক কপি হয়েছে' : shareUrl());
+    return ok;
+  };
+  $('#shareLinkBtn')?.addEventListener('click', async () => {
+    const url = shareUrl();
+    if (navigator.share) {
+      try { await navigator.share({ title:'BDTrip — আমার ভ্রমণ ম্যাপ', text:shareText(), url }); return; } catch (_) {}
+    }
+    await copyShareLink();
+  });
   function shareText() {
     const n = state.v.size, pct = Math.round((n / total) * 100);
-    const url = location.protocol.startsWith('http') ? location.href.split('#')[0] : '';
+    const url = location.protocol.startsWith('http') ? shareUrl() : '';
     return `আমি বাংলাদেশের ${bn(n)}টি জেলা ঘুরেছি (${bn(pct)}%)! তুমি কতটা ঘুরেছ? BDTrip এ নিজের ম্যাপ বানাও ${url}`.trim();
   }
   async function copyText(txt) {
@@ -488,4 +584,5 @@
 
   $('#yr').textContent = new Date().getFullYear();
   update();
+  if (sharedState) setTimeout(showSharedComparison, 250);
 })();
