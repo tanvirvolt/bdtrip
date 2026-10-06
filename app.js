@@ -338,6 +338,7 @@
   async function render(preset = 'portrait') {
     const PRESETS = { portrait:{W:1080,H:1350}, story:{W:1080,H:1920}, square:{W:1080,H:1080}, a3:{W:1191,H:1684} };
     const { W, H } = PRESETS[preset] || PRESETS.portrait;
+    const posterOnly = preset === "a3";
     try {
       await Promise.all([
         document.fonts.load('800 60px "Noto Sans Bengali"', 'বাংলাদেশ'),
@@ -354,12 +355,12 @@
 
     c.textAlign = 'left';
     c.fillStyle = mut; c.font = '500 24px "Hind Siliguri", sans-serif';
-    c.fillText('BDTrip · ভ্রমণ ম্যাপ', 70, 92);
+    if (!posterOnly) c.fillText('BDTrip · ভ্রমণ ম্যাপ', 70, 92);
     c.fillStyle = ink;
     let title = titleText(), fs = 64;
     c.font = `800 ${fs}px "Noto Sans Bengali", "Hind Siliguri", sans-serif`;
     while (c.measureText(title).width > 640 && fs > 30) { fs -= 2; c.font = `800 ${fs}px "Noto Sans Bengali", sans-serif`; }
-    c.fillText(title, 70, 165);
+    if (!posterOnly) c.fillText(title, 70, 165);
 
     const n = state.v.size, wn = state.w.size;
     c.textAlign = 'right';
@@ -399,26 +400,27 @@
     c.fillStyle = 'rgba(128,128,128,.22)'; c.beginPath(); c.roundRect(bx, by, bw, 10, 5); c.fill();
     if (n) { c.fillStyle = t.v; c.beginPath(); c.roundRect(bx, by, Math.max(10, bw * pct), 10, 5); c.fill(); }
     c.textAlign = 'left'; c.fillStyle = mut; c.font = '500 24px "Hind Siliguri", sans-serif';
-    c.fillText(`${bn(n)}টি জেলা ভ্রমণ · ${bn(Math.round(pct * 100))}% সম্পন্ন`, 70, H - 175);
+    if (!posterOnly) c.fillText(`${bn(n)}টি জেলা ভ্রমণ · ${bn(Math.round(pct * 100))}% সম্পন্ন`, 70, H - 175);
 
     // legend
-    c.font = '600 24px "Hind Siliguri", sans-serif';
+    if (!posterOnly) c.font = '600 24px "Hind Siliguri", sans-serif';
     const l1 = `ঘুরেছি ${bn(n)}`, l2 = `ঘুরতে চাই ${bn(wn)}`;
+    if (posterOnly) { c.font = '800 54px "Noto Sans Bengali", sans-serif'; c.fillStyle = ink; c.textAlign = 'center'; c.fillText(`${bn(n)} / ${bn(total)} জেলা`, W/2, H-110); }
     c.textAlign = 'left';
     const w1 = c.measureText(l1).width, w2 = c.measureText(l2).width;
     const lw = 22 + w1 + 44 + 22 + w2, lx = (W - lw) / 2, ly = H - 128;
-    c.fillStyle = t.v; c.beginPath(); c.arc(lx + 8, ly - 8, 8, 0, 7); c.fill();
+    if (!posterOnly) { c.fillStyle = t.v; c.beginPath(); c.arc(lx + 8, ly - 8, 8, 0, 7); c.fill();
     c.fillStyle = ink; c.fillText(l1, lx + 22, ly);
     const x2 = lx + 22 + w1 + 44;
     c.fillStyle = t.w; c.beginPath(); c.arc(x2 + 8, ly - 8, 8, 0, 7); c.fill();
-    c.fillStyle = ink; c.fillText(l2, x2 + 22, ly);
+    c.fillStyle = ink; c.fillText(l2, x2 + 22, ly); }
 
     // brand
-    c.font = '800 34px "Poppins", sans-serif';
+    if (!posterOnly) c.font = '800 34px "Poppins", sans-serif';
     const a = 'BD', b = 'Trip';
     const wa = c.measureText(a).width, wb = c.measureText(b).width, bx0 = (W - wa - wb) / 2;
-    c.fillStyle = ink; c.fillText(a, bx0, H - 48);
-    c.fillStyle = t.v; c.fillText(b, bx0 + wa, H - 48);
+    if (!posterOnly) c.fillStyle = ink; if (!posterOnly) c.fillText(a, bx0, H - 48);
+    if (!posterOnly) c.fillStyle = t.v; if (!posterOnly) c.fillText(b, bx0 + wa, H - 48);
     return cv;
   }
 
