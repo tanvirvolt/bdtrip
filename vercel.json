@@ -1,0 +1,11 @@
+{
+  "$schema":"https://openapi.vercel.sh/vercel.json",
+  "buildCommand":"node scripts/generate-district-pages.mjs",
+  "redirects":[
+    {"source":"/districts/:slug","destination":"/district/:slug/","permanent":true},
+    {"source":"/districts/:slug/","destination":"/district/:slug/","permanent":true}
+  ],
+  "rewrites":[
+    {"source":"/m/:code","destination":"/api/share/:code"}
+  ]
+}
