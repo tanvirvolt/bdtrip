@@ -162,3 +162,6 @@ body.dark{--bg:#081412;--card:#10201d;--ink:#eef7f3;--mut:#9db3ac;--line:#263b36
 .share-compare p{font-size:13px;color:var(--mut);line-height:1.6;margin:12px 0}
 .share-compare-close{position:absolute;right:9px;top:7px;border:0;background:transparent;color:var(--mut);font-size:24px;cursor:pointer}
 @media(max-width:520px){.export-presets .btn{flex:1}.share-compare{right:10px;bottom:82px}}
+
+/* District SEO link index */
+.district-seo-index{margin-top:18px;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:13px 16px}.district-seo-index summary{cursor:pointer;font-weight:700}.district-seo-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.district-seo-links a{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--deep2);background:var(--bg);font-size:12.5px}
