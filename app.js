@@ -553,6 +553,58 @@
     btn.disabled = false;
   });
 
+  // ---------- Phase 3: journal, achievements, planner ----------
+  const JOURNAL_DB = 'bdtrip_journal_v1';
+  const JOURNAL_STORE = 'entries';
+  const PLAN_STORE = 'bdtrip_plans_v1';
+  let journalDB = null;
+  const openJournalDB = () => new Promise((resolve,reject) => {
+    if (journalDB) return resolve(journalDB);
+    const req = indexedDB.open(JOURNAL_DB, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(JOURNAL_STORE, { keyPath:'id' });
+    req.onsuccess = () => { journalDB=req.result; resolve(journalDB); };
+    req.onerror = () => reject(req.error);
+  });
+  const journalGet = async (id) => { const db=await openJournalDB(); return new Promise((res,rej)=>{const r=db.transaction(JOURNAL_STORE,'readonly').objectStore(JOURNAL_STORE).get(id);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error);}); };
+  const journalPut = async (entry) => { const db=await openJournalDB(); return new Promise((res,rej)=>{const r=db.transaction(JOURNAL_STORE,'readwrite').objectStore(JOURNAL_STORE).put(entry);r.onsuccess=()=>res();r.onerror=()=>rej(r.error);}); };
+  const journalAll = async () => { const db=await openJournalDB(); return new Promise((res,rej)=>{const r=db.transaction(JOURNAL_STORE,'readonly').objectStore(JOURNAL_STORE).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error);}); };
+  const resizeImage = (file,max=1200) => new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{const sc=Math.min(1,max/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);cv.toBlob(b=>resolve(b),'image/jpeg',.82);};im.onerror=reject;im.src=URL.createObjectURL(file);});
+  const journalFill = async () => {
+    const id=state.cur, d=id!=null?byId.get(id):null;
+    $('#journalDistrictTitle').textContent=d?d.bn:'একটি জেলা বেছে নিন';
+    if(!d){$('#journalDate').value='';$('#journalRating').value='0';$('#journalNote').value='';return;}
+    try{const e=await journalGet(id);$('#journalDate').value=e?.date||'';$('#journalRating').value=e?.rating||'0';$('#journalNote').value=e?.note||'';}catch(_){}
+  };
+  const renderJournalList = async () => {
+    try{const rows=(await journalAll()).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,12);$('#journalCount').textContent=bn(rows.length);$('#journalList').innerHTML=rows.map(e=>{const d=byId.get(e.id);return `<button type="button" class="journal-item" data-jid="${e.id}"><b>${d?.bn||''}</b><span>${e.date||'তারিখ নেই'} · ${e.rating?('★'.repeat(e.rating)):'রেটিং নেই'}</span><small>${(e.note||'').slice(0,90)}</small></button>`;}).join('')||'<p class="placeholder">এখনো কোনো জার্নাল নেই।</p>';$('#journalList').querySelectorAll('[data-jid]').forEach(b=>b.addEventListener('click',()=>{state.cur=+b.dataset.jid;window.BDTripCurrentDistrict=state.cur;update();journalFill();}));}catch(_){}
+  };
+  $('#journalSave')?.addEventListener('click', async () => {
+    if(state.cur==null)return toast('আগে একটি জেলা বেছে নিন।');
+    try{
+      const files=[...($('#journalPhoto')?.files||[])];
+      const photos=[];
+      for(const f of files.slice(0,6)){const blob=await resizeImage(f);photos.push({name:f.name,blob});}
+      await journalPut({id:state.cur,date:$('#journalDate').value,rating:Number($('#journalRating').value)||0,note:$('#journalNote').value.trim(),photos,updatedAt:Date.now()});
+      toast('জার্নাল সেভ হয়েছে — শুধু এই ডিভাইসে।'); renderJournalList();
+    }catch(e){toast('সেভ করা যায়নি। ব্রাউজারের IndexedDB/স্টোরেজ অনুমতি দেখুন।');}
+  });
+  $('#journalClear')?.addEventListener('click',()=>{['journalDate','journalNote'].forEach(id=>$('#'+id).value='');$('#journalRating').value='0';if($('#journalPhoto'))$('#journalPhoto').value='';});
+  const ACH=[['first','প্রথম পদক্ষেপ',1,'প্রথম জেলা ঘুরেছি'],['division','৮ বিভাগ',8,'প্রতিটি বিভাগে অন্তত ১টি জেলা'],['half','অর্ধেক বাংলাদেশ',32,'৩২টি জেলা'],['coast','উপকূল explorer',16,'১৬টি উপকূলীয় জেলা'],['border','সীমান্ত explorer',30,'৩০টি সীমান্ত জেলা'],['all','বাংলাদেশ জয়ী',64,'৬৪টি জেলা']];
+  const borderIds=new Set([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]);
+  const coastIds=new Set([31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46]);
+  const renderAchievements=()=>{const divs=new Set([...state.v].map(id=>byId.get(id)?.div));const html=ACH.map(([key,label,need,desc])=>{let ok=state.v.size>=need;if(key==='division')ok=divs.size===8;if(key==='coast')ok=[...coastIds].every(id=>state.v.has(id));if(key==='border')ok=[...borderIds].every(id=>state.v.has(id));return `<div class="achievement ${ok?'unlocked':''}"><span class="ach-icon">${ok?'🏆':'🔒'}</span><div><b>${label}</b><small>${desc}</small></div></div>`;}).join('');$('#achievementList').innerHTML=html;};
+  const PLAN_KEY='bdtrip_plan_v1';
+  let plan={title:'',days:[],budget:{travel:0,hotel:0,food:0,other:0}};
+  try{plan=JSON.parse(localStorage.getItem(PLAN_KEY)||'null')||plan;}catch(_){}
+  const renderPlan=()=>{$('#plannerTitle').value=plan.title||'';$('#plannerDays').innerHTML=plan.days.map((day,i)=>`<div class="plan-day" data-day="${i}"><div class="plan-day-head"><b>দিন ${bn(i+1)}</b><button type="button" class="remove-day" data-remove="${i}">×</button></div><select class="plan-district" data-plan-district="${i}"><option value="">জেলা বেছে নিন</option>${D.districts.map(d=>`<option value="${d.id}" ${day.district==d.id?'selected':''}>${d.bn}</option>`).join('')}</select><textarea class="plan-note" data-plan-note="${i}" rows="2" placeholder="আজ কী করবেন?">${day.note||''}</textarea></div>`).join('');document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{plan.days.splice(+b.dataset.remove,1);renderPlan();});document.querySelectorAll('[data-plan-district]').forEach(s=>s.onchange=()=>{plan.days[+s.dataset.planDistrict].district=Number(s.value)||null;});document.querySelectorAll('[data-plan-note]').forEach(s=>s.oninput=()=>{plan.days[+s.dataset.planNote].note=s.value;});['travel','hotel','food','other'].forEach(k=>$('#plan'+k[0].toUpperCase()+k.slice(1)).value=plan.budget[k]||'');calcPlanTotal();};
+  const calcPlanTotal=()=>{const b=plan.budget;const total=Number(b.travel)||0+Number(b.hotel)||0+Number(b.food)||0+Number(b.other)||0;$('#planTotal').textContent=money((Number(b.travel)||0)+(Number(b.hotel)||0)+(Number(b.food)||0)+(Number(b.other)||0);};
+  $('#plannerAdd')?.addEventListener('click',()=>{plan.days.push({district:null,note:''});renderPlan();});
+  ['travel','hotel','food','other'].forEach(k=>$('#plan'+k[0].toUpperCase()+k.slice(1))?.addEventListener('input',()=>{plan.budget[k]=Number($('#plan'+k[0].toUpperCase()+k.slice(1)).value)||0;calcPlanTotal();}));
+  $('#plannerSave')?.addEventListener('click',()=>{try{localStorage.setItem(PLAN_KEY,JSON.stringify(plan));toast('ট্রিপ প্ল্যান সেভ হয়েছে।');}catch(_){toast('প্ল্যান সেভ করা যায়নি।');}});
+  $('#plannerReset')?.addEventListener('click',()=>{plan={title:'',days:[],budget:{travel:0,hotel:0,food:0,other:0}};renderPlan();});
+  const planShareCode=()=>btoa(unescape(encodeURIComponent(JSON.stringify(plan)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/g,'');
+  $('#plannerShare')?.addEventListener('click',async()=>{const code=planShareCode();const url=location.origin+'/planner/?p='+code;await copyText(url);toast('ট্রিপ প্ল্যান লিংক কপি হয়েছে।');});
+
   // ---------- budget ----------
   const num = (id) => Math.max(0, parseFloat($(id).value) || 0);
   function calcBudget() {
@@ -585,5 +637,6 @@
 
   $('#yr').textContent = new Date().getFullYear();
   update();
+  renderJournalList(); journalFill(); renderAchievements(); renderPlan();
   if (sharedState) setTimeout(showSharedComparison, 250);
 })();
