@@ -2,5 +2,9 @@
   "private": true,
   "scripts": {
     "build": "node scripts/generate-district-pages.mjs"
+  },
+  "dependencies": {
+    "@vercel/og": "1.0.3",
+    "react": "19.2.0"
   }
 }
