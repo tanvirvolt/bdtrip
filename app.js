@@ -184,9 +184,10 @@
         <button type="button" data-st="">মুছুন</button>
         <a href="${maps}" target="_blank" rel="noopener">Google Maps এ দেখুন</a>
       </div>
-      <div class="g-sec"><h4>ঘুরে দেখার জায়গা</h4><ul>${(info.a || ['স্থানীয়দের কাছ থেকে জেনে নিন']).map((x) => `<li>${x}</li>`).join('')}</ul></div>
+      <div class="g-sec"><h4>ঘুরে দেখার জায়গা <span class="info-count">${bn((info.a || []).length)}টি</span></h4><ul>${(info.a || ['স্থানীয় পর্যটন স্পটের তথ্য শিগগির যোগ হবে']).map((x) => `<li>${x}</li>`).join('')}</ul></div>
       <div class="g-sec"><h4>ঘোরার সেরা সময়</h4><p>${info.s || 'অক্টোবর–মার্চ'}</p></div>
-      ${info.f ? `<div class="g-sec"><h4>বিখ্যাত খাবার ও পণ্য</h4><p>${info.f}</p></div>` : ''}`;
+      <div class="g-sec"><h4>স্থানীয় খাবার / পণ্য</h4><p>${info.f || 'স্থানীয় খাবার ও পণ্য সম্পর্কে যাত্রার আগে জেলা-ভিত্তিক সরকারি তথ্য যাচাই করুন।'}</p></div>
+      <div class="g-sec"><h4>তথ্যসূত্র</h4><div class="source-list">${(info.src || []).map(s => `<a href="${s.url}" target="_blank" rel="noopener noreferrer">${s.name} ↗</a>`).join('') || '<span>সরকারি জেলা/পর্যটন পোর্টাল যাচাই করুন।</span>'}</div></div>`;
     box.querySelectorAll('[data-st]').forEach((b) =>
       b.addEventListener('click', () => { setStatus(d.id, b.dataset.st || null); update(); }));
   }
