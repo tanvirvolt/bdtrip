@@ -4,32 +4,69 @@
   const tool = document.querySelector('.tool');
   const picker = document.querySelector('.picker');
   const stage = document.querySelector('.stage');
-  if (!svg || !tool || !picker || !stage) return;
+  const groups = document.getElementById('groups');
+  if (!svg || !tool || !picker || !stage || !groups) return;
 
-  // Mobile: put the map first and turn the district picker into a bottom sheet.
-  const sheetBtn = document.createElement('button');
-  sheetBtn.type = 'button';
-  sheetBtn.className = 'mobile-district-toggle';
-  sheetBtn.setAttribute('aria-expanded', 'false');
-  sheetBtn.innerHTML = '<span>☰</span> জেলা তালিকা <b id="mobileDistrictCount">৬৪</b>';
-  tool.insertBefore(sheetBtn, picker);
+  // Mobile: keep the map visible first, then provide a quick finder and
+  // an easy-to-scan district list below it. No hidden bottom sheet.
+  const finder = document.createElement('div');
+  finder.className = 'mobile-district-finder';
+  finder.innerHTML = `
+    <div class="mobile-finder-title"><b>জেলা খুঁজুন</b><span>ম্যাপ থেকে বা নিচের তালিকা থেকে বেছে নিন</span></div>
+    <div class="mobile-division-filter" role="group" aria-label="বিভাগ ফিল্টার">
+      <button type="button" class="active" data-div="all">সব</button>
+    </div>
+  `;
+  picker.insertBefore(finder, picker.querySelector('.bulk'));
 
-  const closeSheet = () => {
-    picker.classList.remove('mobile-sheet-open');
-    sheetBtn.setAttribute('aria-expanded', 'false');
-  };
-  sheetBtn.addEventListener('click', () => {
-    const open = picker.classList.toggle('mobile-sheet-open');
-    sheetBtn.setAttribute('aria-expanded', String(open));
-    if (open) setTimeout(() => picker.querySelector('#search')?.focus(), 80);
+  const divisionFilter = finder.querySelector('.mobile-division-filter');
+  const allBtn = divisionFilter.querySelector('[data-div="all"]');
+  const divisions = window.BD_DATA?.divisions || [];
+  divisions.forEach(d => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.div = d.id;
+    b.textContent = d.bn;
+    divisionFilter.appendChild(b);
   });
 
-  // Mobile map controls + pan/zoom using the SVG viewBox.
+  const filterGroups = divId => {
+    [...groups.querySelectorAll('.group')].forEach(g => {
+      g.hidden = divId !== 'all' && String(g._list?.[0]?.div) !== String(divId);
+    });
+    divisionFilter.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.div === String(divId)));
+  };
+  divisionFilter.addEventListener('click', e => {
+    const b = e.target.closest('button[data-div]');
+    if (!b) return;
+    filterGroups(b.dataset.div);
+  });
+
+  // On mobile, each division is collapsible so the 64-district list stays compact.
+  [...groups.querySelectorAll('.group')].forEach(g => {
+    const head = g.querySelector('.g-head');
+    const title = head?.querySelector('h3');
+    if (!head || !title) return;
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'mobile-group-toggle';
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.innerHTML = '<span>⌄</span>';
+    head.appendChild(toggle);
+    const setOpen = open => {
+      g.classList.toggle('mobile-group-collapsed', !open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.querySelector('span').textContent = open ? '⌄' : '›';
+    };
+    toggle.addEventListener('click', e => { e.stopPropagation(); setOpen(!g.classList.contains('mobile-group-collapsed')); });
+  });
+
+  // Map zoom + pan.
   const viewport = document.createElement('div');
   viewport.className = 'map-viewport';
   const mapControls = document.createElement('div');
   mapControls.className = 'map-zoom-controls';
-  mapControls.innerHTML = '<button type="button" data-zoom="-1" aria-label="জুম আউট">−</button><button type="button" data-zoom="0" aria-label="ম্যাপ রিসেট">⟲</button><button type="button" data-zoom="1" aria-label="জুম ইন">+</button>';
+  mapControls.innerHTML = '<button type="button" data-zoom="-1" aria-label="জুম আউট">−</button><button type="button" data-zoom="0" aria-label="ম্যাপ রিসেট">⟳</button><button type="button" data-zoom="1" aria-label="জুম ইন">+</button>';
   svg.parentNode.insertBefore(viewport, svg);
   viewport.appendChild(svg);
   viewport.appendChild(mapControls);
@@ -83,7 +120,7 @@
     if (suppressClick) { suppressClick = false; e.stopPropagation(); }
   }, true);
 
-  // Avoid overlapping district labels. The current district gets highest priority.
+  // Keep selected district label visible when labels overlap.
   const avoidLabelCollision = () => {
     const labels = [...svg.querySelectorAll('text')].filter(t => !t.classList.contains('a11y-status-icon'));
     if (!labels.length) return;
@@ -93,30 +130,22 @@
     for (const label of labels) {
       try {
         const box = label.getBBox();
-        const hit = kept.some(k => {
-          const b = k.box;
-          return !(box.x+box.width < b.x-2 || b.x+b.width < box.x-2 || box.y+box.height < b.y-2 || b.y+b.height < box.y-2);
-        });
+        const hit = kept.some(k => !(box.x+box.width < k.x-2 || k.x+k.width < box.x-2 || box.y+box.height < k.y-2 || k.y+k.height < box.y-2));
         if (hit) label.style.display = 'none';
-        else kept.push({box});
+        else kept.push({x:box.x,y:box.y,width:box.width,height:box.height});
       } catch (_) {}
     }
   };
-
   const updateLabelPriority = () => {
     svg.querySelectorAll('text').forEach(t => t.dataset.current = '0');
     const currentId = window.BDTripCurrentDistrict;
-    if (currentId != null) {
-      const d = window.BD_DATA?.districts?.find(x => x.id === currentId);
-      if (d) [...svg.querySelectorAll('text')].forEach(t => { if (t.textContent === d.bn) t.dataset.current = '1'; });
-    }
+    const d = window.BD_DATA?.districts?.find(x => x.id === currentId);
+    if (d) [...svg.querySelectorAll('text')].forEach(t => { if (t.textContent === d.bn) t.dataset.current = '1'; });
     requestAnimationFrame(avoidLabelCollision);
   };
 
-  // Keep mobile sheet count useful without touching the app state.
   const count = document.getElementById('countPill');
   const observer = new MutationObserver(() => {
-    if (count) document.getElementById('mobileDistrictCount').textContent = count.textContent;
     updateLabelPriority();
   });
   if (count) observer.observe(count, { childList:true, characterData:true, subtree:true });
