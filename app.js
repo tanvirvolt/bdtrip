@@ -207,6 +207,20 @@
   $('#modeV').addEventListener('click', () => setMode('v'));
   $('#modeW').addEventListener('click', () => setMode('w'));
 
+  // ---------- local profile photo ----------
+  const PROFILE_DB='bdtrip_profile_v1';
+  let profileDB=null;
+  const openProfileDB=()=>new Promise((resolve,reject)=>{if(profileDB)return resolve(profileDB);const q=indexedDB.open(PROFILE_DB,1);q.onupgradeneeded=()=>q.result.createObjectStore('profile',{keyPath:'id'});q.onsuccess=()=>{profileDB=q.result;resolve(profileDB)};q.onerror=()=>reject(q.error)});
+  const getProfilePhoto=()=>new Promise(async(resolve,reject)=>{try{const db=await openProfileDB();const q=db.transaction('profile','readonly').objectStore('profile').get('photo');q.onsuccess=()=>resolve(q.result?.blob||null);q.onerror=()=>reject(q.error)}catch(e){reject(e)}});
+  const saveProfilePhoto=blob=>new Promise(async(resolve,reject)=>{try{const db=await openProfileDB();const q=db.transaction('profile','readwrite').objectStore('profile').put({id:'photo',blob});q.onsuccess=()=>resolve();q.onerror=()=>reject(q.error)}catch(e){reject(e)}});
+  const removeProfilePhoto=()=>new Promise(async(resolve,reject)=>{try{const db=await openProfileDB();const q=db.transaction('profile','readwrite').objectStore('profile').delete('photo');q.onsuccess=()=>resolve();q.onerror=()=>reject(q.error)}catch(e){reject(e)}});
+  const resizeProfile=()=>new Promise((resolve,reject)=>{const f=$('#profilePhotoInput')?.files?.[0];if(!f)return reject(new Error('no-file'));const im=new Image();im.onload=()=>{const s=Math.min(1,480/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);cv.toBlob(b=>resolve(b),'image/jpeg',.82)};im.onerror=reject;im.src=URL.createObjectURL(f)});
+  const renderProfilePhoto=async()=>{try{const blob=await getProfilePhoto();const av=$('#profileAvatar');if(!av)return;if(blob){const old=av.dataset.url;if(old)URL.revokeObjectURL(old);const url=URL.createObjectURL(blob);av.dataset.url=url;av.innerHTML='<img alt="আপনার প্রোফাইল ছবি" src="'+url+'">';$('#profilePhotoRemove').hidden=false}else{av.innerHTML='<span>♙</span>';$('#profilePhotoRemove').hidden=true}}catch(_){}}; 
+  $('#profilePhotoBtn')?.addEventListener('click',()=>$('#profilePhotoInput').click());
+  $('#profilePhotoInput')?.addEventListener('change',async()=>{try{const blob=await resizeProfile();await saveProfilePhoto(blob);await renderProfilePhoto();toast('আপনার ছবি এই ডিভাইসে সেভ হয়েছে।')}catch(_){toast('ছবি যোগ করা যায়নি।')}}); 
+  $('#profilePhotoRemove')?.addEventListener('click',async()=>{await removeProfilePhoto();await renderProfilePhoto();toast('প্রোফাইল ছবি সরানো হয়েছে।')});
+  renderProfilePhoto();
+
   $('#nameInput').value = state.name;
   $('#nameInput').addEventListener('input', (e) => { state.name = e.target.value.trim(); update(false); });
   $('#labelToggle').checked = state.labels;
