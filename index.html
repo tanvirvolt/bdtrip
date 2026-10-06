@@ -225,7 +225,7 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
           <label class="full">নিজের ছবি <input id="journalPhoto" type="file" accept="image/*" multiple></label>
         </div>
         <div class="journal-actions"><button class="btn primary" id="journalSave" type="button">জার্নাল সেভ</button><button class="btn" id="journalClear" type="button">ফাঁকা করুন</button></div>
-        <p class="journal-privacy">🔒 ছবি ও নোট শুধু এই ব্রাউজারের IndexedDB-তে থাকে। সার্ভারে আপলোড করা হয় না।</p>
+        <div id="journalPhotos" class="journal-photos" aria-label="জার্নাল ছবি"></div><p class="journal-privacy">🔒 ছবি ও নোট শুধু এই ব্রাউজারের IndexedDB-তে থাকে। সার্ভারে আপলোড করা হয় না।</p>
       </article>
       <aside class="card journal-list-card"><div class="picker-head"><h3>সাম্প্রতিক জার্নাল</h3><span class="count-pill" id="journalCount">০</span></div><div id="journalList" class="journal-list"></div></aside>
     </div>
