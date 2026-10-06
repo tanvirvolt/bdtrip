@@ -573,8 +573,13 @@
   const journalFill = async () => {
     const id=state.cur, d=id!=null?byId.get(id):null;
     $('#journalDistrictTitle').textContent=d?d.bn:'একটি জেলা বেছে নিন';
+    $('#journalPhotos').innerHTML='';
     if(!d){$('#journalDate').value='';$('#journalRating').value='0';$('#journalNote').value='';return;}
-    try{const e=await journalGet(id);$('#journalDate').value=e?.date||'';$('#journalRating').value=e?.rating||'0';$('#journalNote').value=e?.note||'';}catch(_){}
+    try{
+      const e=await journalGet(id);
+      $('#journalDate').value=e?.date||'';$('#journalRating').value=e?.rating||'0';$('#journalNote').value=e?.note||'';
+      (e?.photos||[]).forEach(p=>{const img=document.createElement('img');img.alt=p.name||'জার্নাল ছবি';img.src=URL.createObjectURL(p.blob);$('#journalPhotos').appendChild(img);});
+    }catch(_){}
   };
   const renderJournalList = async () => {
     try{const rows=(await journalAll()).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,12);$('#journalCount').textContent=bn(rows.length);$('#journalList').innerHTML=rows.map(e=>{const d=byId.get(e.id);return `<button type="button" class="journal-item" data-jid="${e.id}"><b>${d?.bn||''}</b><span>${e.date||'তারিখ নেই'} · ${e.rating?('★'.repeat(e.rating)):'রেটিং নেই'}</span><small>${(e.note||'').slice(0,90)}</small></button>`;}).join('')||'<p class="placeholder">এখনো কোনো জার্নাল নেই।</p>';$('#journalList').querySelectorAll('[data-jid]').forEach(b=>b.addEventListener('click',()=>{state.cur=+b.dataset.jid;window.BDTripCurrentDistrict=state.cur;update();journalFill();}));}catch(_){}
