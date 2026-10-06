@@ -91,6 +91,7 @@
 
   function pick(id) {
     state.cur = id;
+    window.BDTripCurrentDistrict = id;
     setStatus(id, statusOf(id) === state.mode ? null : state.mode);
     update();
   }
@@ -277,7 +278,7 @@
       tag.className = 'wtag';
       tag.innerHTML = `${d.bn}<button type="button" aria-label="${d.bn} মুছুন">×</button>`;
       tag.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') setStatus(id, null); else state.cur = id;
+        if (e.target.tagName === 'BUTTON') setStatus(id, null); else { state.cur = id; window.BDTripCurrentDistrict = id; }
         update();
       });
       wl.appendChild(tag);
