@@ -168,19 +168,17 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
         <div class="tip" id="tip" hidden></div>
       </div>
 
-      <div class="card dl">
-        <h4>আপনার ম্যাপ ডাউনলোড বা শেয়ার করুন</h4>
-        <div class="dl-btns">
-          <button class="btn primary" data-fmt="png">↓ PNG</button>
-          <button class="btn" data-fmt="jpg">↓ JPG</button>
-          <button class="btn" data-fmt="pdf">↓ PDF</button>
-        </div>
-        <div class="share-row">
-          <button class="btn share" id="shareBtn">ম্যাপ শেয়ার</button><button class="btn" id="shareLinkBtn">লিংক কপি</button>
-          <a class="btn wa" id="waBtn" target="_blank" rel="noopener">WhatsApp</a>
-          <button class="btn" id="copyBtn">টেক্সট কপি</button>
-        </div>
-        <div class="export-presets" aria-label="এক্সপোর্ট টেমপ্লেট"><span>টেমপ্লেট</span><button class="btn" data-preset="story">Instagram Story</button><button class="btn" data-preset="square">Square</button><button class="btn" data-preset="a3">A3 Poster PDF</button></div>
+      <div class="card dl mobile-share-card">
+        <div class="share-card-head"><div><h4>ম্যাপ সেভ করুন বা শেয়ার করুন</h4><p>ছবি হিসেবে রাখুন, অথবা বন্ধুদের সাথে আপনার ভ্রমণ অগ্রগতি শেয়ার করুন।</p></div><span class="share-card-icon">↗</span></div>
+        <div class="export-section"><div class="mini-label">ম্যাপ সেভ</div><div class="dl-btns">
+          <button class="btn primary" data-fmt="png"><span>↓</span> PNG</button>
+          <button class="btn" data-fmt="jpg"><span>↓</span> JPG</button>
+          <button class="btn" data-fmt="pdf"><span>↓</span> PDF</button>
+        </div></div>
+        <div class="share-section"><div class="mini-label">বন্ধুদের সাথে শেয়ার</div><button class="btn share share-main" id="shareBtn"><span>↗</span> ম্যাপ শেয়ার করুন</button><div class="share-row">
+          <button class="btn" id="shareLinkBtn">🔗 লিংক কপি</button><a class="btn wa" id="waBtn" target="_blank" rel="noopener">WhatsApp</a><button class="btn" id="copyBtn">▣ টেক্সট কপি</button>
+        </div></div>
+        <div class="export-presets" aria-label="এক্সপোর্ট টেমপ্লেট"><div class="mini-label">রেডি টেমপ্লেট</div><div class="preset-grid"><button class="btn" data-preset="story"><span>▯</span><b>Story</b><small>1080×1920</small></button><button class="btn" data-preset="square"><span>□</span><b>Square</b><small>1080×1080</small></button><button class="btn" data-preset="a3"><span>▤</span><b>A3 Poster</b><small>PDF</small></button></div></div>
       </div>
     </section>
   </section>
