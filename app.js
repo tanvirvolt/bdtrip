@@ -278,7 +278,7 @@
     });
 
     labelG.textContent = '';
-    if (state.labels) {
+    if (state.labels && !posterOnly) {
       [...state.v, ...state.w].forEach((id) => {
         const d = byId.get(id);
         const tx = document.createElementNS(NS, 'text');
@@ -397,8 +397,7 @@
     }
 
     const pct = n / total, bx = 70, bw = W - 140, by = H - 225;
-    c.fillStyle = 'rgba(128,128,128,.22)'; c.beginPath(); c.roundRect(bx, by, bw, 10, 5); c.fill();
-    if (n) { c.fillStyle = t.v; c.beginPath(); c.roundRect(bx, by, Math.max(10, bw * pct), 10, 5); c.fill(); }
+    if (!posterOnly) { c.fillStyle = 'rgba(128,128,128,.22)'; c.beginPath(); c.roundRect(bx, by, bw, 10, 5); c.fill(); if (n) { c.fillStyle = t.v; c.beginPath(); c.roundRect(bx, by, Math.max(10, bw * pct), 10, 5); c.fill(); } }
     c.textAlign = 'left'; c.fillStyle = mut; c.font = '500 24px "Hind Siliguri", sans-serif';
     if (!posterOnly) c.fillText(`${bn(n)}টি জেলা ভ্রমণ · ${bn(Math.round(pct * 100))}% সম্পন্ন`, 70, H - 175);
 
