@@ -141,7 +141,15 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
           <span class="lbl">রঙ</span>
           <div class="themes" id="themes" role="radiogroup" aria-label="রঙের থিম"></div>
         </div>
-        <div class="row inputs">
+        <div class="row inputs profile-row">
+          <div class="profile-photo-picker">
+            <button type="button" class="profile-photo-btn" id="profilePhotoBtn" aria-label="আপনার ছবি যোগ করুন">
+              <span class="profile-avatar" id="profileAvatar"><span>♙</span></span>
+              <span>আপনার ছবি যোগ করুন</span>
+            </button>
+            <input id="profilePhotoInput" type="file" accept="image/*" hidden>
+            <button type="button" class="profile-photo-remove" id="profilePhotoRemove" hidden>ছবি সরান</button>
+          </div>
           <input id="nameInput" type="text" maxlength="28" placeholder="আপনার নাম (ঐচ্ছিক)">
           <label class="check"><input id="labelToggle" type="checkbox" checked> জেলার নাম দেখান</label>
         </div>
