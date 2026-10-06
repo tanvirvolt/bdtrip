@@ -278,7 +278,7 @@
     });
 
     labelG.textContent = '';
-    if (state.labels && !posterOnly) {
+    if (state.labels) {
       [...state.v, ...state.w].forEach((id) => {
         const d = byId.get(id);
         const tx = document.createElementNS(NS, 'text');
@@ -309,6 +309,7 @@
     const nx = LEVELS[li + 1];
     $('#heroNext').textContent = nx ? `আর ${bn(nx[0] - n)}টি জেলা গেলেই “${nx[1]}”` : 'সব ৬৪ জেলা ঘোরা শেষ, অভিনন্দন!';
 
+    renderAchievements();
     // guide + stats + wishlist (only when selection changed)
     renderGuide();
     $('#divStats').innerHTML = DIV_ORDER.map((did) => {
@@ -589,20 +590,22 @@
     }catch(e){toast('সেভ করা যায়নি। ব্রাউজারের IndexedDB/স্টোরেজ অনুমতি দেখুন।');}
   });
   $('#journalClear')?.addEventListener('click',()=>{['journalDate','journalNote'].forEach(id=>$('#'+id).value='');$('#journalRating').value='0';if($('#journalPhoto'))$('#journalPhoto').value='';});
-  const ACH=[['first','প্রথম পদক্ষেপ',1,'প্রথম জেলা ঘুরেছি'],['division','৮ বিভাগ',8,'প্রতিটি বিভাগে অন্তত ১টি জেলা'],['half','অর্ধেক বাংলাদেশ',32,'৩২টি জেলা'],['coast','উপকূল explorer',16,'১৬টি উপকূলীয় জেলা'],['border','সীমান্ত explorer',30,'৩০টি সীমান্ত জেলা'],['all','বাংলাদেশ জয়ী',64,'৬৪টি জেলা']];
-  const borderIds=new Set([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]);
-  const coastIds=new Set([31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46]);
-  const renderAchievements=()=>{const divs=new Set([...state.v].map(id=>byId.get(id)?.div));const html=ACH.map(([key,label,need,desc])=>{let ok=state.v.size>=need;if(key==='division')ok=divs.size===8;if(key==='coast')ok=[...coastIds].every(id=>state.v.has(id));if(key==='border')ok=[...borderIds].every(id=>state.v.has(id));return `<div class="achievement ${ok?'unlocked':''}"><span class="ach-icon">${ok?'🏆':'🔒'}</span><div><b>${label}</b><small>${desc}</small></div></div>`;}).join('');$('#achievementList').innerHTML=html;};
+  const ACH=[['first','প্রথম পদক্ষেপ','প্রথম জেলা ঘুরেছি'],['division','৮ বিভাগ','প্রতিটি বিভাগে অন্তত ১টি জেলা'],['half','অর্ধেক বাংলাদেশ','৩২টি জেলা'],['coast','উপকূল Explorer','সব ১৯টি নির্ধারিত উপকূলীয় জেলা'],['border','সীমান্ত Explorer','সব ৩০টি নির্ধারিত সীমান্ত জেলা'],['all','বাংলাদেশ জয়ী','৬৪টি জেলা']];
+  const borderIds=new Set([2,3,4,8,9,10,11,15,17,18,19,20,21,22,24,25,36,37,38,39,40,41,44,45,53,54,55,56,58,60,61,64]);
+  const coastIds=new Set([5,6,7,8,9,21,27,28,30,31,32,33,34,35,42,50,51,52,20,43]);
+  const renderAchievements=()=>{const divs=new Set([...state.v].map(id=>byId.get(id)?.div));const html=ACH.map(([key,label,desc])=>{let ok=state.v.size>=1;if(key==='division')ok=divs.size===8;if(key==='half')ok=state.v.size>=32;if(key==='coast')ok=[...coastIds].every(id=>state.v.has(id));if(key==='border')ok=[...borderIds].every(id=>state.v.has(id));if(key==='all')ok=state.v.size===64;return `<div class="achievement ${ok?'unlocked':''}"><span class="ach-icon">${ok?'🏆':'🔒'}</span><div><b>${label}</b><small>${desc}</small></div></div>`;}).join('');$('#achievementList').innerHTML=html;};
   const PLAN_KEY='bdtrip_plan_v1';
   let plan={title:'',days:[],budget:{travel:0,hotel:0,food:0,other:0}};
   try{plan=JSON.parse(localStorage.getItem(PLAN_KEY)||'null')||plan;}catch(_){}
   const renderPlan=()=>{$('#plannerTitle').value=plan.title||'';$('#plannerDays').innerHTML=plan.days.map((day,i)=>`<div class="plan-day" data-day="${i}"><div class="plan-day-head"><b>দিন ${bn(i+1)}</b><button type="button" class="remove-day" data-remove="${i}">×</button></div><select class="plan-district" data-plan-district="${i}"><option value="">জেলা বেছে নিন</option>${D.districts.map(d=>`<option value="${d.id}" ${day.district==d.id?'selected':''}>${d.bn}</option>`).join('')}</select><textarea class="plan-note" data-plan-note="${i}" rows="2" placeholder="আজ কী করবেন?">${day.note||''}</textarea></div>`).join('');document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{plan.days.splice(+b.dataset.remove,1);renderPlan();});document.querySelectorAll('[data-plan-district]').forEach(s=>s.onchange=()=>{plan.days[+s.dataset.planDistrict].district=Number(s.value)||null;});document.querySelectorAll('[data-plan-note]').forEach(s=>s.oninput=()=>{plan.days[+s.dataset.planNote].note=s.value;});['travel','hotel','food','other'].forEach(k=>$('#plan'+k[0].toUpperCase()+k.slice(1)).value=plan.budget[k]||'');calcPlanTotal();};
-  const calcPlanTotal=()=>{const b=plan.budget;const total=Number(b.travel)||0+Number(b.hotel)||0+Number(b.food)||0+Number(b.other)||0;$('#planTotal').textContent=money((Number(b.travel)||0)+(Number(b.hotel)||0)+(Number(b.food)||0)+(Number(b.other)||0);};
+  const calcPlanTotal=()=>{const b=plan.budget;const total=(Number(b.travel)||0)+(Number(b.hotel)||0)+(Number(b.food)||0)+(Number(b.other)||0);$('#planTotal').textContent=money(total);};
   $('#plannerAdd')?.addEventListener('click',()=>{plan.days.push({district:null,note:''});renderPlan();});
   ['travel','hotel','food','other'].forEach(k=>$('#plan'+k[0].toUpperCase()+k.slice(1))?.addEventListener('input',()=>{plan.budget[k]=Number($('#plan'+k[0].toUpperCase()+k.slice(1)).value)||0;calcPlanTotal();}));
   $('#plannerSave')?.addEventListener('click',()=>{try{localStorage.setItem(PLAN_KEY,JSON.stringify(plan));toast('ট্রিপ প্ল্যান সেভ হয়েছে।');}catch(_){toast('প্ল্যান সেভ করা যায়নি।');}});
   $('#plannerReset')?.addEventListener('click',()=>{plan={title:'',days:[],budget:{travel:0,hotel:0,food:0,other:0}};renderPlan();});
-  const planShareCode=()=>btoa(unescape(encodeURIComponent(JSON.stringify(plan)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/g,'');
+  const planShareCode=()=>{const bytes=new TextEncoder().encode(JSON.stringify(plan));let s='';bytes.forEach(b=>s+=String.fromCharCode(b));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/g,'');};
+  const decodePlan=code=>{try{const s=atob(code.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-code.length%4)%4));return JSON.parse(new TextDecoder().decode(Uint8Array.from(s,ch=>ch.charCodeAt(0))));}catch(_){return null;}};
+  const sharedPlan=decodePlan(new URLSearchParams(location.search).get('p')||''); if(sharedPlan&&Array.isArray(sharedPlan.days)){plan=sharedPlan;try{localStorage.setItem(PLAN_KEY,JSON.stringify(plan));}catch(_){} }
   $('#plannerShare')?.addEventListener('click',async()=>{const code=planShareCode();const url=location.origin+'/planner/?p='+code;await copyText(url);toast('ট্রিপ প্ল্যান লিংক কপি হয়েছে।');});
 
   // ---------- budget ----------
