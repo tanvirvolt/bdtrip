@@ -171,10 +171,11 @@
           <button class="btn" data-fmt="pdf">↓ PDF</button>
         </div>
         <div class="share-row">
-          <button class="btn share" id="shareBtn">শেয়ার করুন</button>
+          <button class="btn share" id="shareBtn">ম্যাপ শেয়ার</button><button class="btn" id="shareLinkBtn">লিংক কপি</button>
           <a class="btn wa" id="waBtn" target="_blank" rel="noopener">WhatsApp</a>
           <button class="btn" id="copyBtn">টেক্সট কপি</button>
         </div>
+        <div class="export-presets" aria-label="এক্সপোর্ট টেমপ্লেট"><span>টেমপ্লেট</span><button class="btn" data-preset="story">Instagram Story</button><button class="btn" data-preset="square">Square</button><button class="btn" data-preset="a3">A3 Poster PDF</button></div>
       </div>
     </section>
   </section>
@@ -311,7 +312,7 @@
     </div>
   </div>
 </footer>
-<div class="toast" id="toast" role="status" hidden></div>
+<div class="share-compare" id="shareCompare" role="dialog" aria-modal="false" hidden><button type="button" class="share-compare-close" id="shareCompareClose" aria-label="বন্ধ করুন">×</button><small>BDTrip · শেয়ার করা ম্যাপ</small><h3 id="shareCompareTitle">আপনার বন্ধুর ভ্রমণ ম্যাপ</h3><div class="share-compare-grid"><div><b id="sharedVisited">০</b><span>বন্ধুর ঘোরা</span></div><div><b id="sharedCommon">০</b><span>দুজনের মিল</span></div><div><b id="sharedMissing">০</b><span>আপনি যাননি</span></div></div><p id="shareCompareText"></p><a class="btn primary" href="#tool" id="sharedStartBtn">আমার ম্যাপের সাথে তুলনা করুন</a></div><div class="toast" id="toast" role="status" hidden></div>
 <nav class="mobile-nav" aria-label="মোবাইল নেভিগেশন"><a href="#top">⌂<span>হোম</span></a><a href="#tool">▦<span>ম্যাপ</span></a><a href="#guide">⌖<span>গাইড</span></a><a href="#budget">৳<span>বাজেট</span></a><a href="#checklist">✓<span>চেকলিস্ট</span></a></nav>
 
 <script src="data.js" defer></script>
