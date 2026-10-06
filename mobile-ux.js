@@ -71,6 +71,21 @@
   viewport.appendChild(svg);
   viewport.appendChild(mapControls);
 
+  // Compact mobile quick finder directly below the map.
+  const quick = document.createElement('div');
+  quick.className = 'mobile-quickbar';
+  quick.innerHTML = '<label><span>জেলা খুঁজুন</span><input type="search" placeholder="ঢাকা / Coxsbazar..." autocomplete="off"></label><a href="#guide" class="btn">গাইড ↘</a>';
+  viewport.insertAdjacentElement('afterend', quick);
+  const quickInput = quick.querySelector('input');
+  const mainSearch = document.getElementById('search');
+  quickInput.addEventListener('input', () => {
+    if (mainSearch) { mainSearch.value = quickInput.value; mainSearch.dispatchEvent(new Event('input', {bubbles:true})); }
+    document.querySelector('.picker')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  mainSearch?.addEventListener('input', () => {
+    if (quickInput.value !== mainSearch.value) quickInput.value = mainSearch.value;
+  });
+
   const vb = svg.getAttribute('viewBox').split(/\s+/).map(Number);
   const base = { x: vb[0], y: vb[1], w: vb[2], h: vb[3] };
   let zoom = 1, panX = 0, panY = 0, drag = null, suppressClick = false;
@@ -119,6 +134,19 @@
   viewport.addEventListener('click', e => {
     if (suppressClick) { suppressClick = false; e.stopPropagation(); }
   }, true);
+
+  // Highlight the current section in the mobile bottom navigation.
+  const mobileNav = document.querySelector('.mobile-nav');
+  if (mobileNav) {
+    const navLinks = [...mobileNav.querySelectorAll('a')];
+    const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const io = new IntersectionObserver(entries => {
+      const visible = entries.filter(e => e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+      if (!visible) return;
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+visible.target.id));
+    }, {rootMargin:'-25% 0px -55% 0px', threshold:[0,.2,.5]});
+    sections.forEach(s => io.observe(s));
+  }
 
   // Keep selected district label visible when labels overlap.
   const avoidLabelCollision = () => {
