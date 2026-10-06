@@ -592,7 +592,7 @@
   $('#journalClear')?.addEventListener('click',()=>{['journalDate','journalNote'].forEach(id=>$('#'+id).value='');$('#journalRating').value='0';if($('#journalPhoto'))$('#journalPhoto').value='';});
   const ACH=[['first','প্রথম পদক্ষেপ','প্রথম জেলা ঘুরেছি'],['division','৮ বিভাগ','প্রতিটি বিভাগে অন্তত ১টি জেলা'],['half','অর্ধেক বাংলাদেশ','৩২টি জেলা'],['coast','উপকূল Explorer','সব ১৯টি নির্ধারিত উপকূলীয় জেলা'],['border','সীমান্ত Explorer','সব ৩০টি নির্ধারিত সীমান্ত জেলা'],['all','বাংলাদেশ জয়ী','৬৪টি জেলা']];
   const borderIds=new Set([2,3,4,8,9,10,11,15,17,18,19,20,21,22,24,25,36,37,38,39,40,41,44,45,53,54,55,56,58,60,61,64]);
-  const coastIds=new Set([5,6,7,8,9,21,27,28,30,31,32,33,34,35,42,50,51,52,20,43]);
+  const coastIds=new Set([5,6,7,8,9,21,27,28,30,31,32,33,34,35,42,43,50,51,52]);
   const renderAchievements=()=>{const divs=new Set([...state.v].map(id=>byId.get(id)?.div));const html=ACH.map(([key,label,desc])=>{let ok=state.v.size>=1;if(key==='division')ok=divs.size===8;if(key==='half')ok=state.v.size>=32;if(key==='coast')ok=[...coastIds].every(id=>state.v.has(id));if(key==='border')ok=[...borderIds].every(id=>state.v.has(id));if(key==='all')ok=state.v.size===64;return `<div class="achievement ${ok?'unlocked':''}"><span class="ach-icon">${ok?'🏆':'🔒'}</span><div><b>${label}</b><small>${desc}</small></div></div>`;}).join('');$('#achievementList').innerHTML=html;};
   const PLAN_KEY='bdtrip_plan_v1';
   let plan={title:'',days:[],budget:{travel:0,hotel:0,food:0,other:0}};
