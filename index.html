@@ -60,7 +60,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap" crossorigin onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap"></noscript>
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="v2.css">
+<link rel="preload" as="style" href="/v2.css" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/v2.css"></noscript>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"আমার বাছাই করা তথ্য কি সংরক্ষিত থাকে?","acceptedAnswer":{"@type":"Answer","text":"হ্যাঁ, শুধু আপনার ব্রাউজারে সেভ থাকে। BDTrip কোনো তথ্য সার্ভারে পাঠায় না।"}},{"@type":"Question","name":"ঘুরেছি আর ঘুরতে চাই এর মধ্যে পার্থক্য কী?","acceptedAnswer":{"@type":"Answer","text":"ঘুরেছি মোডে যেসব জেলায় গিয়েছেন সেগুলো এবং ঘুরতে চাই মোডে ভবিষ্যতের ট্রিপের জেলাগুলো আলাদা রঙে দেখায়।"}},{"@type":"Question","name":"ম্যাপ কোন সাইজে ডাউনলোড হয়?","acceptedAnswer":{"@type":"Answer","text":"ম্যাপ ১০৮০×১৩৫০ পিক্সেলের হাই-কোয়ালিটি ছবি এবং PDF-এ A4 সাইজে ডাউনলোড করা যায়।"}},{"@type":"Question","name":"BDTrip কি ফ্রি?","acceptedAnswer":{"@type":"Answer","text":"হ্যাঁ, BDTrip সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।"}}]}</script>
 </head>
 <body>
@@ -318,7 +318,18 @@
 <script src="info.js" defer></script>
 <script src="app.js" defer></script>
 <script src="v2.js" defer></script>
-<script src="accessibility.js" defer></script>
-<script src="mobile-ux.js" defer></script>
+<script>
+window.addEventListener('load', function () {
+  var run = window.requestIdleCallback || function (cb) { setTimeout(cb, 80); };
+  run(function () {
+    ['accessibility.js', 'mobile-ux.js'].forEach(function (src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      document.body.appendChild(s);
+    });
+  });
+});
+</script>
 </body>
 </html>
