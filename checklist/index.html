@@ -1,1 +1,68 @@
-<!doctype html><html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BDTrip — ট্রিপ চেকলিস্ট</title><meta name="description" content="BDTrip ট্রিপ চেকলিস্ট ও ভ্রমণ টিপস"><link rel="canonical" href="https://bdtrip.vercel.app/checklist/"><link rel="icon" href="/api/favicon"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/v2.css"><style>body{background:var(--page,#f7f8f5)}.standalone{max-width:980px;margin:auto;padding:28px 18px 60px}.page-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}.page-head nav{display:flex;gap:10px;flex-wrap:wrap}.page-head nav a{padding:9px 13px;border-radius:10px;text-decoration:none}.hero-mini{padding:36px 0 24px}.hero-mini h1{font-size:clamp(32px,6vw,54px);margin:0 0 10px}.two{margin-top:18px}</style></head><body><main class="standalone"><header class="page-head"><a class="brand" href="/"><span class="mark">📍</span><span class="wordmark">BD<b>Trip</b></span></a><nav><a href="/">হোম</a><a href="/planner/">প্ল্যানার</a><a href="/journal/">জার্নাল</a><a href="/budget/">বাজেট</a></nav></header><section class="hero-mini"><a href="/">← BDTrip হোম</a><h1>ট্রিপ চেকলিস্ট ও টিপস</h1><p>যাওয়ার আগে গুরুত্বপূর্ণ জিনিসগুলো টিক দিন। আপনার ব্রাউজারেই তালিকাটি সেভ থাকবে।</p></section><section class="two"><div class="card"><h2>যাওয়ার আগে</h2><ul id="checkList" class="checks"></ul><button class="btn" id="clear">সব টিক মুছুন</button></div><div class="card tips"><h2>কাজের টিপস</h2><ul><li><b>জরুরি সেবা:</b> জাতীয় জরুরি সেবা নম্বর ৯৯৯।</li><li><b>নগদ টাকা রাখুন:</b> দূরের এলাকায় নেটওয়ার্ক ও মোবাইল ব্যাংকিং সবসময় পাওয়া যায় না।</li><li><b>আগে বুকিং:</b> জনপ্রিয় গন্তব্যে ছুটির সময় হোটেল ও টিকিট আগে থেকে নিন।</li><li><b>বর্ষায় সাবধান:</b> পাহাড়ি পথ ও ঝর্ণায় বৃষ্টির পর ঝুঁকি বাড়ে।</li><li><b>স্থানীয়দের সম্মান করুন:</b> আবর্জনা ফেলবেন না, ছবি তোলার আগে অনুমতি নিন।</li></ul></div></section></main><script src="/checklist.js" defer></script></body></html>
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BDTrip — ট্রাভেল চেকলিস্ট</title>
+<meta name="description" content="ভ্রমণের আগে প্রয়োজনীয় জিনিসের BDTrip ট্রাভেল চেকলিস্ট।">
+<link rel="canonical" href="https://bdtrip.vercel.app/checklist/">
+<link rel="icon" href="/api/favicon"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/v2.css">
+<style>
+:root{--ck-green:#0f7a5a;--ck-dark:#0b3d3a;--ck-yellow:#ffb703;--ck-page:#f4f7f5;--ck-card:#fff;--ck-muted:#61736e}
+body{margin:0;background:var(--ck-page);color:#102b29;font-family:"Hind Siliguri","Noto Sans Bengali",sans-serif}
+.ck-wrap{max-width:1240px;margin:auto;padding:18px 20px 55px}.ck-nav{position:sticky;top:12px;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 18px;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border:1px solid #e3ebe7;border-radius:18px;box-shadow:0 10px 30px rgba(11,61,58,.08)}
+.ck-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ck-dark);font-weight:800}.ck-logo{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:var(--ck-dark);color:var(--ck-yellow);font-size:20px}.ck-brand b{color:#f29d00}.ck-navlinks{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.ck-navlinks a{padding:9px 11px;border-radius:10px;text-decoration:none;color:#29433f;font-size:14px}.ck-navlinks a:hover,.ck-navlinks a.active{background:#e9f6f1;color:var(--ck-green);font-weight:700}.ck-lang{display:flex;gap:5px;align-items:center;background:#edf4f1;padding:4px;border-radius:999px}.ck-lang a{padding:7px 10px;border-radius:999px;text-decoration:none;color:#47615c;font-size:13px}.ck-lang a.active{background:var(--ck-green);color:#fff;font-weight:700}
+.ck-hero{margin-top:18px;border-radius:28px;overflow:hidden;position:relative;background:linear-gradient(115deg,#e9f7f2 0%,#fff 55%,#eaf5f1 100%);border:1px solid #dce9e4;padding:46px 46px 40px;min-height:220px}.ck-hero:after{content:"";position:absolute;right:-80px;bottom:-150px;width:470px;height:360px;border-radius:50%;background:radial-gradient(circle,#b8dfce 0,#dceee8 48%,transparent 70%);opacity:.8}.ck-kicker{display:inline-flex;align-items:center;gap:8px;color:var(--ck-green);font-weight:800;font-size:13px;letter-spacing:.08em}.ck-hero h1{margin:9px 0 8px;font-size:clamp(38px,6vw,66px);line-height:1;color:#102c3b}.ck-hero h1 em{font-style:normal;color:var(--ck-green)}.ck-hero p{max-width:680px;margin:0;color:#536965;font-size:17px}.ck-quote{position:absolute;right:38px;top:38px;width:250px;padding:20px;border-radius:18px;background:rgba(11,61,58,.93);color:#fff;z-index:2;box-shadow:0 18px 40px rgba(11,61,58,.2)}.ck-quote b{display:block;color:var(--ck-yellow);font-size:28px}.ck-quote span{font-size:14px;line-height:1.5}
+.ck-pills{position:relative;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}.ck-pill{padding:15px 17px;border-radius:15px;background:rgba(255,255,255,.9);border:1px solid #e1ebe7;display:flex;gap:12px;align-items:center}.ck-pill i{font-style:normal;font-size:23px}.ck-pill strong{display:block;font-size:14px}.ck-pill small{color:#6c7d79}
+.ck-main{display:grid;grid-template-columns:235px minmax(0,1fr) 220px;gap:18px;margin-top:18px}.ck-card{background:var(--ck-card);border:1px solid #e2ebe7;border-radius:20px;box-shadow:0 8px 25px rgba(16,60,53,.06)}.ck-side{padding:18px}.ck-side h2,.ck-actions h2{font-size:17px;margin:0 0 14px}.ck-option{display:flex;align-items:center;gap:10px;padding:11px;border-radius:12px;color:#304944;font-size:14px;margin-bottom:6px}.ck-option:first-of-type{background:#eaf7f2;color:var(--ck-green);font-weight:700}.ck-option input{accent-color:var(--ck-green)}.ck-side hr{border:0;border-top:1px solid #edf1ef;margin:16px 0}.ck-mini{font-size:13px;color:#62736f;line-height:1.7}.ck-content{padding:20px}.ck-content-head{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:17px}.ck-content-head h2{margin:0;font-size:24px}.ck-progress{min-width:230px}.ck-progress-top{display:flex;justify-content:space-between;font-size:12px;color:#60716d}.ck-bar{height:9px;background:#e6eeeb;border-radius:99px;overflow:hidden;margin-top:7px}.ck-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ck-green),#36ad83);border-radius:99px;transition:.25s}
+.ck-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.ck-cat{border-radius:17px;padding:16px;background:#f2faf7;border:1px solid #dcefe8}.ck-cat:nth-child(2){background:#f2f7ff;border-color:#dfe9f7}.ck-cat:nth-child(3){background:#fff9e9;border-color:#f5e9c3}.ck-cat:nth-child(4){background:#fff2f5;border-color:#f4dfe5}.ck-cat h3{margin:0 0 10px;font-size:16px}.ck-item{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-top:1px solid rgba(0,0,0,.06);font-size:14px;color:#314b46}.ck-item:first-of-type{border-top:0}.ck-item input{margin-top:4px;accent-color:var(--ck-green);width:17px;height:17px}.ck-item.done span{text-decoration:line-through;color:#7c8e89}.ck-actions{padding:18px}.ck-action{width:100%;border:0;border-radius:12px;padding:12px;margin-bottom:8px;background:#edf3f1;color:#173d36;font:inherit;font-weight:700;cursor:pointer}.ck-action.primary{background:var(--ck-green);color:#fff}.ck-tip{margin-top:18px;padding:16px;border-radius:16px;background:#fff8e5;border:1px solid #f1dfad}.ck-tip h3{margin:0 0 8px}.ck-tip ul{padding-left:19px;margin:0;color:#596d67;font-size:13px;line-height:1.8}.ck-bottom{margin-top:18px;padding:18px 20px;background:linear-gradient(100deg,#e8f7f1,#f8fbfa);border:1px solid #dcebe5;border-radius:18px;display:flex;justify-content:space-between;gap:20px;align-items:center}.ck-bottom strong{font-size:18px}.ck-bottom p{margin:3px 0 0;color:#63756f;font-size:13px}
+@media(max-width:1050px){.ck-main{grid-template-columns:200px minmax(0,1fr)}.ck-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ck-action{margin:0}.ck-quote{display:none}}
+@media(max-width:760px){.ck-wrap{padding:10px 12px 35px}.ck-nav{position:static;flex-wrap:wrap}.ck-navlinks{order:3;width:100%;overflow:auto;flex-wrap:nowrap}.ck-navlinks a{white-space:nowrap}.ck-hero{padding:30px 22px}.ck-hero h1{font-size:42px}.ck-pills{grid-template-columns:repeat(2,1fr)}.ck-main{grid-template-columns:1fr}.ck-side{display:none}.ck-grid{grid-template-columns:1fr}.ck-content-head{align-items:stretch;flex-direction:column}.ck-progress{min-width:0}.ck-actions{grid-column:auto;display:block}.ck-action{margin-bottom:8px}.ck-bottom{align-items:flex-start;flex-direction:column}}
+@media(max-width:430px){.ck-pills{grid-template-columns:1fr}.ck-pill{padding:12px}.ck-hero h1{font-size:36px}.ck-content{padding:14px}}
+</style>
+</head>
+<body>
+<div class="ck-wrap">
+<header class="ck-nav">
+<a class="ck-brand" href="/"><span class="ck-logo">📍</span><span>BD<b>Trip</b></span></a>
+<nav class="ck-navlinks" aria-label="প্রধান মেনু">
+<a href="/">হোম</a><a href="/#tool">ম্যাপ</a><a href="/#guide">জেলা গাইড</a><a href="/planner/">প্ল্যানার</a><a href="/journal/">জার্নাল</a><a href="/budget/">বাজেট</a><a class="active" href="/checklist/">চেকলিস্ট</a><a href="/#faq">FAQ</a>
+</nav>
+<div class="ck-lang"><a class="active" href="/checklist/">বাংলা</a><a href="/checklist/">EN</a></div>
+</header>
+<section class="ck-hero">
+<div class="ck-kicker">✦ TRAVEL PREPARATION</div><h1>ট্রাভেল <em>চেকলিস্ট</em></h1>
+<p>ভ্রমণের আগে গুরুত্বপূর্ণ জিনিসগুলো একবারে গুছিয়ে নিন—চেক করুন, অগ্রগতি দেখুন এবং প্রয়োজনে প্রিন্ট করুন।</p>
+<div class="ck-quote"><b>“</b><span>ভালো প্রস্তুতি প্রতিটি ভ্রমণকে আরও সহজ করে।</span><small>বাংলাদেশ ভ্রমণ</small></div>
+<div class="ck-pills">
+<div class="ck-pill"><i>✓</i><div><strong>জরুরি জিনিস</strong><small>কিছু ভুলে যাবেন না</small></div></div>
+<div class="ck-pill"><i>🎒</i><div><strong>ট্রিপ প্রস্তুতি</strong><small>যাত্রার আগে চেক করুন</small></div></div>
+<div class="ck-pill"><i>🇧🇩</i><div><strong>বাংলাদেশ টিপস</strong><small>স্থানীয় বিষয় মাথায় রাখুন</small></div></div>
+<div class="ck-pill"><i>↗</i><div><strong>সেভ ও প্রিন্ট</strong><small>চেকলিস্ট সাথে রাখুন</small></div></div>
+</div>
+</section>
+<section class="ck-main">
+<aside class="ck-card ck-side">
+<h2>আপনার ট্রিপ</h2>
+<label class="ck-option"><input type="radio" name="trip" checked> সাধারণ ভ্রমণ</label>
+<label class="ck-option"><input type="radio" name="trip"> পাহাড় / ট্রেকিং</label>
+<label class="ck-option"><input type="radio" name="trip"> সমুদ্র / সৈকত</label>
+<label class="ck-option"><input type="radio" name="trip"> প্রকৃতি / বন</label>
+<label class="ck-option"><input type="radio" name="trip"> শহর ভ্রমণ</label>
+<hr><div class="ck-mini"><b>টিপ:</b> আপনার গন্তব্য অনুযায়ী প্রয়োজনীয় জিনিস আগে থেকে মিলিয়ে নিন।</div>
+</aside>
+<section class="ck-card ck-content">
+<div class="ck-content-head"><div><h2>চেকলিস্ট</h2><span class="ck-mini" id="countText">০ / ৯ সম্পন্ন</span></div><div class="ck-progress"><div class="ck-progress-top"><span>অগ্রগতি</span><b id="pct">০%</b></div><div class="ck-bar"><i id="bar"></i></div></div></div>
+<div id="checkList" class="ck-grid"></div>
+</section>
+<aside class="ck-card ck-actions">
+<h2>দ্রুত কাজ</h2>
+<button class="ck-action primary" id="markAll">✓ সব সম্পন্ন</button>
+<button class="ck-action" id="clear">↻ সব রিসেট</button>
+<button class="ck-action" id="print">▣ প্রিন্ট / PDF</button>
+<div class="ck-tip"><h3>ভ্রমণ টিপস</h3><ul><li>জাতীয় জরুরি সেবা: ৯৯৯</li><li>দূরের এলাকায় নগদ টাকা রাখুন</li><li>জনপ্রিয় গন্তব্যে আগে বুকিং করুন</li><li>বর্ষায় পাহাড়ি পথ ও ঝর্ণায় সতর্ক থাকুন</li><li>স্থানীয়দের সম্মান করুন ও আবর্জনা ফেলবেন না</li></ul></div>
+</aside>
+</section>
+<section class="ck-bottom"><div><strong>বাংলাদেশ-ভিত্তিক প্রস্তুতি</strong><p>প্রয়োজনীয় ওষুধ, আইডি, চার্জার, আবহাওয়া এবং স্থানীয় নিয়ম আগে যাচাই করুন।</p></div><span>BDTrip · Travel Smart 🇧🇩</span></section>
+</div>
+<script src="/checklist.js" defer></script>
+</body></html>
