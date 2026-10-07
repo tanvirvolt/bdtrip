@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>আমার ট্রাভেল জার্নাল — BDTrip</title>
+<meta name="description" content="BDTrip-এর ব্যক্তিগত ট্রাভেল জার্নাল। ভ্রমণের তারিখ, রেটিং, নোট ও ছবি নিজের ডিভাইসে সংরক্ষণ করুন।">
+<link rel="stylesheet" href="/style.css">
+</head><body>
+<header class="nav"><a class="brand" href="/" aria-label="BDTrip হোম"><span class="mark">BD</span><span class="wordmark">BD<b>Trip</b></span></a><nav class="links"><a href="/">ম্যাপ</a><a href="/#guide">জেলা গাইড</a><a href="/journal/">জার্নাল</a></nav></header>
+<main>  <!-- TRAVEL JOURNAL PAGE -->
+  <section class="block journal-page" id="journal">
+    <div class="block-head">
+      <span class="tag">BDTrip · Personal Travel Journal</span>
+      <h1>আমার ট্রাভেল জার্নাল</h1>
+      <p>আপনার ভ্রমণের তারিখ, রেটিং, নোট ও ছবি এই ডিভাইসেই সংরক্ষণ করুন।</p>
+    </div>
+    <div class="journal-grid">
+      <article class="card journal-editor">
+        <div class="picker-head"><h3 id="journalDistrictTitle">একটি জেলা বেছে নিন</h3><span class="count-pill" id="journalPhotoState">লোকাল</span></div>
+        <div class="journal-fields">
+          <label>কবে গিয়েছেন<input id="journalDate" type="date"></label>
+          <label>রেটিং<select id="journalRating"><option value="0">রেটিং দিন</option><option value="1">★ ১/৫</option><option value="2">★★ ২/৫</option><option value="3">★★★ ৩/৫</option><option value="4">★★★★ ৪/৫</option><option value="5">★★★★★ ৫/৫</option></select></label>
+          <label class="full">ছোট নোট<textarea id="journalNote" rows="5" maxlength="500" placeholder="এই ভ্রমণের স্মৃতি লিখুন..."></textarea></label>
+          <label class="full">নিজের ছবি<input id="journalPhoto" type="file" accept="image/*" multiple></label>
+        </div>
+        <div class="journal-actions"><button class="btn primary" id="journalSave" type="button">জার্নাল সেভ</button><button class="btn" id="journalClear" type="button">ফাঁকা করুন</button></div>
+        <div id="journalPhotos" class="journal-photos"></div>
+        <p class="journal-privacy">🔒 ছবি ও নোট শুধু এই ব্রাউজারের IndexedDB-তে থাকে।</p>
+      </article>
+      <aside class="card journal-list-card"><div class="picker-head"><h3>সাম্প্রতিক জার্নাল</h3><span class="count-pill" id="journalCount">০</span></div><div id="journalList" class="journal-list"></div></aside>
+    </div>
+  </section>
+</main>
+<script src="/data.js"></script><script src="/info.js"></script><script src="/app.js" defer></script>
+</body></html>
