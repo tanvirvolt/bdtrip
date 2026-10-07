@@ -268,3 +268,9 @@ main,.nav,.foot{max-width:1160px;margin-inline:auto;padding-inline:16px}
 
 .journal-photos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.journal-photos:empty{display:none}.journal-photos img{width:100%;aspect-ratio:1;border-radius:12px;object-fit:cover;border:1px solid var(--line)}
 @media(max-width:520px){.journal-photos{grid-template-columns:repeat(3,1fr)}}
+
+
+/* Profile photo beside map title */
+.map-title-line{display:flex;align-items:center;gap:8px}
+.map-profile-avatar{width:32px;height:32px;flex:0 0 32px;border-radius:50%;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 10px #0002;background:var(--bg);background-size:cover;background-position:center}
+.map-profile-avatar:not([hidden]){display:inline-block}
