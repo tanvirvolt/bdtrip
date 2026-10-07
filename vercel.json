@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "node scripts/generate-district-pages.mjs",
+  "outputDirectory": ".",
   "redirects": [
     {
       "source": "/districts/:slug",
