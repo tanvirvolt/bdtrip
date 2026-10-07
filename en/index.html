@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BDTrip — Bangladesh Travel Map, District Guides & Trip Planner</title>
+<meta name="robots" content="index, follow">
+<meta name="google-site-verification" content="pqM5PFo0HcMxEEG3UqKBxsjr3jALcpAvlrMi5idREfU">
+<meta name="description" content="BDTrip এ ৬৪ জেলার ম্যাপে আপনার ঘোরা ও ঘুরতে চাওয়া জেলা চিহ্নিত করুন, জেলা গাইড দেখুন, ট্রিপ বাজেট হিসাব করুন এবং ম্যাপ PNG, JPG বা PDF ডাউনলোড করুন।">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BDTrip — বাংলাদেশের কতটুকু ঘুরেছেন?">
+<meta property="og:description" content="A 64-district Bangladesh travel map, district guides, trip tools and a shareable travel map.">
+<meta name="theme-color" content="#0b3d3a">
+
+<link rel="canonical" href="https://bdtrip.vercel.app/en/">
+<link rel="icon" type="image/png" href="/api/favicon" sizes="64x64">
+<link rel="shortcut icon" href="/api/favicon">
+<link rel="apple-touch-icon" href="/api/favicon">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="application-name" content="BDTrip">
+<meta name="apple-mobile-web-app-title" content="BDTrip">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta property="og:url" content="https://bdtrip.vercel.app/">
+<meta property="og:site_name" content="BDTrip">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bdtrip.vercel.app/og-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="BDTrip — বাংলাদেশের ৬৪ জেলা, এক ম্যাপে!">
+<meta property="og:image:type" content="image/svg+xml">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bdtrip.vercel.app/og-image.svg">
+<meta name="twitter:image:alt" content="BDTrip — বাংলাদেশের ৬৪ জেলা, এক ম্যাপে!">
+<meta name="twitter:title" content="BDTrip — বাংলাদেশের কতটুকু ঘুরেছেন?">
+<meta name="twitter:description" content="৬৪ জেলার ম্যাপ, জেলা গাইড, ট্রিপ বাজেট ক্যালকুলেটর ও শেয়ারযোগ্য ট্রাভেল ম্যাপ।">
+<script>
+if(localStorage.getItem("bdtrip_lang")==="bn") localStorage.setItem("bdtrip_lang","en");
+if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://bdtrip.vercel.app/#website",
+  "url": "https://bdtrip.vercel.app/",
+  "name": "BDTrip",
+  "alternateName": "BDTrip Bangladesh Travel Map",
+  "description": "৬৪ জেলার ম্যাপ, জেলা গাইড, ট্রিপ বাজেট ক্যালকুলেটর ও শেয়ারযোগ্য ট্রাভেল ম্যাপ।",
+  "inLanguage": "bn-BD"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://bdtrip.vercel.app/#organization",
+  "name": "BDTrip",
+  "url": "https://bdtrip.vercel.app/",
+  "description": "বাংলাদেশের ৬৪ জেলার ট্রাভেল ম্যাপ, জেলা গাইড ও ট্রিপ প্ল্যানিং টুল।"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap" crossorigin onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap"></noscript>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/v2.css">
+<link rel="preload" as="style" href="/v2.css" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/v2.css"></noscript>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"আমার বাছাই করা তথ্য কি সংরক্ষিত থাকে?","acceptedAnswer":{"@type":"Answer","text":"হ্যাঁ, শুধু আপনার ব্রাউজারে সেভ থাকে। BDTrip কোনো তথ্য সার্ভারে পাঠায় না।"}},{"@type":"Question","name":"ঘুরেছি আর ঘুরতে চাই এর মধ্যে পার্থক্য কী?","acceptedAnswer":{"@type":"Answer","text":"ঘুরেছি মোডে যেসব জেলায় গিয়েছেন সেগুলো এবং ঘুরতে চাই মোডে ভবিষ্যতের ট্রিপের জেলাগুলো আলাদা রঙে দেখায়।"}},{"@type":"Question","name":"ম্যাপ কোন সাইজে ডাউনলোড হয়?","acceptedAnswer":{"@type":"Answer","text":"ম্যাপ ১০৮০×১৩৫০ পিক্সেলের হাই-কোয়ালিটি ছবি এবং PDF-এ A4 সাইজে ডাউনলোড করা যায়।"}},{"@type":"Question","name":"BDTrip কি ফ্রি?","acceptedAnswer":{"@type":"Answer","text":"হ্যাঁ, BDTrip সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।"}}]}</script>
+</head>
+<body>
+
+<header class="nav" id="top">
+  <a class="brand" href="#top" aria-label="BDTrip হোম">
+    <span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 00-7.500 7.500C8.500 17 16 27 16 27s7.500-10 7.500-15.500A7.500 7.500 0 0016 4z" fill="#ffb703"/><circle cx="16" cy="11.500" r="2.800" fill="#0b3d3a"/></svg></span>
+    <span class="wordmark">BD<b>Trip</b></span>
+  </a>
+  <nav class="links" aria-label="প্রধান মেনু">
+    <a href="#tool">ম্যাপ</a>
+    <a href="#guide">জেলা গাইড</a>
+    <a href="/planner/">প্ল্যানার</a>
+    <a href="/journal/">জার্নাল</a>
+    <a href="/budget/">বাজেট</a>
+    <a href="/checklist/">চেকলিস্ট</a>
+    <a href="#faq">প্রশ্নোত্তর</a>
+  </nav>
+  <div class="lang-switch" aria-label="Language"><a href="/" title="বাংলা">বাংলা</a><span>·</span><a href="/en/" class="active" title="English">EN</a></div><div class="v2-actions"><button id="themeToggle" class="icon-btn" type="button" aria-label="ডার্ক মোড">◐</button><a class="v2-search-btn" href="#tool">⌕ <span>জেলা খুঁজুন</span></a></div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blob b1" aria-hidden="true"></div>
+    <div class="blob b2" aria-hidden="true"></div>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="tag">৬৪ জেলা · ৮ বিভাগ · সম্পূর্ণ ফ্রি</span>
+        <h1>বাংলাদেশের <em>কতটুকু</em> ঘুরে দেখেছেন?</h1>
+        <p>যেসব জেলায় গিয়েছেন সেগুলো রাঙিয়ে নিন, যেখানে যেতে চান সেগুলো উইশলিস্টে রাখুন। জেলা গাইড দেখুন, ট্রিপের বাজেট হিসাব করুন, তারপর সুন্দর একটি ট্রাভেল ম্যাপ ডাউনলোড করে শেয়ার করুন।</p>
+        <div class="hero-cta">
+          <a class="cta" href="#tool">ম্যাপ বানানো শুরু করুন</a>
+          <a class="cta ghost" href="/district/chattogram/">জেলা গাইড দেখুন</a>
+        </div>
+      </div>
+      <aside class="score" aria-live="polite">
+        <div class="ring" id="heroRing" style="--p:0"><div class="ring-in"><b id="heroCount">০</b><span>/৬৪ জেলা</span></div></div>
+        <div class="score-txt">
+          <small>আপনার ভ্রমণ লেভেল</small>
+          <strong id="heroLevel">নতুন ভ্রমণকারী</strong>
+          <span id="heroNext">প্রথম জেলাটি বেছে নিন</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- TOOL -->
+  <section class="tool" id="tool">
+    <aside class="card picker">
+      <div class="picker-head">
+        <h2>জেলা বাছাই</h2>
+        <span class="count-pill" id="countPill">০/৬৪</span>
+      </div>
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search" type="search" placeholder="জেলা খুঁজুন (বাংলা বা English)" autocomplete="off">
+      </label>
+      <div class="bulk">
+        <button type="button" id="selAll">সব ঘুরেছি</button>
+        <button type="button" id="clrAll">সব মুছুন</button>
+      </div>
+      <div id="groups" class="groups"></div>
+      <p class="none" id="noResult" hidden>কোনো জেলা পাওয়া যায়নি।</p>
+    </aside>
+
+    <section class="stage">
+      <div class="card controls">
+        <div class="seg" role="radiogroup" aria-label="বাছাই মোড">
+          <button type="button" id="modeV" role="radio" class="active">ঘুরেছি</button>
+          <button type="button" id="modeW" role="radio">ঘুরতে চাই</button>
+        </div>
+        <p class="hint">মোড বেছে নিয়ে তালিকা বা ম্যাপে ক্লিক করুন। আবার ক্লিক করলে মুছে যাবে। কোনো জেলায় ক্লিক করলে নিচে <a href="#guide" class="inl">জেলা গাইড</a> দেখাবে।</p>
+        <div class="row">
+          <span class="lbl">রঙ</span>
+          <div class="themes" id="themes" role="radiogroup" aria-label="রঙের থিম"></div>
+        </div>
+        <div class="row inputs profile-row">
+          <div class="profile-photo-picker">
+            <button type="button" class="profile-photo-btn" id="profilePhotoBtn" aria-label="আপনার ছবি যোগ করুন">
+              <span class="profile-avatar" id="profileAvatar"><span>♙</span></span>
+              <span>আপনার ছবি যোগ করুন</span>
+            </button>
+            <input id="profilePhotoInput" type="file" accept="image/*" hidden>
+            <button type="button" class="profile-photo-remove" id="profilePhotoRemove" hidden>ছবি সরান</button>
+          </div>
+          <input id="nameInput" type="text" maxlength="28" placeholder="আপনার নাম (ঐচ্ছিক)">
+          <label class="check"><input id="labelToggle" type="checkbox" checked> জেলার নাম দেখান</label>
+        </div>
+      </div>
+
+      <div class="card mapcard-wrap">
+        <div class="canvas-card" id="mapCard">
+          <div class="mc-top">
+            <div>
+              <small>BDTrip · ভ্রমণ ম্যাপ</small>
+              <h3 class="map-title-line"><span class="map-profile-avatar" id="mapProfileAvatar" hidden aria-hidden="true"></span><span id="mapTitle">আমার বাংলাদেশ</span></h3>
+            </div>
+            <div class="mc-count"><b id="bigCount">০</b><span>/৬৪</span></div>
+          </div>
+          <svg id="map" viewBox="0 0 600 848" role="img" aria-label="বাংলাদেশের জেলা ম্যাপ"></svg>
+          <div class="progress"><i id="bar"></i></div>
+          <div class="mc-meta"><span id="pctText">০% সম্পন্ন</span><span id="divText"></span></div>
+          <div class="legend">
+            <span><i class="dot v"></i>ঘুরেছি <b id="legV">০</b></span>
+            <span><i class="dot w"></i>ঘুরতে চাই <b id="legW">০</b></span>
+          </div>
+          <div class="mc-foot"><span class="mark sm">BD</span> BDTrip</div>
+        </div>
+        <div class="tip" id="tip" hidden></div>
+      </div>
+
+      <div class="card dl mobile-share-card">
+        <div class="share-card-head"><div><h4>ম্যাপ সেভ করুন বা শেয়ার করুন</h4><p>ছবি হিসেবে রাখুন, অথবা বন্ধুদের সাথে আপনার ভ্রমণ অগ্রগতি শেয়ার করুন।</p></div><span class="share-card-icon">↗</span></div>
+        <div class="export-section"><div class="mini-label">ম্যাপ সেভ</div><div class="dl-btns">
+          <button class="btn primary" data-fmt="png"><span>↓</span> PNG</button>
+          <button class="btn" data-fmt="jpg"><span>↓</span> JPG</button>
+          <button class="btn" data-fmt="pdf"><span>↓</span> PDF</button>
+        </div></div>
+        <div class="share-section"><div class="mini-label">বন্ধুদের সাথে শেয়ার</div><button class="btn share share-main" id="shareBtn"><span>↗</span> ম্যাপ শেয়ার করুন</button><div class="share-row">
+          <button class="btn" id="shareLinkBtn">🔗 লিংক কপি</button><a class="btn wa" id="waBtn" target="_blank" rel="noopener">WhatsApp</a><button class="btn" id="copyBtn">▣ টেক্সট কপি</button>
+        </div></div>
+        <div class="export-presets" aria-label="এক্সপোর্ট টেমপ্লেট"><div class="mini-label">রেডি টেমপ্লেট</div><div class="preset-grid"><button class="btn" data-preset="story"><span>▯</span><b>Story</b><small>1080×1920</small></button><button class="btn" data-preset="square"><span>□</span><b>Square</b><small>1080×1080</small></button><button class="btn" data-preset="a3"><span>▤</span><b>A3 Poster</b><small>PDF</small></button></div></div>
+      </div>
+    </section>
+  </section>
+
+  <!-- GUIDE -->
+  <section class="block" id="guide">
+    <div class="block-head">
+      <h2>জেলা গাইড</h2>
+      <p>ম্যাপ বা তালিকা থেকে যেকোনো জেলা বেছে নিন, সেখানকার ঘোরার জায়গা, সেরা সময় আর বিখ্যাত খাবার দেখুন।</p>
+    </div>
+    <div class="guide-grid">
+      <article class="card guide-card" id="guideCard" aria-live="polite">
+        <p class="placeholder">একটি জেলা বেছে নিন, এখানে তার গাইড দেখাবে।</p>
+      </article>
+      <div class="card divs">
+        <h3>বিভাগ অনুযায়ী অগ্রগতি</h3>
+        <div id="divStats"></div>
+      </div>
+    </div>
+    <div class="card wish" id="wishBox">
+      <h3>আমার ট্রিপ লিস্ট <span class="mini" id="wishCount"></span></h3>
+      <div id="wishList" class="wish-list"></div>
+    </div>
+    <details class="district-seo-index"><summary>৬৪ জেলার পূর্ণ ভ্রমণ গাইড</summary><div class="district-seo-links"><a href="/district/comilla/">কুমিল্লা</a><a href="/district/feni/">ফেনী</a><a href="/district/brahmanbaria/">ব্রাহ্মণবাড়িয়া</a><a href="/district/rangamati/">রাঙ্গামাটি</a><a href="/district/noakhali/">নোয়াখালী</a><a href="/district/chandpur/">চাঁদপুর</a><a href="/district/lakshmipur/">লক্ষ্মীপুর</a><a href="/district/chattogram/">চট্টগ্রাম</a><a href="/district/coxsbazar/">কক্সবাজার</a><a href="/district/khagrachhari/">খাগড়াছড়ি</a><a href="/district/bandarban/">বান্দরবান</a><a href="/district/sirajganj/">সিরাজগঞ্জ</a><a href="/district/pabna/">পাবনা</a><a href="/district/bogura/">বগুড়া</a><a href="/district/rajshahi/">রাজশাহী</a><a href="/district/natore/">নাটোর</a><a href="/district/joypurhat/">জয়পুরহাট</a><a href="/district/chapainawabganj/">চাঁপাইনবাবগঞ্জ</a><a href="/district/naogaon/">নওগাঁ</a><a href="/district/jashore/">যশোর</a><a href="/district/satkhira/">সাতক্ষীরা</a><a href="/district/meherpur/">মেহেরপুর</a><a href="/district/narail/">নড়াইল</a><a href="/district/chuadanga/">চুয়াডাঙ্গা</a><a href="/district/kushtia/">কুষ্টিয়া</a><a href="/district/magura/">মাগুরা</a><a href="/district/khulna/">খুলনা</a><a href="/district/bagerhat/">বাগেরহাট</a><a href="/district/jhenaidah/">ঝিনাইদহ</a><a href="/district/jhalakathi/">ঝালকাঠি</a><a href="/district/patuakhali/">পটুয়াখালী</a><a href="/district/pirojpur/">পিরোজপুর</a><a href="/district/barisal/">বরিশাল</a><a href="/district/bhola/">ভোলা</a><a href="/district/barguna/">বরগুনা</a><a href="/district/sylhet/">সিলেট</a><a href="/district/moulvibazar/">মৌলভীবাজার</a><a href="/district/habiganj/">হবিগঞ্জ</a><a href="/district/sunamganj/">সুনামগঞ্জ</a><a href="/district/narsingdi/">নরসিংদী</a><a href="/district/gazipur/">গাজীপুর</a><a href="/district/shariatpur/">শরীয়তপুর</a><a href="/district/narayanganj/">নারায়ণগঞ্জ</a><a href="/district/tangail/">টাঙ্গাইল</a><a href="/district/kishoreganj/">কিশোরগঞ্জ</a><a href="/district/manikganj/">মানিকগঞ্জ</a><a href="/district/dhaka/">ঢাকা</a><a href="/district/munshiganj/">মুন্সিগঞ্জ</a><a href="/district/rajbari/">রাজবাড়ী</a><a href="/district/madaripur/">মাদারীপুর</a><a href="/district/gopalganj/">গোপালগঞ্জ</a><a href="/district/faridpur/">ফরিদপুর</a><a href="/district/panchagarh/">পঞ্চগড়</a><a href="/district/dinajpur/">দিনাজপুর</a><a href="/district/lalmonirhat/">লালমনিরহাট</a><a href="/district/nilphamari/">নীলফামারী</a><a href="/district/gaibandha/">গাইবান্ধা</a><a href="/district/thakurgaon/">ঠাকুরগাঁও</a><a href="/district/rangpur/">রংপুর</a><a href="/district/kurigram/">কুড়িগ্রাম</a><a href="/district/sherpur/">শেরপুর</a><a href="/district/mymensingh/">ময়মনসিংহ</a><a href="/district/jamalpur/">জামালপুর</a><a href="/district/netrokona/">নেত্রকোণা</a></div></details><p class="note">তথ্য সাধারণ ধারণার জন্য। যাত্রার আগে খোলা থাকার সময়, মৌসুম, যাতায়াত ও স্থানীয় নিয়ম যাচাই করে নিন। পার্বত্য এলাকা ও সেন্টমার্টিনের মতো জায়গায় অনুমতি বা বিশেষ নিয়ম থাকতে পারে।</p>
+  </section>
+
+  <section class="block faq" id="faq">
+    <div class="block-head"><h2>প্রশ্নোত্তর</h2></div>
+    <details><summary>আমার বাছাই করা তথ্য কি সংরক্ষিত থাকে?</summary><p>হ্যাঁ, শুধু আপনার ব্রাউজারে সেভ থাকে। আমরা কোনো তথ্য সার্ভারে পাঠাই না।</p></details>
+    <details><summary>"ঘুরেছি" আর "ঘুরতে চাই" এর মধ্যে পার্থক্য কী?</summary><p>"ঘুরেছি" মোডে যেসব জেলায় গিয়েছেন সেগুলো গাঢ় রঙে, আর "ঘুরতে চাই" মোডে ভবিষ্যতের ট্রিপের জেলাগুলো আলাদা রঙে দেখাবে। ডাউনলোড করা ম্যাপে দুটোই থাকে।</p></details>
+    <details><summary>ম্যাপ কোন সাইজে ডাউনলোড হয়?</summary><p>১০৮০×১৩৫০ পিক্সেলের হাই-কোয়ালিটি ছবি (ইনস্টাগ্রাম পোর্ট্রেট), PDF এ A4 সাইজ।</p></details>
+    <details><summary>এটা কি ফ্রি?</summary><p>হ্যাঁ, সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।</p></details>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-card">
+    <div class="foot-scene" aria-hidden="true">
+      <span class="foot-sun"></span>
+      <span class="foot-mountain m1"></span>
+      <span class="foot-mountain m2"></span>
+      <span class="foot-tree t1"></span>
+      <span class="foot-tree t2"></span>
+      <span class="foot-river"></span>
+      <span class="foot-boat">⌁</span>
+      <span class="foot-birds">⌁⌁</span>
+    </div>
+
+    <div class="foot-content">
+      <div class="foot-grid">
+        <section class="foot-brand" aria-labelledby="footer-title">
+          <a class="brand light" href="#top" aria-label="BDTrip">
+            <span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 0 0-7.5 7.5C8.5 17 16 27 16 27s7.5-10 7.5-15.5A7.5 7.5 0 0 0 16 4z" fill="#ffb703"/><circle cx="16" cy="11.5" r="2.8" fill="#0b3d3a"/></svg></span>
+            <span class="wordmark">BD<b>Trip</b></span>
+          </a>
+          <div class="foot-kicker">EXPLORE BANGLADESH</div>
+          <h2 id="footer-title">৬৪ জেলার বাংলাদেশ,<br><em>এক ম্যাপে!</em></h2>
+          <p>ঘুরুন, পরিকল্পনা করুন, চিহ্নিত করুন, শেয়ার করুন।</p>
+          <div class="foot-stats">
+            <span><b>৬৪</b><small>জেলা</small></span>
+            <span><b>৮</b><small>বিভাগ</small></span>
+            <span><b>১০০%</b><small>ফ্রি</small></span>
+          </div>
+        </section>
+
+        <nav class="foot-col" aria-label="এক্সপ্লোর">
+          <h3><i>✦</i> এক্সপ্লোর</h3>
+          <a href="#tool">আমার ম্যাপ <b>›</b></a>
+          <a href="#guide">জেলা গাইড <b>›</b></a>
+          <a href="/budget/">বাজেট ক্যালকুলেটর <b>›</b></a>
+          <a href="/checklist/">ট্রিপ চেকলিস্ট <b>›</b></a>
+          <a href="/planner/">মাল্টি-ডে প্ল্যানার <b>›</b></a>
+        </nav>
+
+        <nav class="foot-col" aria-label="তথ্য">
+          <h3><i>●</i> তথ্য</h3>
+          <a href="#faq">প্রশ্নোত্তর <b>›</b></a>
+          <a href="https://www.geoboundaries.org" target="_blank" rel="noopener">ম্যাপ ডেটা: geoBoundaries <b>↗</b></a>
+          <a href="/journal/">ট্রাভেল জার্নাল <b>›</b></a>
+          <a href="#top" class="totop">↑ <span>উপরে যান</span></a>
+        </nav>
+      </div>
+
+      <div class="foot-bottom">
+        <span class="made">বাংলাদেশে তৈরি <i class="heart" aria-hidden="true">♥</i> <a href="https://tanvirvolt.github.io" target="_blank" rel="noopener">Tanvir</a></span>
+        <span class="copy">© <span id="yr"></span> BDTrip · সব ভ্রমণকারীর জন্য</span>
+      </div>
+    </div>
+  </div>
+</footer>
+<div class="share-compare" id="shareCompare" role="dialog" aria-modal="false" hidden><button type="button" class="share-compare-close" id="shareCompareClose" aria-label="বন্ধ করুন">×</button><small>BDTrip · শেয়ার করা ম্যাপ</small><h3 id="shareCompareTitle">আপনার বন্ধুর ভ্রমণ ম্যাপ</h3><div class="share-compare-grid"><div><b id="sharedVisited">০</b><span>বন্ধুর ঘোরা</span></div><div><b id="sharedCommon">০</b><span>দুজনের মিল</span></div><div><b id="sharedMissing">০</b><span>আপনি যাননি</span></div></div><p id="shareCompareText"></p><a class="btn primary" href="#tool" id="sharedStartBtn">আমার ম্যাপের সাথে তুলনা করুন</a></div><div class="toast" id="toast" role="status" hidden></div>
+<nav class="mobile-nav" aria-label="মোবাইল নেভিগেশন"><a href="#top">⌂<span>হোম</span></a><a href="#tool">▦<span>ম্যাপ</span></a><a href="#guide">⌖<span>গাইড</span></a><a href="/planner/">🗺<span>প্ল্যানার</span></a><a href="/journal/">✎<span>জার্নাল</span></a></nav>
+
+<script src="data.js" defer></script>
+<script src="info.js" defer></script>
+<script src="app.js" defer></script>
+<script src="v2.js" defer></script>
+<script>
+window.addEventListener('load', function () {
+  var run = window.requestIdleCallback || function (cb) { setTimeout(cb, 80); };
+  run(function () {
+    ['accessibility.js', 'mobile-ux.js'].forEach(function (src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      document.body.appendChild(s);
+    });
+  });
+});
+</script>
+<script src="/i18n-en.js" defer></script>
+</body>
+</html>
