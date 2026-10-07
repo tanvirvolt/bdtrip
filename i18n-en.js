@@ -57,6 +57,28 @@
     });
   }
 
+  function forceEnglishFooter() {
+    const foot = document.querySelector("footer.foot");
+    if (!foot || foot.dataset.enFixed === "1") return;
+    foot.dataset.enFixed = "1";
+    const content = foot.querySelector(".foot-content");
+    if (!content) return;
+    content.innerHTML = `
+      <div class="foot-grid">
+        <section class="foot-brand" aria-labelledby="footer-title">
+          <a class="brand light" href="#top" aria-label="BDTrip"><span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 0 0-7.5 7.5C8.5 17 16 27 16 27s7.5-10 7.5-15.5A7.5 7.5 0 0 0 16 4z" fill="#ffb703"/><circle cx="16" cy="11.5" r="2.8" fill="#0b3d3a"/></svg></span><span class="wordmark">BD<b>Trip</b></span></a>
+          <div class="foot-kicker">EXPLORE BANGLADESH</div>
+          <h2 id="footer-title">64 Districts of Bangladesh,<br><em>One Map!</em></h2>
+          <p>Explore, plan, mark, and share your journey.</p>
+          <div class="foot-stats"><span><b>64</b><small>Districts</small></span><span><b>8</b><small>Divisions</small></span><span><b>100%</b><small>Free</small></span></div>
+        </section>
+        <nav class="foot-col" aria-label="Explore"><h3><i>✦</i> Explore</h3><a href="#tool">My Map <b>›</b></a><a href="#guide">District Guides <b>›</b></a><a href="/budget/">Budget Calculator <b>›</b></a><a href="/checklist/">Trip Checklist <b>›</b></a><a href="/planner/">Multi-Day Planner <b>›</b></a></nav>
+        <nav class="foot-col" aria-label="Information"><h3><i>●</i> Information</h3><a href="#faq">FAQ <b>›</b></a><a href="https://www.geoboundaries.org" target="_blank" rel="noopener">Map data: geoBoundaries <b>↗</b></a><a href="/journal/">Travel Journal <b>›</b></a><a href="#top" class="totop">↑ <span>Back to top</span></a></nav>
+      </div>
+      <div class="foot-bottom"><span class="made">Made in Bangladesh <i class="heart" aria-hidden="true">♥</i> <a href="https://tanvirvolt.github.io" target="_blank" rel="noopener">Tanvir</a></span><span class="copy">© <span id="yr"></span> BDTrip · For every traveler</span></div>`;
+    const yr=document.querySelector("#yr"); if(yr) yr.textContent=new Date().getFullYear();
+  }
+
   localStorage.setItem("bdtrip_lang","en");
   apply();
   const observer = new MutationObserver(mutations => {
