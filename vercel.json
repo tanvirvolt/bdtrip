@@ -34,6 +34,22 @@
     {
       "source": "/planner/",
       "destination": "/planner/index.html"
+    },
+    {
+      "source": "/budget",
+      "destination": "/budget/index.html"
+    },
+    {
+      "source": "/budget/",
+      "destination": "/budget/index.html"
+    },
+    {
+      "source": "/checklist",
+      "destination": "/checklist/index.html"
+    },
+    {
+      "source": "/checklist/",
+      "destination": "/checklist/index.html"
     }
   ]
 }
