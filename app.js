@@ -361,80 +361,113 @@
         document.fonts.load('800 28px "Poppins"', 'BDTrip')
       ]);
     } catch (e) {}
+
     const t = THEMES[state.theme];
     const ink = t.ink || '#11302f', mut = t.mut || '#62706d';
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = H;
     const c = cv.getContext('2d');
-    c.fillStyle = t.bg; c.fillRect(0, 0, W, H);
 
-    c.textAlign = 'left';
-    c.fillStyle = mut; c.font = '500 24px "Hind Siliguri", sans-serif';
-    if (!posterOnly) c.fillText('BDTrip · ভ্রমণ ম্যাপ', 70, 92);
-    c.fillStyle = ink;
-    let title = titleText(), fs = 64;
-    c.font = `800 ${fs}px "Noto Sans Bengali", "Hind Siliguri", sans-serif`;
-    while (c.measureText(title).width > 640 && fs > 30) { fs -= 2; c.font = `800 ${fs}px "Noto Sans Bengali", sans-serif`; }
-    if (!posterOnly) c.fillText(title, 70, 165);
+    // Premium warm paper background
+    const bg = c.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,'#fffdf5'); bg.addColorStop(.58,t.bg || '#f3efe3'); bg.addColorStop(1,'#eee7d6');
+    c.fillStyle=bg; c.fillRect(0,0,W,H);
 
-    const n = state.v.size, wn = state.w.size;
-    c.textAlign = 'right';
-    c.fillStyle = mut; c.font = '500 34px "Hind Siliguri", sans-serif';
-    const tot = '/' + bn(total);
-    c.fillText(tot, W - 70, 165);
-    const tw = c.measureText(tot).width;
-    c.fillStyle = t.v; c.font = '800 120px "Noto Sans Bengali", sans-serif';
-    c.fillText(bn(n), W - 70 - tw - 8, 165);
+    // Decorative soft travel atmosphere
+    const glow=c.createRadialGradient(W*.86,H*.08,0,W*.86,H*.08,W*.28);
+    glow.addColorStop(0,'#ffb70345'); glow.addColorStop(1,'#ffb70300');
+    c.fillStyle=glow; c.fillRect(0,0,W,H);
+    c.strokeStyle='#c9b98b25'; c.lineWidth=2;
+    for(let r=35;r<190;r+=34){ c.beginPath(); c.arc(W-10,10,r,Math.PI*.1,Math.PI*.95); c.stroke(); }
+    c.strokeStyle='#0f7a5a18';
+    for(let r=30;r<150;r+=32){ c.beginPath(); c.arc(10,H-10,r,-Math.PI*.15,Math.PI*.45); c.stroke(); }
 
-    const ax = 70, ay = 210, aw = W - 140, ah = Math.max(430, H * 0.62);
-    const sc = Math.min(aw / D.w, ah / D.h);
-    const ox = ax + (aw - D.w * sc) / 2, oy = ay + (ah - D.h * sc) / 2;
-    c.save();
-    c.translate(ox, oy); c.scale(sc, sc);
-    c.lineJoin = 'round'; c.lineWidth = (1 / sc) * 1.4; c.strokeStyle = t.bg;
-    D.districts.forEach((d) => {
-      const p = new Path2D(d.d), st = statusOf(d.id);
-      c.fillStyle = st === 'v' ? t.v : st === 'w' ? t.w : t.empty;
+    // Header
+    c.textAlign='left';
+    c.fillStyle='#52706a'; c.font='600 22px "Hind Siliguri", sans-serif';
+    if(!posterOnly) c.fillText('BDTrip · আমার ভ্রমণ মানচিত্র',70,76);
+
+    let title=titleText(), fs=62;
+    c.fillStyle=ink; c.font=`800 ${fs}px "Noto Sans Bengali", sans-serif`;
+    while(c.measureText(title).width>620 && fs>30){fs-=2;c.font=`800 ${fs}px "Noto Sans Bengali", sans-serif`;}
+    if(!posterOnly) c.fillText(title,70,148);
+
+    // Profile photo from IndexedDB
+    try{
+      const blob=await getProfilePhoto();
+      if(blob&&!posterOnly){
+        const url=URL.createObjectURL(blob);
+        await new Promise(resolve=>{
+          const im=new Image();
+          im.onload=()=>{c.save();c.beginPath();c.arc(37,125,25,0,Math.PI*2);c.clip();c.drawImage(im,12,100,50,50);c.restore();URL.revokeObjectURL(url);resolve();};
+          im.onerror=()=>{URL.revokeObjectURL(url);resolve();}; im.src=url;
+        });
+      }
+    }catch(_){}
+
+    // Score badge
+    const n=state.v.size, wn=state.w.size, pct=n/total;
+    if(!posterOnly){
+      const bx=W-205, by=52;
+      c.fillStyle='#0b3d3a'; c.beginPath(); c.roundRect(bx,by,135,88,22); c.fill();
+      c.textAlign='center'; c.fillStyle='#ffcf3a'; c.font='800 54px "Noto Sans Bengali", sans-serif'; c.fillText(bn(n),bx+68,112);
+      c.fillStyle='#d4e8e2'; c.font='500 20px "Hind Siliguri", sans-serif'; c.fillText('/৬৪',bx+68,135);
+    }
+
+    // Map
+    const ax=55, ay=190, aw=W-110, ah=Math.max(430,H*.59);
+    const sc=Math.min(aw/D.w,ah/D.h);
+    const ox=ax+(aw-D.w*sc)/2, oy=ay+(ah-D.h*sc)/2;
+    c.save(); c.translate(ox,oy); c.scale(sc,sc);
+    c.lineJoin='round'; c.lineWidth=(1/sc)*1.45; c.strokeStyle='#f8f4e8';
+    D.districts.forEach(d=>{
+      const p=new Path2D(d.d), st=statusOf(d.id);
+      c.fillStyle=st==='v'?t.v:st==='w'?t.w:t.empty;
       c.fill(p); c.stroke(p);
     });
     c.restore();
 
-    if (state.labels) {
-      c.textAlign = 'center';
-      c.font = '600 15px "Noto Sans Bengali", sans-serif';
-      c.lineWidth = 3; c.lineJoin = 'round';
-      [...state.v, ...state.w].forEach((id) => {
-        const d = byId.get(id);
-        const x = ox + d.c[0] * sc, y = oy + d.c[1] * sc + 5;
-        c.strokeStyle = 'rgba(0,0,0,.45)'; c.strokeText(d.bn, x, y);
-        c.fillStyle = '#fff'; c.fillText(d.bn, x, y);
+    if(state.labels){
+      c.textAlign='center'; c.font='600 15px "Noto Sans Bengali", sans-serif';
+      c.lineWidth=3; c.lineJoin='round';
+      [...state.v,...state.w].forEach(id=>{
+        const d=byId.get(id), x=ox+d.c[0]*sc, y=oy+d.c[1]*sc+5;
+        c.strokeStyle='rgba(0,0,0,.45)'; c.strokeText(d.bn,x,y);
+        c.fillStyle='#fff'; c.fillText(d.bn,x,y);
       });
     }
 
-    const pct = n / total, bx = 70, bw = W - 140, by = H - 225;
-    if (!posterOnly) { c.fillStyle = 'rgba(128,128,128,.22)'; c.beginPath(); c.roundRect(bx, by, bw, 10, 5); c.fill(); if (n) { c.fillStyle = t.v; c.beginPath(); c.roundRect(bx, by, Math.max(10, bw * pct), 10, 5); c.fill(); } }
-    c.textAlign = 'left'; c.fillStyle = mut; c.font = '500 24px "Hind Siliguri", sans-serif';
-    if (!posterOnly) c.fillText(`${bn(n)}টি জেলা ভ্রমণ · ${bn(Math.round(pct * 100))}% সম্পন্ন`, 70, H - 175);
+    // Progress
+    const bx=70,bw=W-140,by=H-225;
+    if(!posterOnly){
+      c.fillStyle='#0b3d3a18'; c.beginPath(); c.roundRect(bx,by,bw,12,6); c.fill();
+      if(n){c.fillStyle='#0f7a5a';c.beginPath();c.roundRect(bx,by,Math.max(14,bw*pct),12,6);c.fill();}
+      c.textAlign='left';c.fillStyle=mut;c.font='600 24px "Hind Siliguri", sans-serif';
+      c.fillText(`${bn(n)}টি জেলা ভ্রমণ · ${bn(Math.round(pct*100))}% সম্পন্ন`,70,H-175);
+    }
 
-    // legend
-    if (!posterOnly) c.font = '600 24px "Hind Siliguri", sans-serif';
-    const l1 = `ঘুরেছি ${bn(n)}`, l2 = `ঘুরতে চাই ${bn(wn)}`;
-    if (posterOnly) { c.font = '800 54px "Noto Sans Bengali", sans-serif'; c.fillStyle = ink; c.textAlign = 'center'; c.fillText(`${bn(n)} / ${bn(total)} জেলা`, W/2, H-110); }
-    c.textAlign = 'left';
-    const w1 = c.measureText(l1).width, w2 = c.measureText(l2).width;
-    const lw = 22 + w1 + 44 + 22 + w2, lx = (W - lw) / 2, ly = H - 128;
-    if (!posterOnly) { c.fillStyle = t.v; c.beginPath(); c.arc(lx + 8, ly - 8, 8, 0, 7); c.fill();
-    c.fillStyle = ink; c.fillText(l1, lx + 22, ly);
-    const x2 = lx + 22 + w1 + 44;
-    c.fillStyle = t.w; c.beginPath(); c.arc(x2 + 8, ly - 8, 8, 0, 7); c.fill();
-    c.fillStyle = ink; c.fillText(l2, x2 + 22, ly); }
+    // Legend pills
+    if(!posterOnly){
+      c.font='600 23px "Hind Siliguri", sans-serif';
+      const l1=`ঘুরেছি ${bn(n)}`,l2=`ঘুরতে চাই ${bn(wn)}`;
+      const totalW=c.measureText(l1).width+c.measureText(l2).width+105;
+      let lx=(W-totalW)/2, ly=H-128;
+      c.fillStyle='#ffffffc8';c.beginPath();c.roundRect(lx-14,ly-32,totalW+28,48,24);c.fill();
+      c.fillStyle=t.v;c.beginPath();c.arc(lx+5,ly-8,8,0,Math.PI*2);c.fill();
+      c.fillStyle=ink;c.fillText(l1,lx+22,ly);
+      lx+=c.measureText(l1).width+58;
+      c.fillStyle=t.w;c.beginPath();c.arc(lx+5,ly-8,8,0,Math.PI*2);c.fill();
+      c.fillStyle=ink;c.fillText(l2,lx+22,ly);
+    }else{
+      c.textAlign='center';c.fillStyle=ink;c.font='800 52px "Noto Sans Bengali", sans-serif';
+      c.fillText(`${bn(n)} / ${bn(total)} জেলা`,W/2,H-110);
+    }
 
-    // brand
-    if (!posterOnly) c.font = '800 34px "Poppins", sans-serif';
-    const a = 'BD', b = 'Trip';
-    const wa = c.measureText(a).width, wb = c.measureText(b).width, bx0 = (W - wa - wb) / 2;
-    if (!posterOnly) c.fillStyle = ink; if (!posterOnly) c.fillText(a, bx0, H - 48);
-    if (!posterOnly) c.fillStyle = t.v; if (!posterOnly) c.fillText(b, bx0 + wa, H - 48);
+    // BDTrip footer
+    if(!posterOnly){
+      c.textAlign='center';c.font='800 32px "Poppins", sans-serif';
+      c.fillStyle=ink;c.fillText('BD',W/2-28,H-48);c.fillStyle=t.v;c.fillText('Trip',W/2+18,H-48);
+    }
     return cv;
   }
 
