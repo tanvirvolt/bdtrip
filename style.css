@@ -274,3 +274,65 @@ main,.nav,.foot{max-width:1160px;margin-inline:auto;padding-inline:16px}
 .map-title-line{display:flex;align-items:center;gap:8px}
 .map-profile-avatar{width:32px;height:32px;flex:0 0 32px;border-radius:50%;overflow:hidden;border:2px solid #fff;box-shadow:0 3px 10px #0002;background:var(--bg);background-size:cover;background-position:center}
 .map-profile-avatar:not([hidden]){display:inline-block}
+
+
+/* ===== BDTrip Share Map — Premium Travel Poster ===== */
+.canvas-card{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 8%,#ffb70320 0 9%,transparent 24%),
+    radial-gradient(circle at 8% 88%,#0f7a5a12 0 12%,transparent 30%),
+    linear-gradient(145deg,#fffdf5 0%,#f3efe2 58%,#eee7d6 100%);
+  border:1px solid #e1d8c4;
+  box-shadow:0 16px 40px #0b3d3a14;
+  padding:24px 28px 18px;
+}
+.canvas-card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.42;
+  background:
+    repeating-radial-gradient(circle at 100% 0%,transparent 0 24px,#c9b98b22 25px 26px,transparent 27px 42px),
+    repeating-linear-gradient(120deg,transparent 0 34px,#ffffff55 35px 36px);
+}
+.canvas-card::after{
+  content:"";position:absolute;width:180px;height:180px;left:-70px;bottom:-80px;border-radius:50%;
+  background:radial-gradient(circle,#ffb70330,transparent 68%);pointer-events:none;
+}
+.canvas-card>*{position:relative;z-index:1}
+.mc-top{align-items:center;padding:2px 2px 12px}
+.mc-top>div:first-child{min-width:0}
+.mc-top small{font-weight:600;letter-spacing:.2px;color:#52706a}
+.mc-top h3{display:flex;align-items:center;gap:9px;font-size:clamp(21px,3.6vw,32px);letter-spacing:-.7px}
+.map-title-line{display:flex;align-items:center;gap:9px}
+.map-profile-avatar{width:34px;height:34px;flex:0 0 34px;border:2px solid #fff;border-radius:50%;box-shadow:0 3px 12px #0b3d3a2a;background:#e5dfcf center/cover no-repeat}
+.mc-count{
+  display:flex;align-items:baseline;gap:2px;padding:8px 13px 7px;border-radius:18px;
+  background:#0b3d3a;box-shadow:0 7px 18px #0b3d3a22;color:#fff;
+}
+.mc-count b{font-size:clamp(34px,5.5vw,54px);color:#ffcf3a}
+.mc-count span{color:#d4e8e2}
+#map{max-height:700px;filter:drop-shadow(0 18px 14px #6d5f4022)}
+#map path{stroke-width:1.05}
+#map path.v{filter:drop-shadow(0 0 5px #0f7a5a66)}
+#map path.w{filter:drop-shadow(0 0 4px #f5a62355)}
+.progress{height:9px;background:#0b3d3a16;margin-top:10px;box-shadow:inset 0 1px 2px #0002}
+.progress i{background:linear-gradient(90deg,#0f7a5a,#19a77c,#ffb703);box-shadow:0 0 10px #0f7a5a55}
+.mc-meta{font-size:11px;font-weight:600;color:#5c6d68;margin-top:7px}
+.legend{
+  display:flex;justify-content:center;gap:10px;margin-top:11px;flex-wrap:wrap
+}
+.legend span{
+  background:#ffffffb8;border:1px solid #ddd4c1;border-radius:999px;padding:5px 11px;
+  box-shadow:0 3px 10px #0b3d3a0d;font-weight:600
+}
+.dot{width:9px;height:9px}
+.mc-foot{
+  margin:12px auto 0;padding-top:8px;border-top:1px solid #d8cfbd;
+  color:#294e49;letter-spacing:.2px
+}
+.mc-foot .mark.sm{box-shadow:0 2px 5px #0002}
+@media(max-width:520px){
+  .canvas-card{padding:15px 12px 10px;border-radius:18px}
+  .mc-top{padding-bottom:7px}
+  .map-profile-avatar{width:29px;height:29px;flex-basis:29px}
+  .mc-count{padding:6px 9px}
+}
