@@ -81,9 +81,10 @@
 
   localStorage.setItem("bdtrip_lang","en");
   apply();
+  forceEnglishFooter();
   const observer = new MutationObserver(mutations => {
     for (const m of mutations) {
-      if (m.type === "childList") m.addedNodes.forEach(n => { if (n.nodeType === 1) apply(n); });
+      if (m.type === "childList") { m.addedNodes.forEach(n => { if (n.nodeType === 1) apply(n); }); forceEnglishFooter(); }
       else if (m.type === "characterData") {
         const next = translateText(m.target.nodeValue);
         if (next !== m.target.nodeValue) m.target.nodeValue = next;
