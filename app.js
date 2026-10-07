@@ -391,7 +391,7 @@
     c.fillStyle=ink; c.font=`800 ${fs}px "Noto Sans Bengali", sans-serif`;
     while(c.measureText(title).width>620 && fs>30){fs-=2;c.font=`800 ${fs}px "Noto Sans Bengali", sans-serif`;}
     const hasProfile = !!document.querySelector('#mapProfileAvatar:not([hidden])');
-    if(!posterOnly) c.fillText(title,hasProfile ? 132 : 70,148);
+    if(!posterOnly) c.fillText(title,hasProfile ? 190 : 70,148);
 
     // Profile photo from IndexedDB
     try{
@@ -400,7 +400,11 @@
         const url=URL.createObjectURL(blob);
         await new Promise(resolve=>{
           const im=new Image();
-          im.onload=()=>{c.save();c.beginPath();c.arc(68,123,45,0,Math.PI*2);c.clip();c.drawImage(im,23,78,90,90);c.restore();URL.revokeObjectURL(url);resolve();};
+          im.onload=()=>{c.save();c.save();
+          c.shadowColor='#0b3d3a38'; c.shadowBlur=18; c.shadowOffsetY=7;
+          c.fillStyle='#ffb703'; c.beginPath(); c.arc(95,123,68,0,Math.PI*2); c.fill();
+          c.shadowColor='transparent'; c.shadowBlur=0; c.shadowOffsetY=0;
+          c.beginPath(); c.arc(95,123,60,0,Math.PI*2); c.clip(); c.drawImage(im,35,63,120,120); c.restore();URL.revokeObjectURL(url);resolve();};
           im.onerror=()=>{URL.revokeObjectURL(url);resolve();}; im.src=url;
         });
       }
