@@ -16,6 +16,14 @@
   ],
   "rewrites": [
     {
+      "source": "/journal",
+      "destination": "/journal/index.html"
+    },
+    {
+      "source": "/journal/",
+      "destination": "/journal/index.html"
+    },
+    {
       "source": "/m/:code",
       "destination": "/api/share/:code"
     },
