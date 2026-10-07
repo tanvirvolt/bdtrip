@@ -64,7 +64,7 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap" crossorigin onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap"></noscript>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="/v2.css">
 <link rel="preload" as="style" href="/v2.css" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/v2.css"></noscript>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"আমার বাছাই করা তথ্য কি সংরক্ষিত থাকে?","acceptedAnswer":{"@type":"Answer","text":"হ্যাঁ, শুধু আপনার ব্রাউজারে সেভ থাকে। BDTrip কোনো তথ্য সার্ভারে পাঠায় না।"}},{"@type":"Question","name":"ঘুরেছি আর ঘুরতে চাই এর মধ্যে পার্থক্য কী?","acceptedAnswer":{"@type":"Answer","text":"ঘুরেছি মোডে যেসব জেলায় গিয়েছেন সেগুলো এবং ঘুরতে চাই মোডে ভবিষ্যতের ট্রিপের জেলাগুলো আলাদা রঙে দেখায়।"}},{"@type":"Question","name":"ম্যাপ কোন সাইজে ডাউনলোড হয়?","acceptedAnswer":{"@type":"Answer","text":"ম্যাপ ১০৮০×১৩৫০ পিক্সেলের হাই-কোয়ালিটি ছবি এবং PDF-এ A4 সাইজে ডাউনলোড করা যায়।"}},{"@type":"Question","name":"BDTrip কি ফ্রি?","acceptedAnswer":{"@type":"Answer","text":"হ্যাঁ, BDTrip সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়।"}}]}</script>
@@ -283,10 +283,10 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
 <div class="share-compare" id="shareCompare" role="dialog" aria-modal="false" hidden><button type="button" class="share-compare-close" id="shareCompareClose" aria-label="বন্ধ করুন">×</button><small>BDTrip · শেয়ার করা ম্যাপ</small><h3 id="shareCompareTitle">আপনার বন্ধুর ভ্রমণ ম্যাপ</h3><div class="share-compare-grid"><div><b id="sharedVisited">০</b><span>বন্ধুর ঘোরা</span></div><div><b id="sharedCommon">০</b><span>দুজনের মিল</span></div><div><b id="sharedMissing">০</b><span>আপনি যাননি</span></div></div><p id="shareCompareText"></p><a class="btn primary" href="#tool" id="sharedStartBtn">আমার ম্যাপের সাথে তুলনা করুন</a></div><div class="toast" id="toast" role="status" hidden></div>
 <nav class="mobile-nav" aria-label="মোবাইল নেভিগেশন"><a href="#top">⌂<span>হোম</span></a><a href="#tool">▦<span>ম্যাপ</span></a><a href="#guide">⌖<span>গাইড</span></a><a href="/planner/">🗺<span>প্ল্যানার</span></a><a href="/journal/">✎<span>জার্নাল</span></a></nav>
 
-<script src="data.js" defer></script>
-<script src="info.js" defer></script>
-<script src="app.js" defer></script>
-<script src="v2.js" defer></script>
+<script src="/data.js" defer></script>
+<script src="/info.js" defer></script>
+<script src="/app.js" defer></script>
+<script src="/v2.js" defer></script>
 <script>
 window.addEventListener('load', function () {
   var run = window.requestIdleCallback || function (cb) { setTimeout(cb, 80); };
