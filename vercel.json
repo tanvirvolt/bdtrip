@@ -16,6 +16,14 @@
   ],
   "rewrites": [
     {
+      "source": "/district-guide",
+      "destination": "/district-guide/index.html"
+    },
+    {
+      "source": "/district-guide/",
+      "destination": "/district-guide/index.html"
+    },
+    {
       "source": "/en",
       "destination": "/en/index.html"
     },
