@@ -85,7 +85,7 @@ const css = `
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:15px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 25px #103c3510}.content h2,.side h2{font-size:20px;margin:0 0 13px;color:var(--d)}
 .section{padding:0 0 21px;margin-bottom:21px;border-bottom:1px solid #edf1ef}.section:last-child{border-bottom:0;margin-bottom:0}.places{display:grid;grid-template-columns:1fr 1fr;gap:9px}.place{padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#f8faf9}.place b{font-size:14px}.place small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
 .info-row{display:grid;grid-template-columns:42px 1fr;gap:11px;align-items:start;margin:9px 0}.ico{width:38px;height:38px;border-radius:11px;background:#e7f5ef;color:var(--g);display:grid;place-items:center;font-weight:800}.info-row b{display:block;font-size:14px}.info-row p{margin:1px 0;color:#61716c;font-size:13px}
-.plan{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.plan-item{padding:12px;border-radius:13px;background:#f4f8f6;border:1px solid var(--line);font-size:13px}.plan-item span{display:block;color:var(--muted);font-size:11px;margin-top:2px}.tips{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tip-item{padding:11px 12px;background:#f8faf9;border-radius:12px;font-size:12px;color:#536760}
+.gallery{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:8px;margin-bottom:20px}.gallery figure{margin:0;position:relative;overflow:hidden;border-radius:15px;background:#eaf2ef;min-height:145px}.gallery figure:first-child{grid-row:span 2;min-height:300px}.gallery img{width:100%;height:100%;object-fit:cover;display:block}.gallery figcaption{position:absolute;left:8px;right:8px;bottom:8px;padding:6px 9px;border-radius:9px;background:#0b3d3acc;color:#fff;font-size:10px}.overview{background:#eef8f4;border:1px solid #d6ebe3;border-radius:15px;padding:15px;margin-bottom:20px}.overview b{color:var(--d)}.plan{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.plan-item{padding:12px;border-radius:13px;background:#f4f8f6;border:1px solid var(--line);font-size:13px}.plan-item span{display:block;color:var(--muted);font-size:11px;margin-top:2px}.tips{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tip-item{padding:11px 12px;background:#f8faf9;border-radius:12px;font-size:12px;color:#536760}
 .cover-art{height:220px;margin:-22px -22px 18px;border-radius:20px 20px 0 0;position:relative;overflow:hidden}.cover-glow{position:absolute;width:190px;height:190px;right:12%;top:-65px;border-radius:50%;background:#ffffff28}.cover-title{position:absolute;left:25px;top:24px;color:#fff;z-index:2}.cover-title span{font-size:32px;display:block}.cover-title small{display:block;font-size:10px;letter-spacing:.14em;font-weight:800;color:#ffffffc7;margin-top:4px}.cover-title strong{display:block;font-family:"Noto Sans Bengali","Hind Siliguri",sans-serif;font-size:38px;line-height:1.05;margin-top:2px}.cover-title em{font-style:normal;font-size:12px;color:#ffffffbd}.cover-land{position:absolute;left:-5%;right:-5%;bottom:-8px;height:100px}.cover-land span,.cover-land i,.cover-land b{position:absolute;bottom:0;display:block;background:#ffffff18;border-radius:100% 100% 0 0}.cover-land span{left:4%;width:35%;height:70px;transform:skewX(-18deg)}.cover-land i{left:33%;width:32%;height:105px;transform:skewX(22deg)}.cover-land b{right:5%;width:38%;height:75px;transform:skewX(-14deg)}
 .mapbox{background:#f7faf8;border-radius:15px;padding:10px}.mapbox svg{width:100%;height:310px}.mapbox path{fill:#cce8de;stroke:#fff;stroke-width:1}.mapbox path.sel{fill:var(--g);stroke:var(--d);stroke-width:2}.side .btn{width:100%;justify-content:center;margin-top:10px}.near{display:grid;gap:7px;margin-top:8px}.near a{padding:9px 10px;background:#f3f7f5;border-radius:9px;color:#3d554e;text-decoration:none;font-size:13px}.source{font-size:12px}.source a{color:var(--g)}.tip{background:#fff8e6;border:1px solid #f2dda2;border-radius:15px;padding:14px;margin-top:15px}.tip b{color:#9b6a00}.foot{margin-top:15px;padding:16px 20px;background:var(--d);color:#cde0da;border-radius:17px;display:flex;justify-content:space-between;font-size:12px}
 @media(max-width:850px){.dlinks{display:none}.hero{padding:30px;min-height:300px}.hero-map{width:230px;height:230px;right:-20px;top:30px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;gap:15px}.side .mapbox{grid-column:1/-1}.places{grid-template-columns:1fr}.guide-strip{grid-template-columns:repeat(2,1fr)}}
@@ -98,6 +98,10 @@ const pages = D.districts.map((d) => {
   const theme = themeFor(d, info);
   const profile = profileFor(d, info);
   const places = info.a?.length ? info.a : ['জেলা ও আশপাশের দর্শনীয় স্থান'];
+  const photoQuery = encodeURIComponent('Bangladesh ' + d.en + ' travel');
+  const photos = [1, 2, 3].map((n) => `https://loremflickr.com/1200/760/${photoQuery}?lock=${d.id * 10 + n}`);
+  const overview = info.f ? `${d.bn} ভ্রমণে ${info.f} ও স্থানীয় অভিজ্ঞতা যোগ করতে পারেন।` : `${d.bn} ভ্রমণে স্থানীয় খাবার, বাজার ও জেলার নিজস্ব সংস্কৃতি ঘুরে দেখার সুযোগ রাখুন।`;
+  const practical = `এই গাইডের স্থানগুলোকে একসাথে ধরে ${profile.duration} সময়ের একটি সহজ itinerary সাজানো যায়। দূরের স্পট হলে যাতায়াতের সময় আলাদা করে ধরুন।`;
   const nearby = D.districts.filter((x) => x.div === d.div && x.id !== d.id).slice(0, 5);
   const map = `<svg viewBox="0 0 ${D.w} ${D.h}" aria-label="${esc(d.bn)} জেলার মানচিত্র"><path class="sel" d="${d.d}"></path></svg>`;
   const sources = (info.src || []).map((x) => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a></li>`).join('') || '<li>জেলা প্রশাসনের সরকারি পোর্টাল</li>';
@@ -138,7 +142,7 @@ ${css}
 <div class="guide-stat"><small>ভ্রমণের ধরন</small><b>${esc(profile.type)}</b></div>
 <div class="guide-stat"><small>প্রস্তাবিত সময়</small><b>${esc(profile.duration)}</b></div>
 <div class="guide-stat"><small>দর্শনীয় স্থান</small><b>${places.length}টি তালিকাভুক্ত</b></div>
-<div class="guide-stat"><small>গাইড</small><b>BDTrip Verified</b></div>
+<div class="guide-stat"><small>গাইড</small><b>BDTrip Travel Guide</b></div>
 </div>
 
 <div class="layout">
@@ -149,7 +153,12 @@ ${css}
 <div class="cover-land"><span></span><i></i><b></b></div>
 </div>
 
-<section class="section"><h2>🌿 ঘুরে দেখার জায়গা</h2><div class="places">
+<div class="gallery">
+<figure><img src="${photos[0]}" alt="${esc(d.bn)} ভ্রমণ ছবি" loading="eager" referrerpolicy="no-referrer" onerror="this.style.display='none'"><figcaption>${esc(d.bn)} · Travel Photo</figcaption></figure>
+<figure><img src="${photos[1]}" alt="${esc(d.bn)} travel photo" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'"><figcaption>Explore ${esc(d.bn)}</figcaption></figure>
+<figure><img src="${photos[2]}" alt="${esc(d.bn)} Bangladesh" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'"><figcaption>Bangladesh</figcaption></figure>
+</div>
+<div class="overview"><b>📝 জেলা সম্পর্কে</b><br><span>${esc(overview)}</span><br><small>${esc(practical)}</small></div><section class="section"><h2>🌿 ঘুরে দেখার জায়গা</h2><div class="places">
 ${places.map((p) => `<div class="place"><b>${esc(p)}</b><small>দর্শনীয় স্থান</small></div>`).join('')}
 </div></section>
 
