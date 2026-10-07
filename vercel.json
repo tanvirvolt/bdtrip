@@ -29,11 +29,11 @@
     },
     {
       "source": "/planner",
-      "destination": "/"
+      "destination": "/planner/index.html"
     },
     {
       "source": "/planner/",
-      "destination": "/"
+      "destination": "/planner/index.html"
     }
   ]
 }
