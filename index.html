@@ -81,7 +81,7 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
     <a href="/journal/">জার্নাল</a>
     <a href="#checklist">চেকলিস্ট</a>
     <a href="#journal">জার্নাল</a>
-    <a href="#planner">প্ল্যানার</a>
+    <a href="/planner/">প্ল্যানার</a>
     <a href="#faq">প্রশ্নোত্তর</a>
   </nav>
   <div class="v2-actions"><button id="themeToggle" class="icon-btn" type="button" aria-label="ডার্ক মোড">◐</button><a class="v2-search-btn" href="#tool">⌕ <span>জেলা খুঁজুন</span></a></div>
@@ -222,29 +222,6 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
       <p>ভ্রমণের অগ্রগতির সাথে ব্যাজ আনলক করুন।</p>
     </div>
     <div class="card achievement-card"><div id="achievementList" class="achievement-list"></div></div>
-  </section>
-
-  <!-- TRIP PLANNER -->
-  <section class="block" id="planner">
-    <div class="block-head">
-      <h2>মাল্টি-ডে ট্রিপ প্ল্যানার</h2>
-      <p>এক ট্রিপে একাধিক জেলা, দিনভিত্তিক প্ল্যান ও নিজের বাজেট। ভাড়া/সময়সূচি BDTrip নিজে থেকে দেয় না—আপনিই লিখবেন।</p>
-    </div>
-    <div class="planner-grid">
-      <article class="card planner-editor">
-        <div class="planner-top"><input id="plannerTitle" maxlength="50" placeholder="যেমন: কক্সবাজার উইকেন্ড ট্রিপ"><button class="btn" id="plannerAdd" type="button">+ দিন যোগ</button></div>
-        <div id="plannerDays" class="planner-days"></div>
-        <div class="planner-budget">
-          <label>যাতায়াত মোট<input id="planTravel" type="number" min="0" step="50" placeholder="নিজে লিখুন"></label>
-          <label>থাকা মোট<input id="planHotel" type="number" min="0" step="50" placeholder="নিজে লিখুন"></label>
-          <label>খাবার মোট<input id="planFood" type="number" min="0" step="50" placeholder="নিজে লিখুন"></label>
-          <label>অন্যান্য<input id="planOther" type="number" min="0" step="50" placeholder="নিজে লিখুন"></label>
-        </div>
-        <div class="planner-total"><span>আনুমানিক মোট</span><b id="planTotal">৳০</b></div>
-        <div class="planner-actions"><button class="btn primary" id="plannerSave" type="button">প্ল্যান সেভ</button><button class="btn" id="plannerShare" type="button">প্ল্যান লিংক</button><button class="btn" id="plannerReset" type="button">রিসেট</button></div>
-      </article>
-      <aside class="card planner-info"><h3>নিরাপদভাবে প্ল্যান করুন</h3><ul><li>বাস/ট্রেনের ভাড়া নিজে লিখুন।</li><li>সময়সূচি নিজে যাচাই করে নিন।</li><li>আবহাওয়া ও স্থানীয় নিয়ম আগে দেখুন।</li><li>শেয়ার লিংকে প্ল্যানের লেখা থাকবে; কোনো সার্ভার ডেটাবেস দরকার নেই।</li></ul></aside>
-    </div>
   </section>
 
   <!-- BUDGET -->
