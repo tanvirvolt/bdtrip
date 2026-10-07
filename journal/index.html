@@ -1,33 +1,174 @@
 <!doctype html>
-<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>আমার ট্রাভেল জার্নাল — BDTrip</title>
-<meta name="description" content="BDTrip-এর ব্যক্তিগত ট্রাভেল জার্নাল। ভ্রমণের তারিখ, রেটিং, নোট ও ছবি নিজের ডিভাইসে সংরক্ষণ করুন।">
+<meta name="description" content="BDTrip-এর ব্যক্তিগত ট্রাভেল জার্নাল। ভ্রমণের তারিখ, রেটিং, নোট, খরচ ও ছবি নিজের ডিভাইসে সংরক্ষণ করুন।">
+<meta name="theme-color" content="#0b3d3a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230b3d3a'/%3E%3Cpath d='M16 5a7 7 0 00-7 7c0 5 7 14 7 14s7-9 7-14a7 7 0 00-7-7z' fill='%23ffb703'/%3E%3Ccircle cx='16' cy='12' r='2.6' fill='%230b3d3a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
-</head><body>
-<header class="nav"><a class="brand" href="/" aria-label="BDTrip হোম"><span class="mark">BD</span><span class="wordmark">BD<b>Trip</b></span></a><nav class="links"><a href="/">ম্যাপ</a><a href="/#guide">জেলা গাইড</a><a href="/journal/">জার্নাল</a></nav></header>
-<main>  <!-- TRAVEL JOURNAL PAGE -->
-  <section class="block journal-page" id="journal">
-    <div class="block-head">
-      <span class="tag">BDTrip · Personal Travel Journal</span>
-      <h1>আমার ট্রাভেল জার্নাল</h1>
-      <p>আপনার ভ্রমণের তারিখ, রেটিং, নোট ও ছবি এই ডিভাইসেই সংরক্ষণ করুন।</p>
+<link rel="stylesheet" href="/journal/journal.css">
+</head>
+<body>
+
+<header class="nav" id="top">
+  <a class="brand" href="/" aria-label="BDTrip হোম">
+    <span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 00-7.500 7.500C8.500 17 16 27 16 27s7.500-10 7.500-15.500A7.500 7.500 0 0016 4z" fill="#ffb703"/><circle cx="16" cy="11.500" r="2.800" fill="#0b3d3a"/></svg></span>
+    <span class="wordmark">BD<b>Trip</b></span>
+  </a>
+  <nav class="links" aria-label="প্রধান মেনু">
+    <a href="/">ম্যাপ</a>
+    <a href="/#guide">জেলা গাইড</a>
+    <a href="/journal/" class="here" aria-current="page">জার্নাল</a>
+  </nav>
+</header>
+
+<main class="jr">
+  <a class="jr-back" href="/">← BDTrip ম্যাপে ফিরে যান</a>
+
+  <!-- HERO + STATS -->
+  <section class="jr-hero" aria-labelledby="jrTitle">
+    <div class="jr-hero-in">
+      <span class="jr-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 012-2h11a2 2 0 012 2v16l-3-2-3 2-3-2-3 2V5z"/><path d="M8 8h7M8 12h5"/></svg>
+        ব্যক্তিগত ট্রাভেল জার্নাল
+      </span>
+      <h1 id="jrTitle">আমার <em>ট্রাভেল জার্নাল</em></h1>
+      <p>কোথায় গিয়েছেন, কবে গিয়েছেন, কী ভালো লেগেছে, কত খরচ হয়েছে। সব নিজের মতো করে লিখে রাখুন। ছবি ও নোট শুধু এই ডিভাইসেই থাকে।</p>
     </div>
-    <div class="journal-grid">
-      <article class="card journal-editor">
-        <div class="picker-head"><h3 id="journalDistrictTitle">একটি জেলা বেছে নিন</h3><span class="count-pill" id="journalPhotoState">লোকাল</span></div>
-        <div class="journal-fields">
-          <label>কবে গিয়েছেন<input id="journalDate" type="date"></label>
-          <label>রেটিং<select id="journalRating"><option value="0">রেটিং দিন</option><option value="1">★ ১/৫</option><option value="2">★★ ২/৫</option><option value="3">★★★ ৩/৫</option><option value="4">★★★★ ৪/৫</option><option value="5">★★★★★ ৫/৫</option></select></label>
-          <label class="full">ছোট নোট<textarea id="journalNote" rows="5" maxlength="500" placeholder="এই ভ্রমণের স্মৃতি লিখুন..."></textarea></label>
-          <label class="full">নিজের ছবি<input id="journalPhoto" type="file" accept="image/*" multiple></label>
-        </div>
-        <div class="journal-actions"><button class="btn primary" id="journalSave" type="button">জার্নাল সেভ</button><button class="btn" id="journalClear" type="button">ফাঁকা করুন</button></div>
-        <div id="journalPhotos" class="journal-photos"></div>
-        <p class="journal-privacy">🔒 ছবি ও নোট শুধু এই ব্রাউজারের IndexedDB-তে থাকে।</p>
-      </article>
-      <aside class="card journal-list-card"><div class="picker-head"><h3>সাম্প্রতিক জার্নাল</h3><span class="count-pill" id="journalCount">০</span></div><div id="journalList" class="journal-list"></div></aside>
-    </div>
+    <dl class="jr-stats" aria-live="polite">
+      <div><dt>মোট এন্ট্রি</dt><dd id="stEntries">০</dd></div>
+      <div><dt>ভিন্ন জেলা</dt><dd id="stDistricts">০<small>/৬৪</small></dd></div>
+      <div><dt>গড় রেটিং</dt><dd id="stRating">–</dd></div>
+      <div><dt>ছবি</dt><dd id="stPhotos">০</dd></div>
+    </dl>
   </section>
+
+  <div class="jr-grid">
+
+    <!-- MINI MAP -->
+    <section class="card jr-mapcard" aria-labelledby="jrMapTitle">
+      <div class="jr-head">
+        <h2 id="jrMapTitle">ম্যাপ থেকে জেলা বাছুন</h2>
+        <div class="jr-legend"><span><i class="dot has"></i>লেখা আছে</span><span><i class="dot sel"></i>বাছাই</span></div>
+      </div>
+      <svg id="jrMap" viewBox="0 0 600 848" role="group" aria-label="বাংলাদেশের জেলা ম্যাপ"></svg>
+    </section>
+
+    <!-- EDITOR -->
+    <article class="card jr-editor" id="editor" aria-labelledby="jrEditTitle">
+      <div class="jr-head">
+        <h2 id="jrEditTitle">নতুন এন্ট্রি</h2>
+        <span class="jr-local" title="সব তথ্য এই ব্রাউজারের IndexedDB-তে থাকে">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+          শুধু আপনার ডিভাইসে
+        </span>
+      </div>
+
+      <form id="jrForm" class="jr-form" autocomplete="off" novalidate>
+
+        <label class="f full" for="jrDistrict">জেলা
+          <select id="jrDistrict" required><option value="">জেলা বেছে নিন</option></select>
+          <span class="hint" id="jrHint" aria-live="polite"></span>
+        </label>
+
+        <label class="f" for="jrDate">কবে গিয়েছেন
+          <input id="jrDate" type="date">
+        </label>
+
+        <label class="f" for="jrSpend">মোট খরচ (৳, ঐচ্ছিক)
+          <input id="jrSpend" type="number" min="0" step="1" inputmode="numeric" placeholder="যেমন: 4500">
+        </label>
+
+        <div class="f full" role="group" aria-labelledby="rateLbl">
+          <span id="rateLbl" class="lbl">রেটিং</span>
+          <div class="stars" id="jrStars" role="radiogroup" aria-label="রেটিং"></div>
+          <span class="hint" id="jrRateTxt">রেটিং দেননি</span>
+        </div>
+
+        <div class="f full" role="group" aria-labelledby="tagLbl">
+          <span id="tagLbl" class="lbl">ভ্রমণের ধরন</span>
+          <div class="tags" id="jrTags"></div>
+        </div>
+
+        <label class="f full" for="jrNote">ভ্রমণের স্মৃতি
+          <textarea id="jrNote" rows="5" maxlength="500" placeholder="কী ভালো লেগেছে? কী মনে রাখার মতো? কোথায় খেয়েছেন, কীভাবে গেছেন..."></textarea>
+          <span class="hint right" id="jrCount">০/৫০০</span>
+        </label>
+
+        <div class="f full">
+          <span class="lbl">ছবি <small id="jrPhotoCount">(০/৮)</small></span>
+          <label class="drop" id="jrDrop" for="jrPhoto">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>
+            <b>ছবি বেছে নিন বা এখানে ছেড়ে দিন</b>
+            <span>ছবি আপনার ডিভাইসে ছোট করে সংরক্ষণ হয়, কোথাও আপলোড হয় না</span>
+            <input id="jrPhoto" type="file" accept="image/*" multiple>
+          </label>
+          <div id="jrPhotos" class="photos" aria-label="এন্ট্রির ছবি"></div>
+        </div>
+
+        <label class="check full">
+          <input id="jrSync" type="checkbox" checked>
+          সেভ করলে ম্যাপে এই জেলাটি "ঘুরেছি" হিসেবে চিহ্নিত হবে
+        </label>
+
+        <div class="actions full">
+          <button class="btn primary" id="jrSave" type="submit">জার্নাল সেভ করুন</button>
+          <button class="btn" id="jrNew" type="button">নতুন এন্ট্রি</button>
+          <button class="btn danger" id="jrDelete" type="button" hidden>মুছুন</button>
+        </div>
+      </form>
+    </article>
+
+    <!-- LIST -->
+    <aside class="card jr-listcard" aria-labelledby="jrListTitle">
+      <div class="jr-head">
+        <h2 id="jrListTitle">সাম্প্রতিক জার্নাল</h2>
+        <span class="count-pill" id="jrCountPill">০</span>
+      </div>
+      <div class="jr-tools">
+        <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="jrSearch" type="search" placeholder="জেলা বা নোটে খুঁজুন" aria-label="এন্ট্রি খুঁজুন"></label>
+        <select id="jrSort" aria-label="সাজানো">
+          <option value="new">নতুন আগে</option>
+          <option value="old">পুরনো আগে</option>
+          <option value="rate">রেটিং বেশি আগে</option>
+        </select>
+      </div>
+      <div id="jrList" class="list" aria-live="polite"></div>
+
+      <div class="backup">
+        <h3>ব্যাকআপ</h3>
+        <p>ডেটা শুধু এই ব্রাউজারে আছে। ব্রাউজারের ডেটা মুছলে বা ফোন বদলালে হারিয়ে যাবে, তাই মাঝে মাঝে ব্যাকআপ রাখুন।</p>
+        <div class="backup-btns">
+          <button class="btn" id="jrExport" type="button">ব্যাকআপ নামান</button>
+          <label class="btn" for="jrImport">ব্যাকআপ ফেরত আনুন<input id="jrImport" type="file" accept="application/json,.json" hidden></label>
+        </div>
+      </div>
+    </aside>
+
+  </div>
 </main>
-<script src="/data.js"></script><script src="/info.js"></script><script src="/app.js" defer></script>
-</body></html>
+
+<footer class="foot">
+  <div class="foot-card">
+    <svg class="foot-ridge" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90V52c80-30 140-34 220-10s130 22 210-6 150-36 240-6 150 30 240 0 150-24 290 8V90z" fill="#ffffff0d"/><path d="M0 90V68c110-26 190-14 290 4s180 8 280-14 190-18 290 6 210 22 340-6V90z" fill="#ffffff0f"/></svg>
+    <div class="foot-bottom" style="border-top:0;padding-top:0">
+      <span class="made">বাংলাদেশে তৈরি <i class="heart" aria-hidden="true">♥</i> <a href="https://tanvirvolt.github.io" target="_blank" rel="noopener">Tanvir</a></span>
+      <span class="copy">© <span id="yr"></span> BDTrip &middot; <a href="/">ম্যাপে ফিরুন</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="jr-toast" id="jrToast" role="status" aria-live="polite" hidden></div>
+
+<!-- Data (district shapes + guide). The journal runs on its own script, app.js is not needed here. -->
+<script src="/data.js"></script>
+<script src="/info.js"></script>
+<script src="/journal/journal.js" defer></script>
+</body>
+</html>
