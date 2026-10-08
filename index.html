@@ -134,7 +134,8 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
       </div>
       <label class="search">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="search" type="search" placeholder="জেলা খুঁজুন (বাংলা বা English)" autocomplete="off">
+        <input id="search" type="search" placeholder="জেলা, স্থান, খাবার বা guide খুঁজুন..." autocomplete="off" aria-controls="homeSearchResults" aria-expanded="false">
+      <div id="homeSearchResults" class="home-search-results" hidden></div>
       </label>
       <div class="bulk">
         <button type="button" id="selAll">সব ঘুরেছি</button>
