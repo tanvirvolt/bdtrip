@@ -38,21 +38,49 @@
   panel?.addEventListener('click',e=>{if(e.target===panel||e.target.closest('[data-bn-search-close]'))closeSearch()});
   let loaded=false;
   const ensureData=()=>new Promise(resolve=>{
-    if(window.BD_DATA){loaded=true;resolve();return;}
-    if(loaded){resolve();return;}
-    const s=document.createElement('script');s.src='/data.js';s.onload=()=>{loaded=true;resolve()};s.onerror=()=>resolve();document.head.appendChild(s);
+    if(window.BD_DATA?.districts?.length){loaded=true;resolve(true);return;}
+    if(loaded){resolve(Boolean(window.BD_DATA?.districts?.length));return;}
+    const existing=document.querySelector('script[src$="/data.js"],script[src="data.js"]');
+    if(existing){
+      if(window.BD_DATA?.districts?.length){loaded=true;resolve(true);return;}
+      existing.addEventListener('load',()=>{loaded=true;resolve(Boolean(window.BD_DATA?.districts?.length))},{once:true});
+      existing.addEventListener('error',()=>resolve(false),{once:true});
+      return;
+    }
+    const s=document.createElement('script');
+    s.src='/data.js';
+    s.onload=()=>{loaded=true;resolve(Boolean(window.BD_DATA?.districts?.length))};
+    s.onerror=()=>resolve(false);
+    document.head.appendChild(s);
   });
-  const norm=v=>String(v||'').toLowerCase().replace(/[\s\-_]/g,'');
+  const norm=v=>String(v??'').toLocaleLowerCase('bn').replace(/[\s\-_]/g,'');
+  const slugify=v=>String(v||'').toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
   function render(query){
     if(!results)return;
-    ensureData().then(()=>{
+    results.innerHTML='<div class="bdnav-empty"><div><b>খুঁজছি...</b></div></div>';
+    ensureData().then(ok=>{
+      if(!ok){
+        results.innerHTML='<div class="bdnav-empty"><div><b>জেলা ডেটা লোড করা যায়নি</b><br><small>পেজটি refresh করে আবার চেষ্টা করুন</small></div></div>';
+        return;
+      }
       const q=norm(query);
-      const ds=window.BD_DATA?.districts||[];
-      const items=q?ds.filter(d=>norm(d.bn).includes(q)||norm(d.en).includes(q)||norm(d.id).includes(q)).slice(0,12):ds.slice(0,8);
-      if(!items.length){results.innerHTML='<div class="bdnav-empty"><div><b>কোনো জেলা পাওয়া যায়নি</b><br><small>বাংলা বা English নাম দিয়ে আবার চেষ্টা করুন</small></div></div>';return;}
-      results.innerHTML=items.map(d=>'<a class="bdnav-result" href="/district/'+encodeURIComponent(d.id)+'/"><span class="bdnav-result-icon">⌖</span><span><b>'+escapeHtml(d.bn)+'</b><small>'+escapeHtml(d.en)+'</small></span><span style="margin-left:auto">›</span></a>').join('');
+      const ds=Array.isArray(window.BD_DATA?.districts)?window.BD_DATA.districts:[];
+      const items=q
+        ? ds.filter(d=>norm(d.bn).includes(q)||norm(d.en).includes(q)).slice(0,12)
+        : ds.slice(0,8);
+      if(!items.length){
+        results.innerHTML='<div class="bdnav-empty"><div><b>কোনো জেলা পাওয়া যায়নি</b><br><small>বাংলা বা English নাম দিয়ে আবার চেষ্টা করুন</small></div></div>';
+        return;
+      }
+      results.innerHTML=items.map(d=>{
+        const slug=slugify(d.en);
+        return '<a class="bdnav-result" href="/district/'+encodeURIComponent(slug)+'/"><span class="bdnav-result-icon">'+districtIcon()+'</span><span><b>'+escapeHtml(d.bn)+'</b><small>'+escapeHtml(d.en)+'</small></span><span class="bdnav-result-arrow" aria-hidden="true">›</span></a>';
+      }).join('');
+    }).catch(()=>{
+      results.innerHTML='<div class="bdnav-empty"><div><b>Search error</b><br><small>আবার চেষ্টা করুন</small></div></div>';
     });
   }
+  const districtIcon=()=>'<svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
   const escapeHtml=v=>String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   input?.addEventListener('input',e=>render(e.target.value));
 })();
