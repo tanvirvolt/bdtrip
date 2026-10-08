@@ -78,12 +78,18 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
     <div class="blob b2" aria-hidden="true"></div>
     <div class="hero-grid">
       <div class="hero-copy">
-        <span class="tag">৬৪ জেলা · ৮ বিভাগ · সম্পূর্ণ ফ্রি</span>
-        <h1>বাংলাদেশের <em>কতটুকু</em> ঘুরে দেখেছেন?</h1>
-        <p>যেসব জেলায় গিয়েছেন সেগুলো রাঙিয়ে নিন, যেখানে যেতে চান সেগুলো উইশলিস্টে রাখুন। জেলা গাইড দেখুন, ট্রিপের বাজেট হিসাব করুন, তারপর সুন্দর একটি ট্রাভেল ম্যাপ ডাউনলোড করে শেয়ার করুন।</p>
+        <span class="tag">বাংলাদেশ · ৬৪ জেলা · ৮ বিভাগ · Free</span>
+        <h1>বাংলাদেশের <em>৬৪ জেলা</em><br>এক ম্যাপে নিজের ভ্রমণ গল্প তৈরি করুন</h1>
+        <p>যেসব জেলায় গিয়েছেন mark করুন, যেগুলোতে যেতে চান save করুন, নিজের travel map বানান এবং বন্ধুদের সাথে share করুন।</p>
+        <ul class="hero-features" aria-label="BDTrip features">
+          <li>✓ যেসব জেলায় গিয়েছেন mark করুন</li>
+          <li>★ যেগুলোতে যেতে চান save করুন</li>
+          <li>🗺 নিজের travel map তৈরি করুন</li>
+          <li>📤 বন্ধুদের সাথে share করুন</li>
+        </ul>
         <div class="hero-cta">
-          <a class="cta" href="#tool">ম্যাপ বানানো শুরু করুন</a>
-          <a class="cta ghost" href="/district/chattogram/">জেলা গাইড দেখুন</a>
+          <a class="cta" href="#tool">আমার ট্রাভেল ম্যাপ তৈরি করুন</a>
+          <a class="cta ghost" href="/district-guide/">৬৪ জেলার গাইড দেখুন</a>
         </div>
       </div>
       <aside class="score" aria-live="polite">
@@ -95,6 +101,28 @@ if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.s
         </div>
       </aside>
     </div>
+  </section>
+
+  <!-- TRAVEL PROGRESS -->
+  <section class="progress-dashboard" id="travelProgress" aria-live="polite">
+    <div class="progress-main">
+      <div class="progress-kicker">আপনার বাংলাদেশ</div>
+      <div class="progress-number"><strong id="dashCount">০</strong><span>/ ৬৪ জেলা</span></div>
+      <div class="progress-percent" id="dashPercent">০% বাংলাদেশ ঘোরা হয়েছে</div>
+      <div class="progress-track"><i id="dashBar"></i></div>
+    </div>
+    <div class="progress-stat"><small>সম্পূর্ণ বিভাগ</small><b id="dashDivisions">০ / ৮</b><span>সব জেলা ঘোরা বিভাগ</span></div>
+    <div class="progress-stat"><small>সবচেয়ে বেশি ঘোরা</small><b id="dashTopDivision">—</b><span id="dashTopCount">এখনও শুরু হয়নি</span></div>
+    <div class="progress-stat next-goal"><small>পরবর্তী লক্ষ্য</small><b id="dashNextGoal">প্রথম জেলা বেছে নিন</b><span id="dashNextText">আপনার travel journey শুরু করুন</span></div>
+  </section>
+
+  <!-- TRAVEL ACHIEVEMENTS -->
+  <section class="achievements-section" aria-labelledby="levelTitle">
+    <div class="section-heading">
+      <div><span class="eyebrow">TRAVEL LEVEL</span><h2 id="levelTitle">আপনার যাত্রার নতুন মাইলস্টোন</h2></div>
+      <span class="level-badge" id="levelBadge">🌱 নতুন ভ্রমণকারী</span>
+    </div>
+    <div class="achievement-grid" id="achievementGrid"></div>
   </section>
 
   <!-- TOOL -->
