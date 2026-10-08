@@ -47,3 +47,20 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
   .bdnav-search{width:44px;padding:0;justify-content:center}
   .bdnav-search .search-label{display:none}
 }
+
+/* Final desktop navbar width protection */
+@media(min-width:1181px){
+  .bdnav-links{flex:1 1 auto;min-width:0;overflow:hidden}
+  .bdnav-link,.bdnav-more-wrap{flex:0 0 auto}
+  .bdnav-more{flex:0 0 auto}
+  .bdnav-tools{flex:0 0 auto;min-width:0}
+  .bdnav-search{width:205px;flex:0 1 205px;min-width:185px}
+  .bdnav-brand{flex:0 0 auto}
+}
+@media(min-width:1181px) and (max-width:1240px){
+  .bdnav{gap:8px}
+  .bdnav-link,.bdnav-more{padding-inline:8px}
+  .bdnav-search{width:185px;min-width:175px}
+  .bdnav-lang{min-width:76px;padding-inline:8px}
+  .bdnav-cta{padding-inline:12px}
+}
