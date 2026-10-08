@@ -17,14 +17,23 @@
   themeBtns.forEach(themeBtn=>themeBtn.addEventListener('click',()=>{document.body.classList.toggle('dark');try{localStorage.setItem('bdtrip_theme',document.body.classList.contains('dark')?'dark':'light')}catch(e){}syncTheme();}));
   const more=qs('[data-bn-more]'), moreMenu=qs('[data-bn-more-menu]');
   const closeMore=()=>{moreMenu?.classList.remove('open');more?.setAttribute('aria-expanded','false')};
-  more?.addEventListener('click',e=>{e.stopPropagation();const open=moreMenu.classList.toggle('open');more.setAttribute('aria-expanded',String(open))});
+  more?.addEventListener('click',e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const open=!moreMenu?.classList.contains('open');
+    if(open) moreMenu?.classList.add('open'); else moreMenu?.classList.remove('open');
+    more?.setAttribute('aria-expanded',String(open));
+  });
   const lang=qs('[data-bn-lang]'), langMenu=qs('[data-bn-lang-menu]');
   lang?.addEventListener('click',e=>{e.stopPropagation();langMenu?.classList.toggle('open')});
   const drawer=qs('.bdnav-drawer'), menuBtn=qs('[data-bn-menu]');
   const closeDrawer=()=>drawer?.classList.remove('open');
   menuBtn?.addEventListener('click',()=>drawer?.classList.add('open'));
   drawer?.addEventListener('click',e=>{if(e.target===drawer||e.target.closest('[data-bn-close]'))closeDrawer()});
-  document.addEventListener('click',()=>{closeMore();langMenu?.classList.remove('open')});
+  document.addEventListener('click',e=>{
+    if(!more?.contains(e.target) && !moreMenu?.contains(e.target)) closeMore();
+    if(!lang?.contains(e.target) && !langMenu?.contains(e.target)) langMenu?.classList.remove('open');
+  });
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMore();langMenu?.classList.remove('open');closeDrawer();closeSearch();}});
   let last=false;
   const onScroll=()=>{const now=scrollY>12;if(now!==last){last=now;nav.classList.toggle('is-scrolled',now)}};
