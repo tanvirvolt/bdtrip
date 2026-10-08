@@ -5,11 +5,11 @@
   const nav=document.querySelector('.bdnav');
   if(!nav) return;
   const qs=s=>nav.querySelector(s), qsa=s=>[...nav.querySelectorAll(s)];
-  const path=location.pathname.replace(/\\/$/,'')||'/';
+  const path=location.pathname.replace(/\/$/,'')||'/';
   const current=(href)=>{
-    try{const u=new URL(href,location.origin); const p=u.pathname.replace(/\\/$/,'')||'/'; return p===path || (p==='/'&&path==='/');}catch(e){return false;}
+    try{const u=new URL(href,location.origin); const p=u.pathname.replace(/\/$/,'')||'/'; return p===path || (p==='/'&&path==='/');}catch(e){return false;}
   };
-  qsa('.bdnav-link').forEach(a=>{const p=new URL(a.href,location.origin).pathname.replace(/\\/$/,'')||'/'; const match=current(a.href)||(p==='/district-guide'&&path.startsWith('/district/')); if(match)a.classList.add('active'),a.setAttribute('aria-current','page');});
+  qsa('.bdnav-link').forEach(a=>{const p=new URL(a.href,location.origin).pathname.replace(/\/$/,'')||'/'; const match=current(a.href)||(p==='/district-guide'&&path.startsWith('/district/')); if(match)a.classList.add('active'),a.setAttribute('aria-current','page');});
   const themeBtns=qsa('[data-bn-theme]');
   const syncTheme=()=>{const dark=document.body.classList.contains('dark');themeBtns.forEach(b=>{b.textContent=dark?'☀️':'🌙';b.setAttribute('aria-label',dark?'লাইট মোড':'ডার্ক মোড');});};
   try{if(localStorage.getItem('bdtrip_theme')==='dark')document.body.classList.add('dark')}catch(e){}
