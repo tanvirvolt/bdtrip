@@ -255,3 +255,63 @@ main{width:min(var(--container),calc(100% - 32px));max-width:var(--container);pa
 @media(prefers-reduced-motion:reduce){
   .bdnav,.bdnav *{transition:none!important}
 }
+
+
+/* FINAL OVERRIDE: homepage progress + achievement sections */
+.progress-dashboard{
+  width:100%!important;max-width:1160px!important;margin:28px auto 8px!important;
+  padding:24px!important;display:grid!important;
+  grid-template-columns:minmax(260px,1.35fr) .7fr .9fr 1.1fr!important;
+  gap:12px!important;background:#fff!important;
+  border:1px solid #DDE8E3!important;border-radius:22px!important;
+  box-shadow:0 8px 30px rgba(7,59,54,.06)!important;
+  color:#102A27!important;position:relative!important;z-index:2!important;
+}
+.progress-main{padding-right:20px!important;border-right:1px solid #DDE8E3!important}
+.progress-kicker,.eyebrow{display:block!important;font-size:12px!important;font-weight:800!important;letter-spacing:.08em!important;color:#0B5D4B!important}
+.progress-number{display:flex!important;align-items:baseline!important;gap:5px!important;margin:2px 0 0!important}
+.progress-number strong{font:800 34px Poppins,'Hind Siliguri',sans-serif!important;color:#073B36!important}
+.progress-number span{font-weight:700!important;color:#6B7C77!important}
+.progress-percent{font-size:14px!important;color:#6B7C77!important;margin:0 0 10px!important}
+.progress-track{height:8px!important;border-radius:99px!important;background:#E8F0ED!important;overflow:hidden!important}
+.progress-track i{display:block!important;height:100%!important;width:0;background:#159A78!important;border-radius:99px!important;transition:width .35s ease!important}
+.progress-stat{padding:3px 14px!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+.progress-stat small{font-size:12px!important;color:#6B7C77!important}
+.progress-stat b{font-size:20px!important;line-height:1.35!important;color:#073B36!important}
+.progress-stat span{font-size:12px!important;color:#6B7C77!important}
+.next-goal{background:#F7FBF9!important;border-radius:14px!important}
+.next-goal b{font-size:16px!important;color:#0B5D4B!important}
+
+.achievements-section{
+  width:100%!important;max-width:1160px!important;margin:28px auto 38px!important;
+  padding:0!important;color:#102A27!important;
+}
+.section-heading{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:16px!important;margin-bottom:14px!important}
+.section-heading h2{margin:4px 0 0!important;font-size:25px!important;line-height:1.25!important;color:#102A27!important}
+.level-badge{display:inline-flex!important;align-items:center!important;padding:8px 12px!important;border-radius:999px!important;background:#E7F5EF!important;color:#0B5D4B!important;font-weight:800!important;font-size:13px!important}
+.achievement-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:10px!important}
+.achievement{
+  display:block!important;min-height:125px!important;padding:17px!important;
+  background:#fff!important;border:1px solid #DDE8E3!important;border-radius:16px!important;
+  box-shadow:0 5px 20px rgba(7,59,54,.045)!important;color:#102A27!important;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+.achievement.active{border-color:#A7D8C7!important;box-shadow:0 8px 25px rgba(11,93,75,.09)!important;transform:translateY(-2px)!important}
+.achievement.locked{opacity:.48!important;box-shadow:none!important}
+.achievement .a-icon{font-size:27px!important;line-height:1!important}
+.achievement b{display:block!important;margin-top:9px!important;font-size:15px!important;color:#073B36!important}
+.achievement small{display:block!important;color:#6B7C77!important;font-size:12px!important;margin-top:2px!important}
+
+@media(max-width:900px){
+ .progress-dashboard{grid-template-columns:1fr 1fr!important;margin-left:0!important;margin-right:0!important}
+ .progress-main{grid-column:1/-1!important;border-right:0!important;border-bottom:1px solid #DDE8E3!important;padding:0 0 15px!important}
+ .achievement-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:600px){
+ .progress-dashboard{grid-template-columns:1fr 1fr!important;padding:17px!important;margin-top:18px!important}
+ .progress-stat{padding:4px 8px!important}
+ .progress-number strong{font-size:29px!important}
+ .achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .section-heading{align-items:flex-start!important;flex-direction:column!important}
+ .level-badge{align-self:flex-start!important}
+}
