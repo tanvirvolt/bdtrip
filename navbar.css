@@ -88,3 +88,10 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
   .bdnav-lang{min-width:74px!important;padding-inline:8px!important}
   .bdnav-cta{padding-inline:11px!important}
 }
+
+/* Dropdown visibility fix: the nav link row must not clip its popup */
+@media(min-width:921px){
+  .bdnav-links{overflow:visible!important}
+  .bdnav-more-wrap{overflow:visible!important}
+  .bdnav-dropdown{display:block!important}
+}
