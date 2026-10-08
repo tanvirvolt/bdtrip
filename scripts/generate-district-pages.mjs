@@ -140,16 +140,12 @@ const pages = D.districts.map((d) => {
 <link rel="canonical" href="https://bdtrip.vercel.app/district/${slug(d.en)}/">
 <link rel="icon" href="/api/favicon">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/navbar.css">
 <style>${css}</style>
 </head>
 <body>
+<div id="bdtrip-nav"></div>
 <div class="dp">
-<header class="dpnav">
-<a class="brand" href="/">BD<b>Trip</b></a>
-<nav class="dlinks">
-<a href="/">হোম</a><a href="/#tool">ম্যাপ</a><a href="/district-guide/">জেলা গাইড</a><a href="/planner/">প্ল্যানার</a><a href="/journal/">জার্নাল</a><a href="/budget/">বাজেট</a><a href="/checklist/">চেকলিস্ট</a>
-</nav>
-</header>
 <main>
 <section class="hero">
 <div class="hero-copy">
@@ -216,6 +212,7 @@ ${nearby.map((n) => `<a href="/district/${slug(n.en)}/">${esc(n.bn)} →</a>`).j
 </main>
 <footer class="foot"><span>© ${new Date().getFullYear()} BDTrip · Explore Bangladesh</span><span>Map data: geoBoundaries</span></footer>
 </div>
+<script src="/navbar.js" defer></script>
 </body>
 </html>`;
 
