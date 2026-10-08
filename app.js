@@ -323,6 +323,29 @@
     const nx = LEVELS[li + 1];
     $('#heroNext').textContent = nx ? `আর ${bn(nx[0] - n)}টি জেলা গেলেই “${nx[1]}”` : 'সব ৬৪ জেলা ঘোরা শেষ, অভিনন্দন!';
 
+    // Premium travel progress dashboard
+    const full8Dash = D.divisions.filter((v) => D.districts.filter((d) => d.div === v.id).every((d) => state.v.has(d.id)));
+    const divCounts = D.divisions.map(v => ({v, c:D.districts.filter(d=>d.div===v.id && state.v.has(d.id)).length, total:D.districts.filter(d=>d.div===v.id).length})).sort((a,b)=>b.c-a.c);
+    const topDiv = divCounts[0];
+    const nextDiv = divCounts.find(x=>x.c>0 && x.c<x.total) || divCounts.find(x=>x.c===0);
+    const dashCount=$('#dashCount'), dashPercent=$('#dashPercent'), dashBar=$('#dashBar'), dashDivisions=$('#dashDivisions'), dashTop=$('#dashTopDivision'), dashTopCount=$('#dashTopCount'), dashNext=$('#dashNextGoal'), dashNextText=$('#dashNextText');
+    if(dashCount)dashCount.textContent=bn(n);
+    if(dashPercent)dashPercent.textContent=bn(pct)+'% বাংলাদেশ ঘোরা হয়েছে';
+    if(dashBar)dashBar.style.width=pct+'%';
+    if(dashDivisions)dashDivisions.textContent=bn(full8Dash.length)+' / ৮';
+    if(dashTop)dashTop.textContent=topDiv&&topDiv.c?divName(topDiv.v.id):'—';
+    if(dashTopCount)dashTopCount.textContent=topDiv&&topDiv.c?bn(topDiv.c)+'টি জেলা':'এখনও শুরু হয়নি';
+    if(dashNext){
+      if(n===64){dashNext.textContent='বাংলাদেশ জয়ী 🏆';dashNextText.textContent='সব ৬৪ জেলা ঘোরা সম্পূর্ণ!';}
+      else if(nextDiv){const left=nextDiv.total-nextDiv.c;dashNext.textContent=bn(left)+'টি জেলা বাকি';dashNextText.textContent=divName(nextDiv.v.id)+' বিভাগ সম্পূর্ণ করুন';}
+      else {dashNext.textContent='পরবর্তী জেলা';dashNextText.textContent='আপনার journey চালিয়ে যান';}
+    }
+    const levelData=[[1,'🌱','নতুন ভ্রমণকারী','১–৪ জেলা'],[5,'🧭','পথের সাথী','৫–১৪ জেলা'],[15,'🏕','অভিযাত্রী','১৫–২৯ জেলা'],[30,'🗺','দেশ-দর্শক','৩০–৪৯ জেলা'],[64,'🏆','বাংলাদেশ জয়ী','৬৪ জেলা']];
+    let dashLevel=0;levelData.forEach((l,i)=>{if(n>=l[0])dashLevel=i});
+    const currentLevel=levelData[dashLevel], badge=$('#levelBadge');
+    if(badge)badge.textContent=currentLevel[1]+' '+currentLevel[2];
+    const ag=$('#achievementGrid');
+    if(ag)ag.innerHTML=levelData.map(l=>'<article class="achievement '+(n>=l[0]?'active':'locked')+'"><div class="a-icon">'+l[1]+'</div><b>'+l[2]+'</b><small>'+l[3]+'</small></article>').join('');
     renderAchievements();
     // guide + stats + wishlist (only when selection changed)
     renderGuide();
