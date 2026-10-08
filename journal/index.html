@@ -12,21 +12,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="/journal/journal.css">
+<link rel="stylesheet" href="/navbar.css">
 </head>
 <body>
 
-<header class="nav" id="top">
-  <a class="brand" href="/" aria-label="BDTrip হোম">
-    <span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 00-7.500 7.500C8.500 17 16 27 16 27s7.500-10 7.500-15.500A7.500 7.500 0 0016 4z" fill="#ffb703"/><circle cx="16" cy="11.500" r="2.800" fill="#0b3d3a"/></svg></span>
-    <span class="wordmark">BD<b>Trip</b></span>
-  </a>
-  <nav class="links" aria-label="প্রধান মেনু">
-    <a href="/">ম্যাপ</a>
-    <a href="/#guide">জেলা গাইড</a>
-    <a href="/journal/" class="here" aria-current="page">জার্নাল</a>
-  </nav>
-</header>
-
+<div id="bdtrip-nav"></div>
 <main class="jr">
   <a class="jr-back" href="/">← BDTrip ম্যাপে ফিরে যান</a>
 
@@ -170,5 +160,6 @@
 <script src="/data.js"></script>
 <script src="/info.js"></script>
 <script src="/journal/journal.js" defer></script>
+<script src="/navbar.js" defer></script>
 </body>
 </html>
