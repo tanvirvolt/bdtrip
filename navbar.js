@@ -62,15 +62,23 @@
     const raw=String(v||'').toLowerCase().trim();
     return [raw, aliases[raw]||''].filter(Boolean).join(' ');
   };
+  const loadSearchEngine=()=>new Promise(resolve=>{
+    if(window.BDTripSearch)return resolve(true);
+    const existing=document.querySelector('script[src="/search-engine.js"]');
+    const done=()=>resolve(Boolean(window.BDTripSearch));
+    if(existing){existing.addEventListener('load',done,{once:true});existing.addEventListener('error',()=>resolve(false),{once:true});return;}
+    const el=document.createElement('script');el.src='/search-engine.js';el.onload=done;el.onerror=()=>resolve(false);document.head.appendChild(el);
+  });
   function render(query){
     if(!results)return;
     results.innerHTML='<div class="bdnav-empty"><div><b>খুঁজছি...</b></div></div>';
-    const engine=window.BDTripSearch;
-    if(!engine){
-      results.innerHTML='<div class="bdnav-empty"><div><b>Search engine লোড হয়নি</b></div></div>';
-      return;
-    }
-    engine.query(query).then(items=>{
+    loadSearchEngine().then(ok=>{
+      if(!ok){
+        results.innerHTML='<div class="bdnav-empty"><div><b>Search engine লোড হয়নি</b></div></div>';
+        return null;
+      }
+      return window.BDTripSearch.query(query);
+    }).then(items=>{
       if(!items.length){
         results.innerHTML='<div class="bdnav-empty"><div><b>কোনো ফলাফল পাওয়া যায়নি</b><br><small>জেলা, স্থান, খাবার, বিভাগ বা guide-এর নাম দিয়ে চেষ্টা করুন</small></div></div>';
         return;
