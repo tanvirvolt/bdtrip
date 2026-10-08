@@ -23,6 +23,7 @@
   ];
 
   const $ = (s) => document.querySelector(s);
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const bnDigits = '০১২৩৪৫৬৭৮৯';
   const bn = (n) => String(n).replace(/\d/g, (d) => bnDigits[d]);
   const money = (n) => '৳' + Math.round(n).toLocaleString('bn-BD');
