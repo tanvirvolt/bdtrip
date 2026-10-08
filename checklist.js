@@ -1,5 +1,5 @@
 (()=> {
-const items=[
+const BASE_ITEMS=[
  {cat:"Documents & Booking",items:["জাতীয় পরিচয়পত্র / আইডি কার্ড","অগ্রিম টিকিট ও হোটেল বুকিং"]},
  {cat:"Electronics",items:["ফোন চার্জার ও পাওয়ার ব্যাংক"]},
  {cat:"Money & Essentials",items:["নগদ টাকা (দূরের এলাকার জন্য)","পানির বোতল ও হালকা খাবার"]},
@@ -7,7 +7,38 @@ const items=[
  {cat:"Weather",items:["ছাতা / রেইনকোট","আবহাওয়ার পূর্বাভাস দেখে নেওয়া"]},
  {cat:"Local & Responsible Travel",items:["স্থানীয় নিয়ম ও অনুমতি যাচাই (পাহাড়, দ্বীপ, বনাঞ্চল)"]}
 ];
-const key="bdtrip_chk",list=document.querySelector("#checkList"); let done={};
+const CONTEXT={
+ "coxsbazar":[{cat:"Cox's Bazar — Beach Essentials",items:["Beach sandals","Sunscreen","Extra clothes"]}],
+ "bandarban":[{cat:"Bandarban — Hill & Rain Essentials",items:["Comfortable shoes","Rain protection","Power bank","Cash"]}],
+ "rangamati":[{cat:"Rangamati — Hill & Lake Essentials",items:["Comfortable shoes","Rain protection","Power bank","Cash"]}],
+ "khagrachhari":[{cat:"Khagrachhari — Hill Essentials",items:["Comfortable shoes","Rain protection","Power bank","Cash"]}],
+ "sajek":[{cat:"Sajek — Hill Essentials",items:["Comfortable shoes","Warm clothes","Rain protection","Power bank","Cash"]}],
+ "sundarban":[{cat:"Sundarbans — Nature Essentials",items:["Comfortable shoes","Mosquito repellent","Rain protection","Power bank","ID"]}]
+};
+function slugText(v){return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g,"").trim()}
+function getPlanContext(){
+ try{
+  const p=JSON.parse(localStorage.getItem("bdtrip_plan_v1")||"null");
+  const first=p?.days?.find(d=>d?.district);
+  if(!first)return null;
+  const d=window.BD_DATA?.districts?.find(x=>Number(x.id)===Number(first.district));
+  return d||null;
+ }catch(_){return null}
+}
+function getChecklistItems(){
+ const d=getPlanContext();
+ if(!d)return {items:BASE_ITEMS,district:null};
+ const key=slugText(d.en);
+ const extra=CONTEXT[key]||[];
+ return {items:[...BASE_ITEMS,...extra],district:d};
+}
+const context=getChecklistItems();
+const items=context.items;const key="bdtrip_chk_v2",list=document.querySelector("#checkList"); let done={};
+const contextBox=document.querySelector("#checklistContext");
+if(contextBox){
+ contextBox.hidden=!context.district;
+ if(context.district) contextBox.innerHTML="🧭 <b>"+context.district.bn+"</b> — আপনার Planner থেকে destination-specific checklist যোগ করা হয়েছে।";
+}
 try{done=JSON.parse(localStorage.getItem(key)||"{}")}catch{}
 const flat=items.flatMap(x=>x.items);
 function render(){
