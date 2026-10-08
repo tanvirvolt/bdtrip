@@ -47,20 +47,25 @@
   panel?.addEventListener('click',e=>{if(e.target===panel||e.target.closest('[data-bn-search-close]'))closeSearch()});
   let loaded=false;
   const ensureData=()=>new Promise(resolve=>{
-    if(window.BD_DATA?.districts?.length){loaded=true;resolve(true);return;}
-    if(loaded){resolve(Boolean(window.BD_DATA?.districts?.length));return;}
-    const existing=document.querySelector('script[src$="/data.js"],script[src="data.js"]');
-    if(existing){
-      if(window.BD_DATA?.districts?.length){loaded=true;resolve(true);return;}
-      existing.addEventListener('load',()=>{loaded=true;resolve(Boolean(window.BD_DATA?.districts?.length))},{once:true});
-      existing.addEventListener('error',()=>resolve(false),{once:true});
-      return;
-    }
-    const s=document.createElement('script');
-    s.src='/data.js';
-    s.onload=()=>{loaded=true;resolve(Boolean(window.BD_DATA?.districts?.length))};
-    s.onerror=()=>resolve(false);
-    document.head.appendChild(s);
+    const need=['/data.js','/info.js'].filter(src=>{
+      const name=src.split('/').pop();
+      return !(document.querySelector('script[src$="'+src+'"],script[src="'+name+'"]')&&((name==='data.js'&&window.BD_DATA?.districts?.length)||(name==='info.js'&&window.BD_INFO)));
+    });
+    if(window.BD_DATA?.districts?.length && window.BD_INFO){loaded=true;resolve(true);return;}
+    if(loaded && window.BD_DATA?.districts?.length){resolve(Boolean(window.BD_DATA?.districts?.length));return;}
+    if(!need.length){loaded=true;resolve(Boolean(window.BD_DATA?.districts?.length));return;}
+    let left=need.length,failed=false;
+    need.forEach(src=>{
+      const name=src.split('/').pop();
+      const existing=document.querySelector('script[src$="'+src+'"],script[src="'+name+'"]');
+      const done=ok=>{if(!ok)failed=true;if(--left===0){loaded=true;resolve(!failed&&Boolean(window.BD_DATA?.districts?.length));}};
+      if(existing){
+        if((name==='data.js'&&window.BD_DATA?.districts?.length)||(name==='info.js'&&window.BD_INFO))done(true);
+        else {existing.addEventListener('load',()=>done(true),{once:true});existing.addEventListener('error',()=>done(false),{once:true});}
+      }else{
+        const el=document.createElement('script');el.src=src;el.onload=()=>done(true);el.onerror=()=>done(false);document.head.appendChild(el);
+      }
+    });
   });
   const norm=v=>String(v??'')
     .toLocaleLowerCase('bn')
