@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bangladesh Journey — BDTrip</title>
+<meta name="description" content="একজন ভ্রমণকারীর বাংলাদেশের ৬৪ জেলার travel journey — BDTrip।">
+<meta property="og:title" content="Bangladesh Journey — BDTrip">
+<meta property="og:description" content="বাংলাদেশের কতগুলো জেলা ঘোরা হয়েছে দেখুন।">
+<meta property="og:image" content="https://bdtrip.vercel.app/og-image.svg">
+<meta name="theme-color" content="#073B36">
+<link rel="icon" href="/api/favicon"><link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/design-tokens.css"><link rel="stylesheet" href="/navbar.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:'Hind Siliguri',sans-serif}.wrap{width:min(1120px,calc(100% - 28px));margin:auto;padding:28px 0 60px}.hero{background:#073B36;color:#fff;border-radius:28px;padding:38px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}.hero:after{content:"";position:absolute;inset:auto -100px -180px auto;width:430px;height:430px;border-radius:50%;background:#159A7840}.kicker{color:#9DE0C7;font-weight:800;font-size:13px;letter-spacing:.08em}.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.08;margin:8px 0}.hero p{color:#c5ddd7;margin:0;font-size:17px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px;position:relative;z-index:2}.stat{background:#ffffff12;border:1px solid #ffffff1f;border-radius:15px;padding:15px}.stat b{display:block;font-size:27px;color:#fff}.stat span{color:#b7d5cd;font-size:12px}.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px}.card{background:var(--color-card);border:1px solid var(--color-border);border-radius:22px;padding:20px;box-shadow:var(--shadow-sm)}.card h2{margin:0 0 14px;font-size:21px}.mapbox{background:#edf5f2;border-radius:18px;padding:12px;min-height:520px}.mapbox svg{width:100%;height:560px;display:block}.district{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--color-border)}.district:last-child{border-bottom:0}.district small{color:var(--color-muted)}.badge{padding:4px 9px;border-radius:99px;font-size:11px;font-weight:700}.visited{background:#dff5ed;color:#0B5D4B}.wishlist{background:#fff2d1;color:#9a6700}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--color-border);background:var(--color-card);color:var(--color-text);padding:10px 14px;border-radius:12px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}.btn.primary{background:#0B5D4B;color:#fff;border-color:#0B5D4B}.btn.wa{background:#e7f8ef;color:#087443}.btn.fb{background:#edf2ff;color:#3157a6}.btn.ms{background:#f0edff;color:#6042b6}@media(max-width:800px){.layout{grid-template-columns:1fr}.mapbox svg{height:430px}.stats{grid-template-columns:1fr 1fr}.hero{padding:26px}.stats .stat:last-child{grid-column:1/-1}}@media(max-width:480px){.wrap{width:min(100% - 18px,1120px)}.stats{grid-template-columns:1fr}.stats .stat:last-child{grid-column:auto}}
+</style>
+</head><body>
+<div id="bdtrip-nav"></div>
+<main class="wrap">
+<section class="hero"><span class="kicker">BDTRIP · TRAVEL JOURNEY</span><h1 id="title">Tanvir's Bangladesh Journey</h1><p>বাংলাদেশের কতটুকু ঘুরে দেখেছেন—এক নজরে দেখুন।</p><div class="stats"><div class="stat"><b id="visitedCount">০</b><span>জেলা ঘোরা হয়েছে</span></div><div class="stat"><b id="percent">০%</b><span>বাংলাদেশ explored</span></div><div class="stat"><b id="wishCount">০</b><span>পরবর্তী wishlist</span></div></div></section>
+<div class="actions"><button class="btn wa" id="whatsapp">WhatsApp</button><button class="btn fb" id="facebook">Facebook</button><button class="btn ms" id="messenger">Messenger</button><button class="btn" id="copy">🔗 Copy Link</button><a class="btn primary" href="/">নিজের ম্যাপ তৈরি করুন →</a></div>
+<section class="layout"><article class="card"><h2>🗺 Travel Map</h2><div class="mapbox"><svg id="map" viewBox="0 0 600 848" aria-label="বাংলাদেশের ভ্রমণ ম্যাপ"></svg></div></article><aside class="card"><h2>✓ Visited</h2><div id="visitedList"></div><h2 style="margin-top:24px">★ Wishlist</h2><div id="wishList"></div></aside></section>
+</main>
+<script src="/data.js"></script><script src="/navbar.js" defer></script><script src="/journey.js" defer></script>
+</body></html>
