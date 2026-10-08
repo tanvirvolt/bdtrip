@@ -98,7 +98,33 @@ const pages = D.districts.map((d) => {
   const theme = themeFor(d, info);
   const profile = profileFor(d, info);
   const places = info.a?.length ? info.a : ['জেলা ও আশপাশের দর্শনীয় স্থান'];
-  // Use stable Wikimedia Commons file redirects instead of image CDN URLs.\n  // These are real Bangladesh travel photos and the redirect resolves to the image file.\n  const photoSets = {\n    coast: [\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Bangladesh%20(30836379842).jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Rangamati.jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/View%20of%20Rangamati.jpg'\n    ],\n    hills: [\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Rangamati.jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanging%20Bridge%20of%20Rangamati.jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Scenic%20pathway%20in%20Sajek,%20Rangamati.jpg'\n    ],\n    rivers: [\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/View%20of%20Rangamati.jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Some%20boats.jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Water%20festival%20in%20Kaptai,%20Rangamati,%20Bangladesh.jpg'\n    ],\n    general: [\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Bangladesh%20(30836379842).jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Rangamati.jpg',\n      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Some%20boats.jpg'\n    ]\n  };\n  const photoKey = theme.tag === 'SEA & COAST' ? 'coast' : theme.tag === 'HILLS & ADVENTURE' ? 'hills' : theme.tag === 'RIVERS & WETLANDS' ? 'rivers' : 'general';\n  const photos = photoSets[photoKey];\n  const overview = info.f ? `${d.bn} ভ্রমণে ${info.f} ও স্থানীয় অভিজ্ঞতা যোগ করতে পারেন।` : `${d.bn} ভ্রমণে স্থানীয় খাবার, বাজার ও জেলার নিজস্ব সংস্কৃতি ঘুরে দেখার সুযোগ রাখুন।`;
+  // Use stable Wikimedia Commons file redirects instead of image CDN URLs.
+  // These are real Bangladesh travel photos and the redirect resolves to the image file.
+  const photoSets = {
+    coast: [
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Bangladesh%20(30836379842).jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Rangamati.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/View%20of%20Rangamati.jpg'
+    ],
+    hills: [
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Rangamati.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Hanging%20Bridge%20of%20Rangamati.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Scenic%20pathway%20in%20Sajek,%20Rangamati.jpg'
+    ],
+    rivers: [
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/View%20of%20Rangamati.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Some%20boats.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Water%20festival%20in%20Kaptai,%20Rangamati,%20Bangladesh.jpg'
+    ],
+    general: [
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Bangladesh%20(30836379842).jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Beautiful%20Rangamati.jpg',
+      'https://commons.wikimedia.org/wiki/Special:Redirect/file/Some%20boats.jpg'
+    ]
+  };
+  const photoKey = theme.tag === 'SEA & COAST' ? 'coast' : theme.tag === 'HILLS & ADVENTURE' ? 'hills' : theme.tag === 'RIVERS & WETLANDS' ? 'rivers' : 'general';
+  const photos = photoSets[photoKey];
+  const overview = info.f ? `${d.bn} ভ্রমণে ${info.f} ও স্থানীয় অভিজ্ঞতা যোগ করতে পারেন।` : `${d.bn} ভ্রমণে স্থানীয় খাবার, বাজার ও জেলার নিজস্ব সংস্কৃতি ঘুরে দেখার সুযোগ রাখুন।`;
   const practical = `এই গাইডের স্থানগুলোকে একসাথে ধরে ${profile.duration} সময়ের একটি সহজ itinerary সাজানো যায়। দূরের স্পট হলে যাতায়াতের সময় আলাদা করে ধরুন।`;
   const nearby = D.districts.filter((x) => x.div === d.div && x.id !== d.id).slice(0, 5);
   const map = `<svg viewBox="0 0 ${D.w} ${D.h}" aria-label="${esc(d.bn)} জেলার মানচিত্র"><path class="sel" d="${d.d}"></path></svg>`;
