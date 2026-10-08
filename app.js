@@ -575,7 +575,10 @@
   });
 
   // ---------- share ----------
-  const shareUrl = () => location.origin + '/m/' + encodeShare();
+  const shareUrl = () => {
+    const base = location.origin + '/journey/?m=' + encodeURIComponent(encodeShare());
+    return state.name ? base + '&name=' + encodeURIComponent(state.name) : base;
+  };
   const showSharedComparison = () => {
     if (!sharedState) return;
     const common = [...sharedState.v].filter(id => state.v.has(id)).length;
