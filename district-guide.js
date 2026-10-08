@@ -20,6 +20,15 @@ function card(d){
  const info=I[d.en]||{},places=info.a||[],grad=colors[d.id%colors.length];
  return '<a class="district-card" href="/district/'+slug(d.en)+'/" data-name="'+escapeHtml([d.bn,d.en,...places].join(' '))+'"><div class="dc-img" style="background:linear-gradient(135deg,'+grad+',#0b3d3a)"><span>'+escapeHtml(d.bn)+'</span></div><div class="dc-body"><h3>'+escapeHtml(d.bn)+'</h3><p>'+escapeHtml(places[0]||'জেলার দর্শনীয় স্থান ও ভ্রমণ তথ্য')+'</p><div class="dc-meta"><span>📍 '+Math.max(1,places.length)+' স্থান</span><span></span></div></div></a>';
 }
+function renderFeatured(){
+ const picks=['coxsbazar','chattogram','sylhet','rangamati'];
+ const wrap=document.querySelector('#featuredGrid'); if(!wrap)return;
+ const list=picks.map(sl=>D.districts.find(d=>slug(d.en)===sl)).filter(Boolean);
+ wrap.innerHTML=list.map(d=>{
+   const info=I[d.en]||{}, place=(info.a||[])[0]||'জনপ্রিয় ভ্রমণ গন্তব্য';
+   return '<a class="featured-card" href="/district/'+slug(d.en)+'/"><div><h3>'+escapeHtml(d.bn)+'</h3><p>'+escapeHtml(place)+'</p><span>গাইড দেখুন →</span></div></a>';
+ }).join('');
+}
 function render(){
  const sort=$('#sort')?.value||'default';
  let arr=D.districts.filter(d=>!div||d.div===div).map(d=>({d,s:scoreDistrict(d,q)})).filter(x=>!q||x.s>0).sort((a,b)=>q?(b.s-a.s||a.d.id-b.d.id):(sort==='name'?a.d.bn.localeCompare(b.d.bn,'bn'):b.d.id-a.d.id)).map(x=>x.d);
@@ -36,5 +45,5 @@ $('#sort')?.addEventListener('change',render);
 $('#clear')?.addEventListener('click',()=>{div=0;q='';if($('#search'))$('#search').value='';if($('#sideSearch'))$('#sideSearch').value='';document.querySelectorAll('#divFilters button').forEach(x=>x.classList.remove('active'));render()});
 $('#gridView')?.addEventListener('click',()=>{$('#grid').style.gridTemplateColumns='repeat(3,minmax(0,1fr))';$('#gridView').classList.add('active');$('#listView')?.classList.remove('active')});
 $('#listView')?.addEventListener('click',()=>{$('#grid').style.gridTemplateColumns='1fr';$('#listView').classList.add('active');$('#gridView')?.classList.remove('active')});
-map();render();
+map();renderFeatured();render();
 })();
