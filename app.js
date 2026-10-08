@@ -14,10 +14,8 @@
     { name: 'বেগুনি',    v: '#6d28d9', w: '#10b981', bg: '#f4effa', empty: '#e4dbf0', hover: '#d3c3e6' },
     { name: 'রাত',      v: '#34d399', w: '#fbbf24', bg: '#0f1c1a', empty: '#21332f', hover: '#2e4a42', ink: '#f2f7f5', mut: '#9fb5ad', pageV: '#0f7a5a' }
   ];
-  const LEVELS = [
-    [0, 'নতুন ভ্রমণকারী'], [1, 'ঘুরতে শুরু'], [6, 'পথের সাথী'], [16, 'অভিযাত্রী'],
-    [31, 'দেশ-দর্শক'], [51, 'প্রায় সারা দেশ'], [64, 'বাংলাদেশ জয়ী']
-  ];
+  const LEVELS = [[0, 'নতুন ভ্রমণকারী'], [5, 'পথের সাথী'], [15, 'অভিযাত্রী'], [30, 'দেশ-দর্শক'], [64, 'বাংলাদেশ জয়ী']];
+  const LEVEL_META = [[1,'🌱','নতুন ভ্রমণকারী','১–৪ জেলা'],[5,'🧭','পথের সাথী','৫–১৪ জেলা'],[15,'🏕','অভিযাত্রী','১৫–২৯ জেলা'],[30,'🗺','দেশ-দর্শক','৩০–৪৯ জেলা'],[64,'🏆','বাংলাদেশ জয়ী','৬৪ জেলা']];
   const CHECKS = [
     'জাতীয় পরিচয়পত্র / আইডি কার্ড', 'ফোন চার্জার ও পাওয়ার ব্যাংক', 'নগদ টাকা (দূরের এলাকার জন্য)',
     'অগ্রিম টিকিট ও হোটেল বুকিং', 'প্রয়োজনীয় ওষুধ ও ফার্স্ট এইড', 'ছাতা / রেইনকোট',
@@ -340,12 +338,6 @@
       else if(nextDiv){const left=nextDiv.total-nextDiv.c;dashNext.textContent=bn(left)+'টি জেলা বাকি';dashNextText.textContent=divName(nextDiv.v.id)+' বিভাগ সম্পূর্ণ করুন';}
       else {dashNext.textContent='পরবর্তী জেলা';dashNextText.textContent='আপনার journey চালিয়ে যান';}
     }
-    const levelData=[[1,'🌱','নতুন ভ্রমণকারী','১–৪ জেলা'],[5,'🧭','পথের সাথী','৫–১৪ জেলা'],[15,'🏕','অভিযাত্রী','১৫–২৯ জেলা'],[30,'🗺','দেশ-দর্শক','৩০–৪৯ জেলা'],[64,'🏆','বাংলাদেশ জয়ী','৬৪ জেলা']];
-    let dashLevel=0;levelData.forEach((l,i)=>{if(n>=l[0])dashLevel=i});
-    const currentLevel=levelData[dashLevel], badge=$('#levelBadge');
-    if(badge)badge.textContent=currentLevel[1]+' '+currentLevel[2];
-    const ag=$('#achievementGrid');
-    if(ag)ag.innerHTML=levelData.map(l=>'<article class="achievement '+(n>=l[0]?'active':'locked')+'"><div class="a-icon">'+l[1]+'</div><b>'+l[2]+'</b><small>'+l[3]+'</small></article>').join('');
     renderAchievements();
     // guide + stats + wishlist (only when selection changed)
     renderGuide();
@@ -673,11 +665,30 @@
     }catch(e){toast('সেভ করা যায়নি। ব্রাউজারের IndexedDB/স্টোরেজ অনুমতি দেখুন।');}
   });
   $('#journalClear')?.addEventListener('click',()=>{['journalDate','journalNote'].forEach(id=>$('#'+id).value='');$('#journalRating').value='0';if($('#journalPhoto'))$('#journalPhoto').value='';});
-  const ACH=[['first','প্রথম পদক্ষেপ','প্রথম জেলা ঘুরেছি'],['division','৮ বিভাগ','প্রতিটি বিভাগে অন্তত ১টি জেলা'],['half','অর্ধেক বাংলাদেশ','৩২টি জেলা'],['coast','উপকূল Explorer','সব ১৯টি নির্ধারিত উপকূলীয় জেলা'],['border','সীমান্ত Explorer','সব ৩০টি নির্ধারিত সীমান্ত জেলা'],['all','বাংলাদেশ জয়ী','৬৪টি জেলা']];
-  const borderIds=new Set([2,3,4,8,9,10,11,15,17,18,19,20,21,22,24,25,36,37,38,39,40,41,44,45,53,54,55,56,58,60,61,64]);
-  const coastIds=new Set([5,6,7,8,9,21,27,28,30,31,32,33,34,35,42,43,50,51,52]);
-  const renderAchievements=()=>{const divs=new Set([...state.v].map(id=>byId.get(id)?.div));const html=ACH.map(([key,label,desc])=>{let ok=state.v.size>=1;if(key==='division')ok=divs.size===8;if(key==='half')ok=state.v.size>=32;if(key==='coast')ok=[...coastIds].every(id=>state.v.has(id));if(key==='border')ok=[...borderIds].every(id=>state.v.has(id));if(key==='all')ok=state.v.size===64;return `<div class="achievement ${ok?'unlocked':''}"><span class="ach-icon">${ok?'🏆':'🔒'}</span><div><b>${label}</b><small>${desc}</small></div></div>`;}).join('');$('#achievementList').innerHTML=html;};
-  const PLAN_KEY='bdtrip_plan_v1';
+  let lastLevelIndex = -1;
+  const levelIndexForCount = (n) => { let idx=0; LEVEL_META.forEach((l,i)=>{if(n>=l[0])idx=i;}); return idx; };
+  const celebrateLevelUp = (idx) => {
+    const meta=LEVEL_META[idx]; if(!meta)return;
+    let el=document.getElementById('levelCelebration');
+    if(!el){
+      el=document.createElement('div'); el.id='levelCelebration'; el.className='level-celebration';
+      el.innerHTML='<div class="level-celebration-card"><span class="celebration-spark">✦</span><div class="celebration-icon"></div><small>TRAVEL LEVEL UP</small><h3></h3><p></p><button type="button">চলুন, আরও ঘুরি! ✦</button></div>';
+      document.body.appendChild(el);
+      el.addEventListener('click',e=>{if(e.target===el||e.target.closest('button'))el.classList.remove('show');});
+    }
+    el.querySelector('.celebration-icon').textContent=meta[1];
+    el.querySelector('h3').textContent=meta[2];
+    el.querySelector('p').textContent=meta[3]+' সম্পন্ন — অভিনন্দন!';
+    requestAnimationFrame(()=>el.classList.add('show')); clearTimeout(el._timer); el._timer=setTimeout(()=>el.classList.remove('show'),3600);
+  };
+  const renderAchievements = () => {
+    const grid=$('#achievementGrid'); if(!grid)return; const n=state.v.size; const current=levelIndexForCount(n);
+    grid.innerHTML=LEVEL_META.map((l,i)=>{const unlocked=n>=l[0], currentClass=i===current?' current':''; return '<article class="achievement '+(unlocked?'active':'locked')+currentClass+'"><div class="a-icon">'+l[1]+'</div><b>'+l[2]+'</b><small>'+l[3]+'</small></article>';}).join('');
+    const badge=$('#levelBadge'); if(badge)badge.textContent=LEVEL_META[current][1]+' '+LEVEL_META[current][2];
+    if(lastLevelIndex>=0&&current>lastLevelIndex)celebrateLevelUp(current);
+    lastLevelIndex=current;
+  };
+    const PLAN_KEY='bdtrip_plan_v1';
   let plan={title:'',days:[],budget:{travel:0,hotel:0,food:0,other:0}};
   try{plan=JSON.parse(localStorage.getItem(PLAN_KEY)||'null')||plan;}catch(_){}
   const renderPlan=()=>{$('#plannerTitle').value=plan.title||'';$('#plannerDays').innerHTML=plan.days.map((day,i)=>`<div class="plan-day" data-day="${i}"><div class="plan-day-head"><b>দিন ${bn(i+1)}</b><button type="button" class="remove-day" data-remove="${i}">×</button></div><select class="plan-district" data-plan-district="${i}"><option value="">জেলা বেছে নিন</option>${D.districts.map(d=>`<option value="${d.id}" ${day.district==d.id?'selected':''}>${d.bn}</option>`).join('')}</select><textarea class="plan-note" data-plan-note="${i}" rows="2" placeholder="আজ কী করবেন?">${day.note||''}</textarea></div>`).join('');document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{plan.days.splice(+b.dataset.remove,1);renderPlan();});document.querySelectorAll('[data-plan-district]').forEach(s=>s.onchange=()=>{plan.days[+s.dataset.planDistrict].district=Number(s.value)||null;});document.querySelectorAll('[data-plan-note]').forEach(s=>s.oninput=()=>{plan.days[+s.dataset.planNote].note=s.value;});['travel','hotel','food','other'].forEach(k=>$('#plan'+k[0].toUpperCase()+k.slice(1)).value=plan.budget[k]||'');calcPlanTotal();};
