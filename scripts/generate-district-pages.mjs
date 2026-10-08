@@ -141,6 +141,7 @@ const pages = D.districts.map((d) => {
 <link rel="icon" href="/api/favicon">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/navbar.css">
+<link rel="stylesheet" href="/design-tokens.css">
 <style>${css}
 body.dark{background:#071C19!important;color:#DFF5ED!important}body.dark .top{background:#0B2925!important;border-color:#21453E!important}body.dark .crumb,body.dark .hero p,body.dark .note,body.dark .footer{color:#9DBAB2!important}body.dark .card{background:#0B2925!important;border-color:#21453E!important;color:#DFF5ED!important}body.dark .card h2,body.dark .hero h1{color:#9DE0C7!important}body.dark .fact{border-color:#21453E!important}body.dark .cta{background:#0F8A61!important}</style>
 </head>
