@@ -315,3 +315,57 @@ main{width:min(var(--container),calc(100% - 32px));max-width:var(--container);pa
  .section-heading{align-items:flex-start!important;flex-direction:column!important}
  .level-badge{align-self:flex-start!important}
 }
+
+
+/* Unified homepage search */
+.picker .search{position:relative;z-index:20}
+.home-search-results{
+  position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:50;
+  background:rgba(255,255,255,.98);border:1px solid #DDE8E3;border-radius:16px;
+  box-shadow:0 18px 45px rgba(7,59,54,.16);overflow:hidden;max-height:390px;overflow-y:auto;
+  backdrop-filter:blur(16px)
+}
+.search{position:relative}
+.home-search-result{
+  width:100%;display:grid;grid-template-columns:36px minmax(0,1fr) 18px;align-items:center;
+  gap:9px;padding:11px 13px;border:0;border-bottom:1px solid #edf2ef;background:#fff;
+  color:#102A27;text-align:left;cursor:pointer;font:inherit
+}
+.home-search-result:last-child{border-bottom:0}
+.home-search-result:hover,.home-search-result:focus-visible{background:#F1F8F5;outline:none}
+.hsr-icon{width:32px;height:32px;border-radius:10px;background:#E8F5F0;display:grid;place-items:center;font-size:16px}
+.home-search-result b{display:block;font-size:13px;line-height:1.35}
+.home-search-result small{display:block;color:#6B7C77;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hsr-arrow{font-size:21px;color:#0B5D4B;text-align:center}
+.home-search-empty{padding:18px;text-align:center;color:#62706D;font-size:13px}
+.home-search-empty small{display:block;margin-top:4px;color:#82908C}
+
+/* Travel level celebration */
+.level-celebration{
+  position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px;
+  background:rgba(4,29,26,.42);backdrop-filter:blur(7px);
+  opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease
+}
+.level-celebration.show{opacity:1;visibility:visible}
+.level-celebration-card{
+  position:relative;width:min(410px,100%);padding:30px 26px 24px;text-align:center;
+  background:linear-gradient(145deg,#fff,#F2FAF6);border:1px solid #CFE7DD;border-radius:26px;
+  box-shadow:0 28px 70px rgba(5,52,44,.24);transform:translateY(15px) scale(.96);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1)
+}
+.level-celebration.show .level-celebration-card{transform:translateY(0) scale(1)}
+.celebration-spark{position:absolute;right:24px;top:16px;color:#FFB703;font-size:24px;animation:levelSpark 1s ease-in-out infinite alternate}
+.celebration-icon{font-size:54px;line-height:1;margin-bottom:10px;animation:levelPop .5s cubic-bezier(.2,.9,.2,1.3)}
+.level-celebration-card small{letter-spacing:.14em;color:#0B5D4B;font-weight:800;font-size:10px}
+.level-celebration-card h3{margin:6px 0 3px;color:#073B36;font-size:25px}
+.level-celebration-card p{margin:0 0 18px;color:#62706D;font-size:13px}
+.level-celebration-card button{border:0;border-radius:12px;padding:10px 17px;background:#0B5D4B;color:#fff;font:700 13px inherit;cursor:pointer}
+@keyframes levelPop{0%{transform:scale(.5) rotate(-10deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes levelSpark{from{transform:rotate(-12deg) scale(.85)}to{transform:rotate(12deg) scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.level-celebration,.level-celebration-card{transition:none}.celebration-icon,.celebration-spark{animation:none}}
+@media(max-width:620px){
+  .home-search-results{max-height:330px;border-radius:14px}
+  .home-search-result{padding:10px 11px}
+  .level-celebration-card{padding:26px 20px 21px}
+}
+
