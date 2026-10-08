@@ -35,7 +35,26 @@
     cox: ['coxsbazar','coxsbazar'],
     coxsbazar: ['cox'],
     dhaka: ['dhaka'],
-    sylhet: ['sylhet']
+    sylhet: ['sylhet'],
+    patenga: ['পতেঙ্গা','সমুদ্রসৈকত'],
+    jaflong: ['জাফলং'],
+    ratargul: ['রাতারগুল'],
+    lalakhal: ['লালাখাল'],
+    bisnakandi: ['বিছনাকান্দি'],
+    sajek: ['সাজেক'],
+    inani: ['ইনানী'],
+    himchari: ['হিমছড়ি','হিমছড়ি'],
+    kuakata: ['কুয়াকাটা','কুয়াকাটা'],
+    sundarbans: ['সুন্দরবন'],
+    nilgiri: ['নীলগিরি'],
+    nilachal: ['নীলাচল'],
+    boga: ['বগা লেক'],
+    saintmartin: ['সেন্টমার্টিন'],
+    biryani: ['বিরিয়ানি','বিরিয়ানি','কাচ্চি'],
+    mango: ['আম'],
+    hilsa: ['ইলিশ'],
+    tea: ['চা','সাত রঙের চা'],
+    doi: ['দই']
   };
 
   const ensureData = () => {
