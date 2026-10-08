@@ -172,20 +172,57 @@
   $('#selAll').addEventListener('click', () => { D.districts.forEach((d) => setStatus(d.id, 'v')); update(); });
   $('#clrAll').addEventListener('click', () => { state.v.clear(); state.w.clear(); update(); });
 
-  $('#search').addEventListener('input', (e) => {
-    const q = e.target.value.trim().toLowerCase();
-    let any = false;
-    groupEls.forEach((g) => {
-      let vis = 0;
-      g.querySelectorAll('.chip').forEach((c) => {
-        const show = !q || c.dataset.q.includes(q);
-        c.hidden = !show;
-        if (show) vis++;
-      });
-      g.hidden = vis === 0;
-      if (vis) any = true;
-    });
-    $('#noResult').hidden = any;
+  const homeSearch = $('#search');
+  const homeSearchResults = $('#homeSearchResults');
+  const renderHomeSearch = async (value) => {
+    const q = value.trim();
+    if(!homeSearchResults) return;
+    if(!q){
+      homeSearchResults.hidden=true;
+      homeSearch?.setAttribute('aria-expanded','false');
+      $('#noResult').hidden=true;
+      groupEls.forEach(g=>{g.hidden=false;g.querySelectorAll('.chip').forEach(c=>c.hidden=false);});
+      return;
+    }
+    if(!window.BDTripSearch){
+      homeSearchResults.hidden=false;
+      homeSearchResults.innerHTML='<div class="home-search-empty">Search engine লোড হচ্ছে…</div>';
+      return;
+    }
+    homeSearchResults.hidden=false;
+    homeSearchResults.innerHTML='<div class="home-search-empty">খুঁজছি…</div>';
+    homeSearch.setAttribute('aria-expanded','true');
+    try{
+      const items=await window.BDTripSearch.query(q);
+      if(!items.length){
+        homeSearchResults.innerHTML='<div class="home-search-empty"><b>কোনো ফলাফল পাওয়া যায়নি</b><small>জেলা, tourist place, খাবার বা division-এর নাম দিয়ে চেষ্টা করুন</small></div>';
+        $('#noResult').hidden=true;
+        return;
+      }
+      homeSearchResults.innerHTML=items.map(item=>{
+        const id=item.district.id;
+        return '<button type="button" class="home-search-result" data-id="'+id+'"><span class="hsr-icon">'+(item.type==='place'?'🏛':item.type==='food'?'🍛':item.type==='division'?'🗺':item.type==='guide'?'📖':'📍')+'</span><span><b>'+escapeHtml(item.title)+'</b><small>'+escapeHtml(item.label)+' · '+escapeHtml(item.subtitle)+'</small></span><span class="hsr-arrow">›</span></button>';
+      }).join('');
+      homeSearchResults.querySelectorAll('[data-id]').forEach(btn=>btn.addEventListener('click',()=>{
+        const id=Number(btn.dataset.id);
+        state.cur=id; window.BDTripCurrentDistrict=id;
+        setStatus(id,'v');
+        homeSearch.value=byId.get(id)?.bn||'';
+        homeSearchResults.hidden=true;
+        homeSearch.setAttribute('aria-expanded','false');
+        update();
+      }));
+    }catch(_){
+      homeSearchResults.innerHTML='<div class="home-search-empty">Search error — আবার চেষ্টা করুন</div>';
+    }
+  };
+  homeSearch?.addEventListener('input',e=>renderHomeSearch(e.target.value));
+  homeSearch?.addEventListener('focus',e=>{if(e.target.value.trim())renderHomeSearch(e.target.value);});
+  document.addEventListener('click',e=>{
+    if(homeSearchResults && !homeSearchResults.contains(e.target) && e.target!==homeSearch){
+      homeSearchResults.hidden=true;
+      homeSearch?.setAttribute('aria-expanded','false');
+    }
   });
 
   // ---------- controls ----------
