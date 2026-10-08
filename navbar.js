@@ -10,11 +10,11 @@
     try{const u=new URL(href,location.origin); const p=u.pathname.replace(/\\/$/,'')||'/'; return p===path || (p==='/'&&path==='/');}catch(e){return false;}
   };
   qsa('.bdnav-link').forEach(a=>{const p=new URL(a.href,location.origin).pathname.replace(/\\/$/,'')||'/'; const match=current(a.href)||(p==='/district-guide'&&path.startsWith('/district/')); if(match)a.classList.add('active'),a.setAttribute('aria-current','page');});
-  const themeBtn=qs('[data-bn-theme]');
-  const syncTheme=()=>{const dark=document.body.classList.contains('dark');if(themeBtn){themeBtn.textContent=dark?'☀️':'🌙';themeBtn.setAttribute('aria-label',dark?'লাইট মোড':'ডার্ক মোড');}};
+  const themeBtns=qsa('[data-bn-theme]');
+  const syncTheme=()=>{const dark=document.body.classList.contains('dark');themeBtns.forEach(b=>{b.textContent=dark?'☀️':'🌙';b.setAttribute('aria-label',dark?'লাইট মোড':'ডার্ক মোড');});};
   try{if(localStorage.getItem('bdtrip_theme')==='dark')document.body.classList.add('dark')}catch(e){}
   syncTheme();
-  themeBtns.forEach(themeBtn=>themeBtn.addEventListener('click',()=>{document.body.classList.toggle('dark');try{localStorage.setItem('bdtrip_theme',document.body.classList.contains('dark')?'dark':'light')}catch(e){}syncTheme()}));
+  themeBtns.forEach(themeBtn=>themeBtn.addEventListener('click',()=>{document.body.classList.toggle('dark');try{localStorage.setItem('bdtrip_theme',document.body.classList.contains('dark')?'dark':'light')}catch(e){}syncTheme();}));
   const more=qs('[data-bn-more]'), moreMenu=qs('[data-bn-more-menu]');
   const closeMore=()=>{moreMenu?.classList.remove('open');more?.setAttribute('aria-expanded','false')};
   more?.addEventListener('click',e=>{e.stopPropagation();const open=moreMenu.classList.toggle('open');more.setAttribute('aria-expanded',String(open))});
