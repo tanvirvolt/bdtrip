@@ -1,4 +1,4 @@
-const CACHE='bdtrip-v5';
+const CACHE='bdtrip-v6';
 
 const CORE=[
   '/',
@@ -6,6 +6,12 @@ const CORE=[
   '/style.css',
   '/v2.css',
   '/navbar.css',
+  '/design-tokens.css',
+  '/core/ui.js',
+  '/journey/',
+  '/journey.js',
+  '/icon-192.svg',
+  '/icon-512.svg',
   '/navbar.js',
   '/app.js',
   '/data.js',
