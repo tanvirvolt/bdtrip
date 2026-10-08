@@ -116,7 +116,7 @@ const pages = D.districts.map((d) => {
 <link rel="canonical" href="https://bdtrip.vercel.app/district/${slug(d.en)}/">
 <link rel="icon" href="/api/favicon">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
-${css}
+<style>${css}</style>
 </head>
 <body>
 <div class="dp">
