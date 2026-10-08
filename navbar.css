@@ -50,7 +50,7 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
 
 /* Final desktop navbar width protection */
 @media(min-width:1181px){
-  .bdnav-links{flex:1 1 auto;min-width:0;overflow:hidden}
+  .bdnav-links{flex:1 1 auto;min-width:0;overflow:visible}
   .bdnav-link,.bdnav-more-wrap{flex:0 0 auto}
   .bdnav-more{flex:0 0 auto}
   .bdnav-tools{flex:0 0 auto;min-width:0}
@@ -87,11 +87,4 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
   .bdnav-search .search-label{display:none!important}
   .bdnav-lang{min-width:74px!important;padding-inline:8px!important}
   .bdnav-cta{padding-inline:11px!important}
-}
-
-/* Dropdown visibility fix: the nav link row must not clip its popup */
-@media(min-width:921px){
-  .bdnav-links{overflow:visible!important}
-  .bdnav-more-wrap{overflow:visible!important}
-  .bdnav-dropdown{display:block!important}
 }
