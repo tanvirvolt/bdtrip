@@ -1,4 +1,4 @@
-const CACHE='bdtrip-v4';
+const CACHE='bdtrip-v5';
 
 const CORE=[
   '/',
