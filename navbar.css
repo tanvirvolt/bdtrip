@@ -24,3 +24,26 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
 @media(max-width:600px){.bdnav{margin-top:7px}.bdnav-pin{width:36px;height:36px}.bdnav-tagline{display:block;font-size:7px}.bdnav-search-panel{padding:18px 10px 25px}.bdnav-search-box{border-radius:20px;padding:10px}.bdnav-search-body{grid-template-columns:1fr}.bdnav-search-filters{display:flex;gap:5px;overflow:auto}.bdnav-search-filters button{width:auto;white-space:nowrap;padding:8px 11px}.bdnav-results{max-height:64vh}.bdnav-drawer{position:fixed;inset:0;z-index:1100;display:block;visibility:hidden;opacity:0;pointer-events:none;transition:.2s;background:rgba(6,31,29,.48);backdrop-filter:blur(6px)}.bdnav-drawer.open{visibility:visible;opacity:1;pointer-events:auto}.bdnav-drawer-card{position:absolute;right:8px;top:8px;bottom:8px;width:min(360px,calc(100% - 16px));background:#fff;border-radius:23px;padding:15px;box-shadow:0 25px 70px rgba(0,0,0,.28);transform:translateX(105%);transition:.24s ease;overflow:auto}.bdnav-drawer.open .bdnav-drawer-card{transform:none}.bdnav-drawer-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:13px;border-bottom:1px solid #e1ebe7}.bdnav-drawer-brand{display:flex;align-items:center;gap:9px;font:800 21px Poppins,'Noto Sans Bengali',sans-serif;color:#0b3d3a}.bdnav-drawer-links{display:grid;gap:4px;padding:12px 0}.bdnav-drawer-link{display:flex;align-items:center;gap:11px;padding:12px;border-radius:13px;text-decoration:none;color:#183833;font:700 15px 'Hind Siliguri','Noto Sans Bengali',sans-serif}.bdnav-drawer-link:hover,.bdnav-drawer-link.active{background:#eaf6f1;color:#0f7a5a}.bdnav-drawer-link .di{width:34px;height:34px;border-radius:10px;background:#f0f6f3;display:grid;place-items:center}.bdnav-drawer-divider{height:1px;background:#e1ebe7;margin:5px 0}.bdnav-drawer-bottom{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px}.bdnav-drawer-bottom button,.bdnav-drawer-bottom a{min-height:43px;border:1px solid #dbe7e2;border-radius:12px;background:#f7faf8;color:#183833;font:700 12px 'Hind Siliguri','Noto Sans Bengali',sans-serif}.bdnav-drawer-cta{margin-top:8px;width:100%;min-height:48px;border-radius:13px;background:#0f7a5a;color:#fff;border:0;font:800 14px 'Hind Siliguri','Noto Sans Bengali',sans-serif}.bdnav-drawer .bdnav-pin{width:34px;height:34px}.bdnav-drawer-card .close{width:38px;height:38px;border:0;border-radius:11px;background:#eef4f1;cursor:pointer;font-size:21px;color:#173832}body.dark .bdnav-drawer{background:rgba(0,0,0,.62)}body.dark .bdnav-drawer-card{background:#122522}body.dark .bdnav-drawer-head{border-color:#29413c}body.dark .bdnav-drawer-link{color:#e8f5f0}body.dark .bdnav-drawer-link:hover,body.dark .bdnav-drawer-link.active{background:#193c34;color:#9de0c7}body.dark .bdnav-drawer-bottom button,body.dark .bdnav-drawer-bottom a{background:#172c29;border-color:#29423d;color:#e8f5f0}
 }
 @media(prefers-reduced-motion:reduce){.bdnav,.bdnav *{transition:none!important}}
+
+/* BDTrip navigation refinement */
+.bdnav{box-sizing:border-box}
+.bdnav .bn-icon{width:18px;height:18px;flex:0 0 18px;display:block;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.bdnav-link,.bdnav-more{color:#284943;font-weight:700}
+.bdnav-link:hover,.bdnav-more:hover{color:#0b5d48}
+.bdnav-link[aria-current="page"],.bdnav-link.active{color:#083d37;font-weight:800}
+.bdnav-drop-item .ico,.bdnav-drawer-link .di{font-style:normal}
+.bdnav-drop-item .ico .bn-icon,.bdnav-drawer-link .di .bn-icon{width:17px;height:17px}
+.bdnav-drawer-link .di{flex:0 0 36px}
+.bdnav-tools{gap:8px}
+.bdnav-lang{min-width:82px}
+.bdnav-theme{font-size:17px}
+.bdnav-search{font-weight:600}
+@media(min-width:1181px){.bdnav-links{gap:4px}.bdnav-link,.bdnav-more{padding-inline:10px}.bdnav-tools{gap:8px}}
+@media(max-width:1180px) and (min-width:921px){
+  .bdnav{width:min(1100px,calc(100% - 28px))}
+  .bdnav-link,.bdnav-more{padding-inline:8px;gap:5px}
+  .bdnav-link span:not(.bn-icon),.bdnav-more span:not(.bn-icon){display:none}
+  .bdnav-link .bn-icon,.bdnav-more .bn-icon{display:block}
+  .bdnav-search{width:44px;padding:0;justify-content:center}
+  .bdnav-search .search-label{display:none}
+}
