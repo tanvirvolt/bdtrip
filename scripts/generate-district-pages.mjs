@@ -227,17 +227,40 @@ for (const page of pages) {
   fs.writeFileSync(path.join(dir, 'index.html'), page.html);
 }
 
-const urls = [
-  'https://bdtrip.vercel.app/',
-  'https://bdtrip.vercel.app/district-guide/',
-  ...pages.map((p) => `https://bdtrip.vercel.app/district/${p.slug}/`)
-];
+const base = 'https://bdtrip.vercel.app';
 
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+const pageUrls = [
+  '/',
+  '/district-guide/',
+  '/planner/',
+  '/journal/',
+  '/budget/',
+  '/checklist/',
+  '/journey/',
+  '/en/'
+].map((url) => base + url);
+
+const districtUrls = pages.map((p) => `${base}/district/${p.slug}/`);
+
+const urlset = (urls) => `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((url) => `  <url><loc>${url}</loc></url>`).join('\n')}
 </urlset>
 `;
 
-fs.writeFileSync(path.join(root, 'sitemap.xml'), sitemap);
-console.log(`Generated ${pages.length} district pages and sitemap.`);
+const sitemapPages = urlset(pageUrls);
+const sitemapDistricts = urlset(districtUrls);
+const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>${base}/sitemap-pages.xml</loc></sitemap>
+  <sitemap><loc>${base}/sitemap-districts.xml</loc></sitemap>
+</sitemapindex>
+`;
+
+fs.writeFileSync(path.join(root, 'sitemap-pages.xml'), sitemapPages);
+fs.writeFileSync(path.join(root, 'sitemap-districts.xml'), sitemapDistricts);
+fs.writeFileSync(path.join(root, 'sitemap-index.xml'), sitemapIndex);
+
+// Keep sitemap.xml as a compatibility entry point for existing Search Console setups.
+fs.writeFileSync(path.join(root, 'sitemap.xml'), sitemapIndex);
+console.log(`Generated ${pages.length} district pages + split sitemap index.`);
