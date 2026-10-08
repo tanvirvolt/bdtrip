@@ -202,16 +202,17 @@
       }
       homeSearchResults.innerHTML=items.map(item=>{
         const id=item.district.id;
-        return '<button type="button" class="home-search-result" data-id="'+id+'"><span class="hsr-icon">'+(item.type==='place'?'🏛':item.type==='food'?'🍛':item.type==='division'?'🗺':item.type==='guide'?'📖':'📍')+'</span><span><b>'+escapeHtml(item.title)+'</b><small>'+escapeHtml(item.label)+' · '+escapeHtml(item.subtitle)+'</small></span><span class="hsr-arrow">›</span></button>';
+        return '<button type="button" class="home-search-result" data-id="'+id+'" data-url="'+item.url+'"><span class="hsr-icon">'+(item.type==='place'?'🏛':item.type==='food'?'🍛':item.type==='division'?'🗺':item.type==='guide'?'📖':'📍')+'</span><span><b>'+escapeHtml(item.title)+'</b><small>'+escapeHtml(item.label)+' · '+escapeHtml(item.subtitle)+'</small></span><span class="hsr-arrow">›</span></button>';
       }).join('');
       homeSearchResults.querySelectorAll('[data-id]').forEach(btn=>btn.addEventListener('click',()=>{
         const id=Number(btn.dataset.id);
         state.cur=id; window.BDTripCurrentDistrict=id;
-        setStatus(id,'v');
         homeSearch.value=byId.get(id)?.bn||'';
         homeSearchResults.hidden=true;
         homeSearch.setAttribute('aria-expanded','false');
         update();
+        const target=btn.dataset.url;
+        if(target) window.location.href=target;
       }));
     }catch(_){
       homeSearchResults.innerHTML='<div class="home-search-empty">Search error — আবার চেষ্টা করুন</div>';
