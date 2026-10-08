@@ -62,8 +62,21 @@
     s.onerror=()=>resolve(false);
     document.head.appendChild(s);
   });
-  const norm=v=>String(v??'').toLocaleLowerCase('bn').replace(/[\s\-_]/g,'');
+  const norm=v=>String(v??'')
+    .toLocaleLowerCase('bn')
+    .normalize('NFKC')
+    .replace(/[\u200c\u200d]/g,'')
+    .replace(/[\s\-_.,/()]+/g,'');
   const slugify=v=>String(v||'').toLowerCase().trim().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  const aliases={
+    'chittagong':'chattogram','chittagram':'chattagram','comilla':'cumilla',
+    'cumilla':'comilla','jeshore':'jashore','jessore':'jashore','barisal':'barishal',
+    'bogra':'bogura','chapai':'chapainawabganj','cox':'coxsbazar'
+  };
+  const aliasText=v=>{
+    const raw=String(v||'').toLowerCase().trim();
+    return [raw, aliases[raw]||''].filter(Boolean).join(' ');
+  };
   function render(query){
     if(!results)return;
     results.innerHTML='<div class="bdnav-empty"><div><b>খুঁজছি...</b></div></div>';
@@ -74,16 +87,30 @@
       }
       const q=norm(query);
       const ds=Array.isArray(window.BD_DATA?.districts)?window.BD_DATA.districts:[];
-      const items=q
-        ? ds.filter(d=>norm(d.bn).includes(q)||norm(d.en).includes(q)).slice(0,12)
-        : ds.slice(0,8);
-      if(!items.length){
-        results.innerHTML='<div class="bdnav-empty"><div><b>কোনো জেলা পাওয়া যায়নি</b><br><small>বাংলা বা English নাম দিয়ে আবার চেষ্টা করুন</small></div></div>';
+      const info=window.BD_INFO||{};
+      const scored=ds.map(d=>{
+        const places=Array.isArray(info[d.en]?.a)?info[d.en].a:[];
+        const hay=norm([d.bn,d.en,slugify(d.en),...places].join(' '));
+        const exactBn=norm(d.bn)===q;
+        const exactEn=norm(d.en)===q;
+        const alias=aliasText(query).split(' ').some(a=>norm(a)===norm(d.en));
+        const match=!q || hay.includes(q) || alias;
+        if(!match)return null;
+        let score=!q?1:hay.startsWith(q)?70:hay.includes(q)?35:0;
+        if(exactBn)score+=100;
+        if(exactEn||alias)score+=90;
+        if(places.some(p=>norm(p).includes(q)))score+=45;
+        return {d,places,score};
+      }).filter(Boolean).sort((a,b)=>b.score-a.score||a.d.id-b.d.id).slice(0,12);
+      if(!scored.length){
+        results.innerHTML='<div class="bdnav-empty"><div><b>কোনো জেলা/স্থান পাওয়া যায়নি</b><br><small>বাংলা, English বা কোনো দর্শনীয় স্থানের নাম দিয়ে আবার চেষ্টা করুন</small></div></div>';
         return;
       }
-      results.innerHTML=items.map(d=>{
+      results.innerHTML=scored.map(({d,places,score})=>{
         const slug=slugify(d.en);
-        return '<a class="bdnav-result" href="/district/'+encodeURIComponent(slug)+'/"><span class="bdnav-result-icon">'+districtIcon()+'</span><span><b>'+escapeHtml(d.bn)+'</b><small>'+escapeHtml(d.en)+'</small></span><span class="bdnav-result-arrow" aria-hidden="true">›</span></a>';
+        const matchedPlace=q&&places.find(p=>norm(p).includes(q));
+        const sub=matchedPlace ? 'স্থান: '+matchedPlace : d.en+' · '+(window.BD_DATA.divisions.find(x=>x.id===d.div)?.bn||'জেলা');
+        return '<a class="bdnav-result" href="/district/'+encodeURIComponent(slug)+'/" data-score="'+score+'"><span class="bdnav-result-icon">'+districtIcon()+'</span><span><b>'+escapeHtml(d.bn)+'</b><small>'+escapeHtml(sub)+'</small></span><span class="bdnav-result-arrow" aria-hidden="true">›</span></a>';
       }).join('');
     }).catch(()=>{
       results.innerHTML='<div class="bdnav-empty"><div><b>Search error</b><br><small>আবার চেষ্টা করুন</small></div></div>';
