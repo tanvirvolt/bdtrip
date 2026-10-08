@@ -64,3 +64,27 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
   .bdnav-lang{min-width:76px;padding-inline:8px}
   .bdnav-cta{padding-inline:12px}
 }
+
+/* FINAL FIX: never clip the "আরও" label */
+@media (min-width:921px){
+  .bdnav-more-wrap{display:block!important;flex:0 0 auto!important;min-width:max-content!important;overflow:visible!important}
+  .bdnav-more{
+    display:inline-flex!important;
+    flex:0 0 auto!important;
+    width:auto!important;
+    min-width:68px!important;
+    padding:0 10px!important;
+    gap:6px!important;
+    overflow:visible!important;
+  }
+  .bdnav-more span{display:inline!important;visibility:visible!important;opacity:1!important;white-space:nowrap!important}
+  .bdnav-more .bn-icon{display:none!important}
+  .bdnav-more .chev{display:block!important;width:13px!important;flex:0 0 13px!important}
+}
+@media (min-width:921px) and (max-width:1180px){
+  .bdnav-links{overflow:visible!important}
+  .bdnav-search{width:44px!important;min-width:44px!important;flex:0 0 44px!important;padding:0!important}
+  .bdnav-search .search-label{display:none!important}
+  .bdnav-lang{min-width:74px!important;padding-inline:8px!important}
+  .bdnav-cta{padding-inline:11px!important}
+}
