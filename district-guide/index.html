@@ -22,6 +22,24 @@
 @media(max-width:760px){.dg{padding:8px 10px 35px}.dg-nav{position:static;flex-wrap:wrap}.dg-links{order:4;width:100%;justify-content:flex-start}.dg-search{order:2;flex:1;min-width:150px}.dg-lang{order:3}.dg-hero{padding:31px 21px;border-radius:23px}.dg-hero h1{font-size:46px}.hero-stats{width:100%;grid-template-columns:repeat(2,1fr)}.dg-workspace{grid-template-columns:1fr}.dg-filter-panel{position:static}.district-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.map-wrap svg{height:390px}.choose{flex-direction:column;align-items:flex-start}}
 @media(max-width:500px){.dg-search{order:3;width:100%}.dg-lang{order:2}.dg-links{order:4}.featured-grid{grid-template-columns:1fr}.district-grid{grid-template-columns:1fr}.district-grid.list-mode .district-card{grid-template-columns:125px 1fr}.dc-visual{height:115px}.district-grid.list-mode .dc-visual{height:100%}.results-head{align-items:flex-start;flex-direction:column}.result-tools{width:100%}.result-tools select{flex:1}.section-head{align-items:flex-start;flex-direction:column}.map-wrap svg{height:320px}.dg-footer{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* District guide photo cards: real lazy-loaded travel photography with readable labels */
+.district-card .dc-visual,.featured-card{isolation:isolate}
+.district-photo{
+ position:absolute;inset:0;width:100%;height:100%;
+ display:block;object-fit:cover;object-position:center;
+ transition:transform .45s ease,filter .25s ease;
+}
+.dc-visual .district-photo{z-index:0}
+.dc-visual.has-photo{background-color:#0b5d4b!important}
+.dc-visual.has-photo:before{z-index:1;background:linear-gradient(180deg,#062d2840 0%,transparent 36%,#052c27a8 100%)}
+.dc-label{z-index:2}
+.district-card:hover .district-photo,.featured-card:hover .district-photo{transform:scale(1.055)}
+.featured-card .district-photo{z-index:-1}
+.featured-card:before{z-index:0;background:linear-gradient(180deg,#062d2830 0%,#062d2870 52%,#052c27ed 100%)}
+.featured-card:after{z-index:0}
+.featured-card>div{z-index:2}
+@media(prefers-reduced-motion:reduce){.district-photo{transition:none}}
 </style>
 </head>
 <body><div class="dg">
