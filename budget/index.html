@@ -378,6 +378,29 @@ body .has-live .budget-footer{margin-bottom:0}
   body #app.wrap,body .app-subnav,body footer.budget-footer{width:calc(100% - 20px) !important}
   body .live .in{width:100% !important;gap:8px}
 }
+
+/* Consistent header, full-width planner canvas, and footer grid */
+body #bdtrip-nav{width:100%;margin:0;padding:0}
+body #bdtrip-nav .bdnav{box-sizing:border-box;width:calc(100% - 32px)!important;max-width:none!important;margin:10px auto 0!important}
+body #app.wrap{box-sizing:border-box;width:calc(100% - 32px)!important;max-width:none!important;margin:0 auto!important}
+body #app.wrap>main,body #app.wrap>main>.card,body #app.wrap>main>.stack,body #app.wrap>main>.stack>.card{box-sizing:border-box;width:100%;max-width:none}
+body .app-subnav{box-sizing:border-box;width:calc(100% - 32px)!important;max-width:none!important;margin:0 auto 14px!important}
+body .live .in{box-sizing:border-box;width:calc(100% - 32px)!important;max-width:none!important}
+body footer.budget-footer{box-sizing:border-box;width:calc(100% - 32px)!important;max-width:none!important;margin:32px auto 24px!important}
+body .budget-footer-inner{width:100%;box-sizing:border-box}
+body .budget-footer-links{align-items:center}
+body .budget-footer-bottom{row-gap:10px}
+@media(max-width:760px){
+ body #bdtrip-nav .bdnav{width:calc(100% - 20px)!important}
+ body #app.wrap,body .app-subnav,body footer.budget-footer{width:calc(100% - 24px)!important}
+ body .live .in{width:100%!important}
+}
+@media(max-width:520px){
+ body #bdtrip-nav .bdnav{width:calc(100% - 14px)!important}
+ body #app.wrap,body .app-subnav,body footer.budget-footer{width:calc(100% - 20px)!important}
+ body .budget-footer-inner{padding:16px 14px 12px}
+ body .budget-footer-bottom{align-items:flex-start;flex-direction:column}
+}
 </style>
 
 <script>(function(){try{var saved=localStorage.getItem('bdtrip_theme');var dark=saved==='dark'||(!saved&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.addEventListener('DOMContentLoaded',function(){document.body.classList.add('dark')},{once:true});}catch(e){}})();</script>
