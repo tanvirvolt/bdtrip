@@ -566,7 +566,7 @@ function safetyHtml(){
 
 /* ---------- Render ---------- */
 function topHtml(){
-  return '<div class="app-langrow"><div class="lang" role="group" aria-label="Language"><button data-act="lang" data-v="bn" class="'+(lang==='bn'?'on':'')+'">বাংলা</button><button data-act="lang" data-v="en" class="'+(lang==='en'?'on':'')+'">EN</button></div></div><nav class="tabs" aria-label="Sections">'+TABS.map(function(t){return '<button class="tab'+(view===t[0]?' on':'')+'" data-act="tab" data-v="'+t[0]+'"'+(view===t[0]?' aria-current="page"':'')+'>'+Lg(t[1])+'</button>'}).join('')+'</nav>';
+  return '<div class="app-subnav"><nav class="tabs" aria-label="Sections">'+TABS.map(function(t){return '<button class="tab'+(view===t[0]?' on':'')+'" data-act="tab" data-v="'+t[0]+'"'+(view===t[0]?' aria-current="page"':'')+'>'+Lg(t[1])+'</button>'}).join('')+'</nav><div class="app-langrow"><div class="lang" role="group" aria-label="Language"><button data-act="lang" data-v="bn" class="'+(lang==='bn'?'on':'')+'">বাংলা</button><button data-act="lang" data-v="en" class="'+(lang==='en'?'on':'')+'">EN</button></div></div></div>';
 }
 function render(keepScroll){
   var body={budget:budgetHtml,transport:transportHtml,plan:planHtml,pack:packHtml,safety:safetyHtml}[view]();
