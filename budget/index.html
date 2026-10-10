@@ -1,62 +1,664 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BDTrip — ট্রিপ বাজেট ক্যালকুলেটর</title>
-<meta name="description" content="BDTrip ট্রিপ বাজেট ক্যালকুলেটর দিয়ে যাতায়াত, হোটেল, খাবার ও অন্যান্য খরচ হিসাব করুন।">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BDTrip — ট্রিপ বাজেট ও প্ল্যানার</title>
+<meta name="description" content="বাংলাদেশের জনপ্রিয় গন্তব্যের ভ্রমণ বাজেট, যাতায়াত, দিনভিত্তিক প্ল্যান, প্যাকিং ও নিরাপত্তা গাইড।">
 <link rel="canonical" href="https://bdtrip.vercel.app/budget/">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;600;800&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/navbar.css"><link rel="stylesheet" href="/design-tokens.css">
+<link rel="stylesheet" href="/navbar.css">
+<link rel="stylesheet" href="/design-tokens.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* The calculator below uses the original uploaded index.html budget design and its existing site design tokens. */
-.budget-page{max-width:1160px;margin:0 auto;padding:20px 16px 10px}.budget-page .block{margin-top:18px}.budget-page .block-head{margin-bottom:16px}.budget-page .budget{padding:22px}.budget-page .b-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.budget-page .b-grid label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--mut)}.budget-page .b-grid input[type=number]{border:1px solid var(--line);border-radius:11px;padding:10px 12px;font-size:15px;background:#fbf9f4;outline:0;color:var(--ink);width:100%}.budget-page .b-grid input[type=number]:focus{border-color:var(--deep2);background:#fff}.budget-page .b-grid .wide{grid-column:1/-1;flex-direction:row;align-items:center;color:var(--ink)}.budget-page .b-out{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.budget-page .b-out div{background:var(--deep);color:#fff;border-radius:16px;padding:14px 16px;min-width:0}.budget-page .b-out div:first-child{background:linear-gradient(135deg,var(--deep),#127a63)}.budget-page .b-out small{display:block;font-size:11.5px;color:#a9cdc4}.budget-page .b-out b{font-size:clamp(20px,3.4vw,30px);font-weight:700;overflow-wrap:anywhere}.budget-page .note{font-size:12px;color:var(--mut);margin-top:12px}.budget-page .check{display:flex;align-items:center;gap:7px;font-size:12.5px;cursor:pointer}.budget-page .check input{accent-color:var(--v);width:16px;height:16px}.budget-page .intro{background:linear-gradient(135deg,var(--deep) 0%,#0e5a52 60%,#127a63 100%);color:#fff;border-radius:24px;padding:clamp(24px,4vw,42px);margin-top:8px}.budget-page .intro .tag{display:inline-block;font-size:12px;font-weight:600;background:#ffffff1c;border:1px solid #ffffff30;padding:4px 14px;border-radius:999px;margin-bottom:12px}.budget-page .intro h1{font-size:clamp(28px,5vw,44px);line-height:1.2;margin-bottom:10px}.budget-page .intro p{font-size:14px;color:#d6e8e2;max-width:720px}.budget-page .intro em{font-style:normal;color:var(--sun)}.budget-page .saved-note{margin-top:14px;padding:12px 15px;border-radius:12px;background:#e3f3ed;color:var(--deep);font-size:13px}
-@media(max-width:520px){.budget-page{padding:12px 12px 0}.budget-page .b-out{grid-template-columns:1fr}.budget-page .budget{padding:15px}.budget-page .intro{border-radius:20px}}
+/* Layout: sticky tab strip, budget wizard drawn as a five-stop route, live total docked at the bottom on the budget tab */
+:root{
+  --bg:#EDF2EE; --surface:#FFFFFF; --surface2:#F3F7F4; --ink:#0F2419; --muted:#53695D; --line:#D2DDD5;
+  --brand:#0E5A3F; --brand-ink:#FFFFFF; --accent:#F0B03A; --accent-ink:#2A1D00;
+  --good:#1E7A4F; --good-bg:#E1F2E8; --warn:#8A5A00; --warn-bg:#FBF0D6; --bad:#B63425; --bad-bg:#FBE8E4;
+  --c1:#2C7CB8; --c2:#0E8A5F; --c3:#DE8420; --c4:#8059C4; --c5:#76897F;
+  --font-display:'Anek Bangla','Hind Siliguri',system-ui,sans-serif;
+  --font-body:'Hind Siliguri','Anek Bangla',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1612; --surface:#12231C; --surface2:#172B23; --ink:#E7F1EB; --muted:#9DB4A8; --line:#25392F;
+    --brand:#53C493; --brand-ink:#052015; --accent:#F2B33D; --accent-ink:#2A1D00;
+    --good:#5ED197; --good-bg:#15301F; --warn:#E8B04A; --warn-bg:#3A2D10; --bad:#FF8A78; --bad-bg:#3A1C18;
+    --c1:#5DA8E0; --c2:#4DC594; --c3:#F0A049; --c4:#A98BE6; --c5:#8FA498; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1612; --surface:#12231C; --surface2:#172B23; --ink:#E7F1EB; --muted:#9DB4A8; --line:#25392F;
+  --brand:#53C493; --brand-ink:#052015; --accent:#F2B33D; --accent-ink:#2A1D00;
+  --good:#5ED197; --good-bg:#15301F; --warn:#E8B04A; --warn-bg:#3A2D10; --bad:#FF8A78; --bad-bg:#3A1C18;
+  --c1:#5DA8E0; --c2:#4DC594; --c3:#F0A049; --c4:#A98BE6; --c5:#8FA498; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;padding-inline:0;padding-block:0 28px}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;line-height:1.25;text-wrap:balance}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:780px;margin-inline:auto}
+.has-live .wrap{padding-bottom:104px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.num{font-variant-numeric:tabular-nums}
+
+.top{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding-block:12px 8px}
+.app-langrow{display:flex;justify-content:flex-end;padding-top:10px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mark{flex:none;width:38px;height:38px;border-radius:11px;background:var(--brand);position:relative}
+.mark::before{content:"";position:absolute;left:9px;right:9px;top:18px;border-top:2.5px dashed var(--brand-ink);opacity:.85}
+.mark::after{content:"";position:absolute;right:7px;top:12px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.brand h1{font-size:23px;font-weight:800;letter-spacing:-.01em}
+.brand p{font-size:13px;color:var(--muted);line-height:1.35}
+.lang{display:flex;flex:none;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface)}
+.lang button{border:0;background:none;padding:5px 12px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
+.lang button.on{background:var(--brand);color:var(--brand-ink)}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;gap:6px;overflow-x:auto;background:var(--bg);padding-block:8px;margin-bottom:12px;border-bottom:1px solid var(--line);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:none;padding:9px 15px;border-radius:10px;font-weight:600;font-size:15px;color:var(--muted)}
+.tab.on{background:var(--ink);color:var(--bg)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.sec-h{font-size:19px;font-weight:700;margin-bottom:4px}
+.lead{color:var(--muted);font-size:14.5px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.row + .row{margin-top:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:420px){.grid3{grid-template-columns:1fr}}
+
+.route{display:flex;list-style:none;margin:2px 0 14px;padding:0}
+.route li{flex:1;position:relative;text-align:center;min-width:0}
+.route li::before{content:"";position:absolute;top:16px;left:-50%;width:100%;border-top:2px dashed var(--line)}
+.route li:first-child::before{display:none}
+.route li.done::before,.route li.on::before{border-top-style:solid;border-top-color:var(--brand)}
+.stop{position:relative;z-index:1;width:33px;height:33px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-weight:700;font-size:14px;color:var(--muted)}
+.route li.done .stop{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.route li.on .stop{border-color:var(--brand);color:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 20%,transparent)}
+.route span{display:block;font-size:12px;line-height:1.25;margin-top:5px;color:var(--muted);padding-inline:2px}
+.route li.on span{color:var(--ink);font-weight:600}
+
+.opt{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;background:var(--surface2);border:1.5px solid var(--line);border-radius:13px;padding:12px 13px}
+.opt b{font-family:var(--font-display);font-size:16px}
+.opt small{color:var(--muted);font-size:13px;line-height:1.35}
+.opt .pr{font-weight:600;font-size:14px;color:var(--brand)}
+.opt.sel{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 11%,var(--surface))}
+.opt.dim{opacity:.55}
+
+.stp{display:flex;align-items:center;gap:6px}
+.stp button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface2);font-size:20px;line-height:1;font-weight:600}
+.stp button:disabled{opacity:.35;cursor:default}
+.stp b{min-width:34px;text-align:center;font-size:18px;font-family:var(--font-display)}
+.tog{position:relative;flex:none;width:48px;height:28px;border-radius:999px;border:0;background:var(--line);transition:background .15s}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);transition:transform .15s}
+.tog[aria-checked="true"]{background:var(--brand)}
+.tog[aria-checked="true"]::after{transform:translateX(20px)}
+.lbl{font-weight:600}
+.lbl small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+
+.field{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--surface2);border-radius:11px;padding:0 12px;min-height:42px}
+.field span{color:var(--muted)}
+.field input,.field select{flex:1;min-width:0;border:0;background:none;outline:0;padding:9px 0;font-size:16px}
+.field select{padding-inline:0}
+.field:focus-within{border-color:var(--brand)}
+
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 16px;font-weight:600;font-size:15px;min-height:44px}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.ghost{background:none}
+.btn.sm{padding:6px 12px;min-height:34px;font-size:14px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:4px}
+a.btn{display:inline-flex;align-items:center;text-decoration:none;color:inherit}
+a.lnk{color:var(--brand);font-weight:600}
+
+.note{border-radius:12px;padding:10px 13px;font-size:14px;line-height:1.45;background:var(--surface2);border:1px solid var(--line)}
+.note.warn{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.note.bad{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+.note.good{background:var(--good-bg);color:var(--good);border-color:transparent}
+
+.live{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.live .in{max-width:780px;margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.live small{display:block;color:var(--muted);font-size:12.5px;line-height:1.3}
+.live b{font-family:var(--font-display);font-size:24px;line-height:1.1}
+
+.hero-total{font-family:var(--font-display);font-weight:800;font-size:44px;line-height:1.05;letter-spacing:-.02em;background:linear-gradient(transparent 68%,color-mix(in srgb,var(--accent) 60%,transparent) 68%);display:inline-block}
+.stackbar{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--line);margin-block:14px 10px}
+.stackbar i{display:block;height:100%}
+.legend{display:flex;flex-direction:column;gap:7px}
+.legend div{display:grid;grid-template-columns:12px 1fr auto auto;gap:9px;align-items:center;font-size:15px}
+.legend em{font-style:normal;color:var(--muted);font-size:13px;min-width:38px;text-align:right}
+.dot{width:12px;height:12px;border-radius:3px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kv div{background:var(--surface2);border-radius:12px;padding:10px 12px}
+.kv small{display:block;color:var(--muted);font-size:12.5px}
+.kv b{font-family:var(--font-display);font-size:20px}
+.cmp{display:grid;grid-template-columns:minmax(78px,110px) 1fr auto;gap:10px;align-items:center;font-size:14.5px}
+.cmp .tr{height:12px;border-radius:6px;background:var(--line);overflow:hidden}
+.cmp .tr i{display:block;height:100%;background:var(--c5);border-radius:6px}
+.cmp.me .tr i{background:var(--brand)}
+.cmp.me{font-weight:600}
+.badge{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--bad-bg);color:var(--bad);margin-left:4px}
+
+.mode{display:flex;flex-direction:column;gap:6px}
+.mode .h{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.mode .h b{font-family:var(--font-display);font-size:17px}
+.mode .pr{font-weight:600;color:var(--brand)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 15px;font-weight:600;font-size:14.5px}
+.chip.on{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+
+.day h3{font-size:18px}
+.day .hd{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px}
+.day .dn{font-size:13px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.06em}
+.slot{display:grid;grid-template-columns:62px 1fr;gap:10px;padding-block:8px;border-top:1px dashed var(--line)}
+.slot:first-of-type{border-top:0}
+.slot span{font-size:13px;font-weight:600;color:var(--muted)}
+
+.check{display:flex;gap:11px;align-items:center;padding:9px 0;border-top:1px solid var(--line);cursor:pointer}
+.check:first-of-type{border-top:0}
+.check input{width:20px;height:20px;accent-color:var(--brand);flex:none}
+.check.done span{text-decoration:line-through;color:var(--muted)}
+.prog{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--brand);transition:width .2s}
+.helpline{display:flex;align-items:center;gap:12px}
+.helpline b{font-family:var(--font-display);font-size:26px;min-width:64px;color:var(--bad)}
+ul.pl{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;z-index:50;max-width:90vw}
+textarea.share{width:100%;min-height:150px;border:1.5px solid var(--line);border-radius:11px;background:var(--surface2);padding:10px}
+footer{margin-top:22px;font-size:13px;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+
 </head>
 <body>
-<div id="bdtrip-nav"></div>
-<main class="budget-page">
-<section class="intro">
-<span class="tag">BDTRIP · TRAVEL BUDGET CALCULATOR</span>
-<h1>আপনার ভ্রমণের <em>বাজেট</em> হিসাব করুন</h1>
-<p>সদস্য সংখ্যা, দিনের হিসাব, যাতায়াত, হোটেল ও খাবারের খরচ দিন। মোট খরচ, জনপ্রতি খরচ এবং দিনপ্রতি খরচ সঙ্গে সঙ্গে দেখুন।</p>
-</section>
-<section class="block" id="budget">
-<div class="block-head"><h2>ট্রিপ বাজেট ক্যালকুলেটর</h2><p>নিজের হিসাব বসান, মোট ও জনপ্রতি খরচ দেখুন।</p></div>
-<div class="budget card">
-<div class="b-grid">
-<label>সদস্য সংখ্যা<input type="number" id="b_people" min="1" value="2" inputmode="numeric"></label>
-<label>কত দিনের ট্রিপ<input type="number" id="b_days" min="1" value="3" inputmode="numeric"></label>
-<label>রুম সংখ্যা<input type="number" id="b_rooms" min="0" value="1" inputmode="numeric"></label>
-<label>যাতায়াত (জনপ্রতি, যাওয়া-আসা) ৳<input type="number" id="b_travel" min="0" placeholder="যেমন: 1500" inputmode="numeric"></label>
-<label>হোটেল (রুম প্রতি, রাত প্রতি) ৳<input type="number" id="b_hotel" min="0" placeholder="যেমন: 2000" inputmode="numeric"></label>
-<label>খাবার (জনপ্রতি, দিন প্রতি) ৳<input type="number" id="b_food" min="0" placeholder="যেমন: 600" inputmode="numeric"></label>
-<label>লোকাল ট্রান্সপোর্ট ও টিকিট (মোট) ৳<input type="number" id="b_other" min="0" placeholder="যেমন: 1000" inputmode="numeric"></label>
-<label class="check wide"><input type="checkbox" id="b_buf" checked> জরুরি খরচের জন্য ১০% বাফার যোগ করুন</label>
-</div>
-<div class="b-out">
-<div><small>মোট খরচ</small><b id="o_total">৳০</b></div>
-<div><small>জনপ্রতি</small><b id="o_pp">৳০</b></div>
-<div><small>দিন প্রতি</small><b id="o_pd">৳০</b></div>
-</div>
-<p class="note">হোটেল রাত = দিন − ১। দামের কোনো ডিফল্ট ধরা হয়নি, আপনার নিজের হিসাব দিন। হিসাব আপনার ব্রাউজারেই করা হয়।</p>
-</div>
-</section>
-</main>
+<div id="bdtrip-nav"></div><div class="wrap" id="app"></div>
 <footer class="foot">
-<div class="foot-card">
-<svg class="foot-ridge" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90V52c80-30 140-34 220-10s130 22 210-6 150-36 240-6 150 30 240 0 150-24 290 8V90z" fill="#ffffff0d"/><path d="M0 90V68c110-26 190-14 290 4s180 8 280-14 190-18 290 6 210 22 340-6V90z" fill="#ffffff0f"/></svg>
-<div class="foot-content"><div class="foot-grid">
-<section class="foot-brand" aria-labelledby="footer-title"><a class="brand light" href="/" aria-label="BDTrip"><span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 00-7.5 7.5C8.5 17 16 27 16 27s7.5-10 7.5-15.5A7.5 7.5 0 0016 4z" fill="#ffb703"/><circle cx="16" cy="11.5" r="2.8" fill="#0b3d3a"/></svg></span><span class="wordmark">BD<b>Trip</b></span></a><div class="foot-kicker">EXPLORE BANGLADESH</div><h2 id="footer-title">৬৪ জেলার বাংলাদেশ,<br><em>এক ম্যাপে!</em></h2><p>ঘুরুন, পরিকল্পনা করুন, চিহ্নিত করুন, শেয়ার করুন।</p><div class="foot-stats"><span><b>৬৪</b><small>জেলা</small></span><span><b>৮</b><small>বিভাগ</small></span><span><b>১০০%</b><small>ফ্রি</small></span></div></section>
-<nav class="foot-col" aria-label="এক্সপ্লোর"><h3><i>✦</i> এক্সপ্লোর</h3><a href="/">আমার ম্যাপ <b>›</b></a><a href="/district-guide/">জেলা গাইড <b>›</b></a><a href="/budget/">বাজেট ক্যালকুলেটর <b>›</b></a><a href="/checklist/">ট্রিপ চেকলিস্ট <b>›</b></a><a href="/planner/">মাল্টি-ডে প্ল্যানার <b>›</b></nav>
-<nav class="foot-col" aria-label="তথ্য"><h3><i>●</i> তথ্য</h3><a href="/#faq">প্রশ্নোত্তর <b>›</b></a><a href="https://www.geoboundaries.org" target="_blank" rel="noopener">ম্যাপ ডেটা: geoBoundaries <b>↗</b></a><a href="/journal/">ট্রাভেল জার্নাল <b>›</b></a><a href="/" class="totop">↑ <span>হোমে ফিরুন</span></a></nav>
-</div><div class="foot-bottom"><span class="made">বাংলাদেশে তৈরি <i class="heart" aria-hidden="true">♥</i> <a href="https://tanvirvolt.github.io" target="_blank" rel="noopener">Tanvir</a></span><span class="copy">© <span id="yr"></span> BDTrip · সব ভ্রমণকারীর জন্য</span></div></div></div></footer>
+  <div class="foot-card">
+    <div class="foot-scene" aria-hidden="true">
+      <span class="foot-sun"></span>
+      <span class="foot-mountain m1"></span>
+      <span class="foot-mountain m2"></span>
+      <span class="foot-tree t1"></span>
+      <span class="foot-tree t2"></span>
+      <span class="foot-river"></span>
+      <span class="foot-boat">⌁</span>
+      <span class="foot-birds">⌁⌁</span>
+    </div>
+
+    <div class="foot-content">
+      <div class="foot-grid">
+        <section class="foot-brand" aria-labelledby="footer-title">
+          <a class="brand light" href="#top" aria-label="BDTrip">
+            <span class="mark"><svg viewBox="0 0 32 32" width="18" height="18"><path d="M16 4a7.5 7.5 0 0 0-7.5 7.5C8.5 17 16 27 16 27s7.5-10 7.5-15.5A7.5 7.5 0 0 0 16 4z" fill="#ffb703"/><circle cx="16" cy="11.5" r="2.8" fill="#0b3d3a"/></svg></span>
+            <span class="wordmark">BD<b>Trip</b></span>
+          </a>
+          <div class="foot-kicker">EXPLORE BANGLADESH</div>
+          <h2 id="footer-title">৬৪ জেলার বাংলাদেশ,<br><em>এক ম্যাপে!</em></h2>
+          <p>ঘুরুন, পরিকল্পনা করুন, চিহ্নিত করুন, শেয়ার করুন।</p>
+          <div class="foot-stats">
+            <span><b>৬৪</b><small>জেলা</small></span>
+            <span><b>৮</b><small>বিভাগ</small></span>
+            <span><b>১০০%</b><small>ফ্রি</small></span>
+          </div>
+        </section>
+
+        <nav class="foot-col" aria-label="এক্সপ্লোর">
+          <h3><i>✦</i> এক্সপ্লোর</h3>
+          <a href="#tool">আমার ম্যাপ <b>›</b></a>
+          <a href="/district-guide/">জেলা গাইড <b>›</b></a>
+          <a href="/budget/">বাজেট ক্যালকুলেটর <b>›</b></a>
+          <a href="/checklist/">ট্রিপ চেকলিস্ট <b>›</b></a>
+          <a href="/planner/">মাল্টি-ডে প্ল্যানার <b>›</b></a>
+        </nav>
+
+        <nav class="foot-col" aria-label="তথ্য">
+          <h3><i>●</i> তথ্য</h3>
+          <a href="#faq">প্রশ্নোত্তর <b>›</b></a>
+          <a href="https://www.geoboundaries.org" target="_blank" rel="noopener">ম্যাপ ডেটা: geoBoundaries <b>↗</b></a>
+          <a href="/journal/">ট্রাভেল জার্নাল <b>›</b></a>
+          <a href="#top" class="totop">↑ <span>উপরে যান</span></a>
+        </nav>
+      </div>
+
+      <div class="foot-bottom">
+        <span class="made">বাংলাদেশে তৈরি <i class="heart" aria-hidden="true">♥</i> <a href="https://tanvirvolt.github.io" target="_blank" rel="noopener">Tanvir</a></span>
+        <span class="copy">© <span id="yr"></span> BDTrip · সব ভ্রমণকারীর জন্য</span>
+      </div>
+    </div>
+  </div>
+</footer>
 <script src="/navbar.js" defer></script>
+
 <script>
-(()=>{'use strict';const $=s=>document.querySelector(s);const money=n=>'৳'+Math.round(n).toLocaleString('bn-BD');const num=id=>Math.max(0,parseFloat($(id).value)||0);
-function calcBudget(){const people=Math.max(1,num('#b_people')),days=Math.max(1,num('#b_days')),nights=Math.max(0,days-1);let sum=num('#b_travel')*people+num('#b_hotel')*num('#b_rooms')*nights+num('#b_food')*people*days+num('#b_other');if($('#b_buf').checked)sum*=1.1;$('#o_total').textContent=money(sum);$('#o_pp').textContent=money(sum/people);$('#o_pd').textContent=money(sum/days)}
-document.querySelectorAll('.budget input').forEach(i=>i.addEventListener('input',calcBudget));calcBudget();$('#yr').textContent=new Date().getFullYear();
+(function(){
+'use strict';
+var LS={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+var lang=LS.get('bdt.lang','bn');
+var T=function(bn,en){return lang==='bn'?bn:en};
+var Lg=function(a){return lang==='bn'?a[0]:a[1]};
+var _nf={};
+var N=function(n){_nf[lang]=_nf[lang]||new Intl.NumberFormat(lang==='bn'?'bn-BD':'en-IN',{maximumFractionDigits:0});return _nf[lang].format(Math.round(n))};
+var r10=function(n){return Math.round(n/10)*10};
+var TK=function(n){return '৳'+N(r10(n))};
+var MONTHS=[['জানুয়ারি','January'],['ফেব্রুয়ারি','February'],['মার্চ','March'],['এপ্রিল','April'],['মে','May'],['জুন','June'],['জুলাই','July'],['আগস্ট','August'],['সেপ্টেম্বর','September'],['অক্টোবর','October'],['নভেম্বর','November'],['ডিসেম্বর','December']];
+var MODE={bus:['বাস (নন-এসি)','Bus (non-AC)'],ac:['বাস (এসি)','Bus (AC)'],train:['ট্রেন','Train'],air:['বিমান','Flight']};
+var CATS=[['transport',['যাতায়াত','Transport'],'--c1'],['hotel',['হোটেল','Hotel'],'--c2'],['food',['খাবার','Food'],'--c3'],['guide',['গাইড, এন্ট্রি ও ঘোরাঘুরি','Guide, entry & activities'],'--c4'],['other',['অন্যান্য','Other'],'--c5']];
+var TABS=[['budget',['বাজেট','Budget']],['transport',['যাতায়াত','Transport']],['plan',['প্ল্যান','Itinerary']],['pack',['প্যাকিং','Packing']],['safety',['নিরাপত্তা ও পারমিট','Safety & permits']]];
+var P=function(s,bn,en){return {s:s,t:[bn,en]}};
+
+/* Prices are planning estimates in BDT, from Dhaka. Update here and the whole app follows. */
+var DEST={
+coxs:{n:['কক্সবাজার','Cox\'s Bazar'],type:'sea',
+ tag:['দীর্ঘ সমুদ্রসৈকত, পরিবার ও বন্ধুদের জন্য','Long beach, good for families and friends'],
+ best:['নভেম্বর – ফেব্রুয়ারি','Nov – Feb'],peak:[10,11,0,1],peakHotel:1.5,closed:[],
+ modes:[
+  {id:'bus',fare:1000,h:['৯–১১ ঘণ্টা','9–11 h'],i:['কমলাপুর, ফকিরাপুল, সায়েদাবাদ কাউন্টার থেকে ছাড়ে। যেমন: হানিফ, সৌদিয়া, শ্যামলী।','Leaves from Kamalapur, Fakirapool and Sayedabad counters (e.g. Hanif, Soudia, Shyamoli).']},
+  {id:'ac',fare:1700,h:['৮–১০ ঘণ্টা','8–10 h'],i:['গ্রিন লাইন, এস আলমের মতো এসি ও স্লিপার সার্ভিস। রাতের কোচে ভাড়া বেশি।','AC and sleeper coaches such as Green Line and S Alam. Night coaches cost more.']},
+  {id:'train',fare:1300,h:['১০–১২ ঘণ্টা','10–12 h'],i:['কমলাপুর থেকে কক্সবাজার এক্সপ্রেস বা পর্যটক এক্সপ্রেস। টিকিট eticket.railway.gov.bd তে।','Cox\'s Bazar Express or Parjatak Express from Kamalapur. Book on eticket.railway.gov.bd.']},
+  {id:'air',fare:7500,h:['১ ঘণ্টা','1 h'],i:['ঢাকা থেকে সরাসরি ফ্লাইট। আগে কিনলে ভাড়া কম, ঈদ ও শীতে অনেক বাড়ে।','Direct flights from Dhaka. Cheaper when booked early, much higher around Eid and winter.']}],
+ fixedPP:0,local:800,locI:['শহরে সিএনজি ও টমটম। মেরিন ড্রাইভে জিপ বা মাইক্রো ভাড়া নিতে হয়, দরদাম করে ঠিক করুন।','CNG and tomtom in town. Rent a jeep or microbus for Marine Drive and agree the price first.'],
+ hotel:[1500,3500,9000],food:[130,380,900],act:[300,800,2000],guide:0,permit:0,
+ permit_t:['পারমিট লাগে না। সমুদ্রে নামার আগে লাইফগার্ডের পতাকা ও আবহাওয়ার সংকেত দেখুন।','No permit needed. Check lifeguard flags and storm signals before swimming.'],
+ safe:['রাতে নির্জন সৈকতে একা যাবেন না।','Avoid empty stretches of beach alone at night.','হোটেল বুক করার আগে রুম ও ভাড়া নিশ্চিত করুন, সৈকতের দোকানে দাম জিজ্ঞেস করে কিনুন।','Confirm the room and rate before booking. Ask prices before buying on the beach.'],
+ arrive:['ঢাকা থেকে কক্সবাজারে পৌঁছে হোটেলে চেক-ইন, বিশ্রাম','Reach Cox\'s Bazar, check in and rest'],leave:['চেক-আউট, শুঁটকি ও কেনাকাটা, ফেরার যাত্রা','Check out, buy dried fish and souvenirs, head home'],
+ plan:[
+  {t:['শহর ও সৈকত','Town and beach'],i:[P('m','সুগন্ধা ও লাবণী সৈকতে সকালের হাঁটা','Morning walk on Sugandha and Laboni beach'),P('a','কলাতলী সৈকত, বার্মিজ মার্কেট ও সামুদ্রিক মাছের লাঞ্চ','Kolatoli beach, Burmese Market and a seafood lunch'),P('e','লাবণী সৈকতে সূর্যাস্ত ও ডিনার','Sunset at Laboni beach, then dinner')]},
+  {t:['মেরিন ড্রাইভ','Marine Drive'],i:[P('m','হিমছড়ি ঝরনা ও সৈকত','Himchari waterfall and beach'),P('a','ইনানী সৈকতের পাথর ও পাটুয়ারটেক','Inani beach rocks and Patuartek'),P('e','মেরিন ড্রাইভ ধরে ফেরা, সূর্যাস্ত','Back along Marine Drive at sunset')]},
+  {t:['মহেশখালী ও রামু','Maheshkhali and Ramu'],i:[P('m','নৌকায় মহেশখালী, আদিনাথ মন্দির','Boat to Maheshkhali, Adinath temple'),P('a','রামুর বৌদ্ধ বিহার','Ramu Buddhist temples'),P('e','সৈকতে ঘোড়ায় চড়া ও ডিনার','Horse ride on the beach, dinner')]},
+  {t:['বিশ্রামের দিন','Slow day'],i:[P('m','দেরিতে ঘুম, ভালো নাস্তা','Late start, long breakfast'),P('a','পছন্দের জায়গা আবার ঘোরা','Revisit your favourite spot'),P('e','কেনাকাটা ও শেষ ডিনার','Shopping and a last dinner')]}]},
+
+sylhet:{n:['সিলেট','Sylhet'],type:'hill',
+ tag:['চা বাগান, ঝরনা, জলাবন ও সীমান্তের পাথর','Tea gardens, waterfalls, swamp forest and border stones'],
+ best:['জুন – আগস্ট (বর্ষা), অক্টোবর – ফেব্রুয়ারি','Jun – Aug (monsoon), Oct – Feb'],peak:[5,6,7,11,0],peakHotel:1.35,closed:[],
+ modes:[
+  {id:'bus',fare:700,h:['৬–৮ ঘণ্টা','6–8 h'],i:['সায়েদাবাদ ও ফকিরাপুল থেকে সিলেটগামী বাস। যেমন: গ্রিন লাইন, শ্যামলী, এনা।','Sylhet buses from Sayedabad and Fakirapool (e.g. Green Line, Shyamoli, Ena).']},
+  {id:'ac',fare:1200,h:['৬–৭ ঘণ্টা','6–7 h'],i:['এসি কোচ। শুক্রবার ও ছুটির আগে আগেভাগে টিকিট কাটুন।','AC coaches. Book early before Fridays and holidays.']},
+  {id:'train',fare:900,h:['৭–৮ ঘণ্টা','7–8 h'],i:['পারাবত, জয়ন্তিকা, উপবন ও কালনী এক্সপ্রেস। টিকিট eticket.railway.gov.bd তে।','Parabat, Jayantika, Upaban and Kalni Express. Book on eticket.railway.gov.bd.']},
+  {id:'air',fare:5500,h:['৪৫ মিনিট','45 min'],i:['ঢাকা থেকে ওসমানী আন্তর্জাতিক বিমানবন্দর পর্যন্ত। দিনে কয়েকটি ফ্লাইট।','Dhaka to Osmani International Airport. Several flights a day.']}],
+ fixedPP:0,local:1800,locI:['রাতারগুল, জাফলং, লালাখাল ঘুরতে সিএনজি বা মাইক্রো ভাড়া করুন। সারা দিনের ভাড়া আগে ঠিক করুন।','Hire a CNG or microbus for Ratargul, Jaflong and Lalakhal. Fix the full-day price first.'],
+ hotel:[1300,3200,7500],food:[120,360,800],act:[300,800,1800],guide:0,permit:0,
+ permit_t:['সাধারণত পারমিট লাগে না। জাফলং ও তামাবিল সীমান্তের কাছে জাতীয় পরিচয়পত্রের কপি রাখুন।','Usually no permit. Carry an NID copy near the Jaflong and Tamabil border area.'],
+ safe:['রাতারগুলে নৌকায় লাইফ জ্যাকেট পরুন।','Wear a life jacket on the boat at Ratargul.','জাফলংয়ে পাথর তোলা ও নদীর স্রোত থেকে সাবধান থাকুন।','Watch the river current at Jaflong and keep clear of stone-crushing areas.'],
+ arrive:['সিলেটে পৌঁছে হোটেলে চেক-ইন','Reach Sylhet and check in'],leave:['চেক-আউট, সিলেটের চা ও আচার কেনা, ফেরা','Check out, buy Sylhet tea and pickles, head home'],
+ plan:[
+  {t:['চা বাগান ও শহর','Tea gardens and city'],i:[P('m','মালনীছড়া চা বাগান','Malnicherra tea garden'),P('a','হযরত শাহজালাল (র.) দরগাহ ও কীন ব্রিজ','Shahjalal Dargah and Keane Bridge'),P('e','সুরমা নদীর পাড়ে সন্ধ্যা, স্থানীয় খাবার','Evening by the Surma river, local food')]},
+  {t:['জাফলং ও বিছনাকান্দি','Jaflong and Bichanakandi'],i:[P('m','বিছনাকান্দি, পাথর আর পাহাড়ের ঝর্ণা','Bichanakandi, stones and hill streams'),P('a','জাফলং, পিয়াইন নদী ও খাসিয়া পাড়া','Jaflong, Piyain river, Khasi village'),P('e','তামাবিল সীমান্ত দেখে ফেরা','See the Tamabil border, then return')]},
+  {t:['রাতারগুল ও লালাখাল','Ratargul and Lalakhal'],i:[P('m','নৌকায় রাতারগুল জলাবন','Boat ride through Ratargul swamp forest'),P('a','লালাখালের নীল জল','Lalakhal blue water'),P('e','হোটেলে ফিরে বিশ্রাম','Back to the hotel to rest')]},
+  {t:['শ্রীমঙ্গল','Srimangal'],i:[P('m','লাউয়াছড়া জাতীয় উদ্যান','Lawachara National Park'),P('a','নীলকণ্ঠ টি কেবিনে সাত রঙের চা, চা বাগান','Seven-colour tea at Nilkantha Tea Cabin, tea estates'),P('e','মাধবকুণ্ড বা শ্রীমঙ্গল শহরে ডিনার','Madhabkunda or dinner in Srimangal')]}]},
+
+bandarban:{n:['বান্দরবান','Bandarban'],type:'hill',
+ tag:['পাহাড়, মেঘ ও আদিবাসী সংস্কৃতি','Hills, clouds and indigenous culture'],
+ best:['অক্টোবর – ফেব্রুয়ারি, মেঘ দেখতে জুলাই – সেপ্টেম্বর','Oct – Feb, Jul – Sep for clouds'],peak:[10,11,0,1,6,7,8],peakHotel:1.4,closed:[],
+ modes:[
+  {id:'bus',fare:1100,h:['৯–১১ ঘণ্টা','9–11 h'],i:['ঢাকা থেকে সরাসরি বান্দরবানের বাস আছে, অথবা চট্টগ্রাম হয়ে যান।','Direct Dhaka–Bandarban buses exist, or change at Chattogram.']},
+  {id:'ac',fare:1700,h:['৮–১০ ঘণ্টা','8–10 h'],i:['এসি কোচ, আগে থেকে কাউন্টারে বুক করুন।','AC coaches. Book at the counter in advance.']},
+  {id:'train',fare:1500,h:['১০–১২ ঘণ্টা','10–12 h'],i:['ট্রেনে চট্টগ্রাম, তারপর বাসে বান্দরবান। দুটো ভাড়া মিলিয়ে ধরা হয়েছে।','Train to Chattogram, then a bus to Bandarban. Both fares combined.']}],
+ fixedPP:0,local:7000,locI:['চান্দের গাড়ি (জিপ) ভাড়া সাধারণত পুরো গাড়ির জন্য। নীলগিরি, চিম্বুক, শৈলপ্রপাত আলাদা ট্রিপে যায়।','Chander Gari (jeep) is priced per vehicle. Nilgiri, Chimbuk and Shoilo Propat are separate runs.'],
+ hotel:[1200,3000,8000],food:[120,350,800],act:[400,1000,2500],guide:1500,permit:0,
+ permit_t:['কিছু দূরের এলাকায় জেলা প্রশাসন বা সেনা ক্যাম্পের অনুমতি লাগে। গাইড বা ট্যুর অপারেটর সাধারণত ব্যবস্থা করে। যাওয়ার আগে সর্বশেষ নিয়ম জেনে নিন।','Remote areas can need permission from the district administration or an army camp. A guide or tour operator usually arranges it. Check current rules before you go.'],
+ safe:['দূরের ট্রেকে অবশ্যই স্থানীয় গাইড নিন, একা যাবেন না।','Always take a local guide on remote treks. Do not go alone.','জাতীয় পরিচয়পত্রের মূল কপি ও ফটোকপি সঙ্গে রাখুন। চেকপোস্টে লাগে।','Carry your NID and a photocopy. Checkposts ask for it.','বৃষ্টির পর পাহাড়ি রাস্তা পিচ্ছিল থাকে।','Hill roads are slippery after rain.'],
+ arrive:['বান্দরবান পৌঁছে হোটেলে চেক-ইন','Reach Bandarban and check in'],leave:['চেক-আউট, স্থানীয় হাতের কাজ কেনা, ফেরা','Check out, buy local handicrafts, head home'],
+ plan:[
+  {t:['শহর ও স্বর্ণ মন্দির','Town and Golden Temple'],i:[P('m','বুদ্ধ ধাতু জাদি (স্বর্ণ মন্দির)','Buddha Dhatu Jadi (Golden Temple)'),P('a','মেঘলা পর্যটন কমপ্লেক্স ও নীলাচল','Meghla Tourist Complex and Nilachal'),P('e','নীলাচলে সূর্যাস্ত','Sunset at Nilachal')]},
+  {t:['নীলগিরি ও চিম্বুক','Nilgiri and Chimbuk'],i:[P('m','নীলগিরিতে ভোরে মেঘের সাগর','Sea of clouds at Nilgiri at dawn'),P('a','চিম্বুক পাহাড় ও চান্দের গাড়ির ঘোরা','Chimbuk hill by Chander Gari'),P('e','হোটেলে বিশ্রাম','Rest at the hotel')]},
+  {t:['ঝরনা ও সাঙ্গু','Waterfall and Sangu'],i:[P('m','শৈলপ্রপাত','Shoilo Propat waterfall'),P('a','সাঙ্গু নদীতে নৌকা','Boat on the Sangu river'),P('e','বাঁশের মুরগি দিয়ে স্থানীয় ডিনার','Bamboo chicken dinner')]}]},
+
+sajek:{n:['সাজেক','Sajek'],type:'hill',
+ tag:['মেঘের ওপর ভ্যালি, রুইলুই ও কংলাক পাড়া','Cloud valley above Ruilui and Konglak villages'],
+ best:['জুলাই – অক্টোবর (মেঘ), ডিসেম্বর – জানুয়ারি','Jul – Oct (clouds), Dec – Jan'],peak:[6,7,8,9,11,0],peakHotel:1.5,closed:[],
+ modes:[
+  {id:'bus',fare:900,h:['৯–১১ ঘণ্টা (খাগড়াছড়ি পর্যন্ত)','9–11 h (to Khagrachhari)']  ,i:['ঢাকা থেকে খাগড়াছড়ি বাস, তারপর চান্দের গাড়ি। সাজেক পৌঁছাতে আরও ৩–৪ ঘণ্টা।','Bus to Khagrachhari, then Chander Gari. Add another 3–4 h to reach Sajek.']},
+  {id:'ac',fare:1400,h:['৮–১০ ঘণ্টা','8–10 h'],i:['এসি কোচ। শুক্রবারের আগে সিট কম থাকে।','AC coaches. Seats run short before Fridays.']},
+  {id:'train',fare:1200,h:['১০–১২ ঘণ্টা','10–12 h'],i:['ট্রেনে চট্টগ্রাম, তারপর বাসে খাগড়াছড়ি।','Train to Chattogram, then a bus to Khagrachhari.']}],
+ fixedPP:0,local:6000,locI:['খাগড়াছড়ি বা দিঘীনালা থেকে চান্দের গাড়ি পুরো গাড়ির ভাড়ায়। ছাড়ার সময় ও এসকর্টের নিয়ম আগে জেনে নিন।','Chander Gari from Khagrachhari or Dighinala is priced per vehicle. Check departure times and escort rules first.'],
+ hotel:[1500,3500,9000],food:[150,400,800],act:[300,700,1500],guide:0,permit:0,
+ permit_t:['সাজেকগামী গাড়ি নির্দিষ্ট সময়ে এসকর্টসহ দলবেঁধে যায়। জাতীয় পরিচয়পত্র লাগে। পরিস্থিতি বদলায়, যাত্রার আগে জেনে নিন।','Vehicles to Sajek move in timed convoys with an escort. Carry NID. Rules change, so confirm before you travel.'],
+ safe:['সাজেকের রিসোর্ট ছুটির দিনে আগে ভরে যায়, আগে বুক করুন।','Resorts fill early on holidays. Book ahead.','নেটওয়ার্ক দুর্বল, অফলাইন ম্যাপ ও নগদ টাকা রাখুন।','Network is weak. Keep offline maps and cash.'],
+ arrive:['খাগড়াছড়ি থেকে চান্দের গাড়িতে সাজেক পৌঁছে চেক-ইন','Chander Gari from Khagrachhari to Sajek, check in'],leave:['ভোরের মেঘ দেখে চেক-আউট, ফেরা','Watch the morning clouds, check out, head back'],
+ plan:[
+  {t:['সাজেক ভ্যালি','Sajek valley'],i:[P('m','কংলাক পাড়ায় সূর্যোদয়','Sunrise at Konglak Para'),P('a','হেলিপ্যাড পয়েন্ট ও রুইলুই পাড়া','Helipad point and Ruilui Para'),P('e','মেঘের ভেতর সূর্যাস্ত','Sunset above the clouds')]},
+  {t:['খাগড়াছড়ি','Khagrachhari'],i:[P('m','আলুটিলা গুহা','Alutila cave'),P('a','রিছাং ঝরনা','Richhang waterfall'),P('e','খাগড়াছড়ি শহরে ডিনার','Dinner in Khagrachhari town')]},
+  {t:['রাঙামাটি','Rangamati'],i:[P('m','কাপ্তাই হ্রদে নৌকা ও ঝুলন্ত সেতু','Kaptai Lake boat and hanging bridge'),P('a','শুভলং ঝরনা','Shuvolong waterfall'),P('e','রাঙামাটি শহরে ডিনার','Dinner in Rangamati')]}]},
+
+stmartin:{n:['সেন্ট মার্টিন','Saint Martin'],type:'sea',
+ tag:['প্রবালের দ্বীপ, শান্ত সৈকত, মৌসুমি ভ্রমণ','Coral island, quiet beaches, seasonal trips'],
+ best:['নভেম্বর – মার্চ','Nov – Mar'],peak:[11,0,1],peakHotel:1.5,closed:[4,5,6,7,8],
+ modes:[
+  {id:'bus',fare:1300,h:['১০–১২ ঘণ্টা (টেকনাফ পর্যন্ত)','10–12 h (to Teknaf)'],i:['ঢাকা থেকে টেকনাফের বাস। এরপর জাহাজঘাট থেকে জাহাজ।','Dhaka to Teknaf by bus, then the ship from the jetty.']},
+  {id:'ac',fare:2100,h:['৯–১১ ঘণ্টা','9–11 h'],i:['এসি কোচে টেকনাফ। সকালের জাহাজ ধরতে আগের রাতে পৌঁছানো ভালো।','AC coach to Teknaf. Arrive the night before to catch the morning ship.']},
+  {id:'air',fare:7500,h:['১ ঘণ্টা + ২ ঘণ্টা বাস','1 h + 2 h by road'],i:['কক্সবাজার পর্যন্ত বিমান, সেখান থেকে বাসে টেকনাফ। বাস ভাড়া আলাদা ধরুন।','Fly to Cox\'s Bazar, then bus to Teknaf. Budget the bus separately.']}],
+ fixedPP:3500,fixedN:['জাহাজ ভাড়া (টেকনাফ ↔ সেন্ট মার্টিন, যাওয়া-আসা)','Ship fare (Teknaf and Saint Martin, return)'],
+ local:400,locI:['দ্বীপে সাইকেল ভাড়া বা হাঁটা। যানবাহন কম।','Hire a bicycle or walk. There are few vehicles.'],
+ hotel:[1500,3500,8000],food:[200,450,900],act:[300,800,1500],guide:0,permit:0,
+ permit_t:['জাহাজ সাধারণত শীত মৌসুমে চলে। বর্ষায় বন্ধ থাকে। যাত্রার আগে সময়সূচি ও টিকিট নিশ্চিত করুন। জাহাজের নাম যেমন কেয়ারী সিন্দবাদ, বে ওয়ান।','Ships mainly run in the cool season and stop in the monsoon. Confirm the schedule and ticket first. Operators include Keari Sindbad and Bay One.'],
+ safe:['প্রবাল তোলা বা প্লাস্টিক ফেলা নিষেধ। আবর্জনা সঙ্গে নিয়ে ফিরুন।','Do not take coral or leave plastic. Carry your rubbish back.','দ্বীপে এটিএম নেই বা অনিয়মিত। নগদ টাকা সঙ্গে রাখুন।','ATMs are rare or unreliable on the island. Carry cash.','আবহাওয়ার সংকেত থাকলে জাহাজ বন্ধ থাকে। ফেরার জন্য বাড়তি এক দিন রাখুন।','Ships stop during storm signals. Keep a spare day for the return.'],
+ arrive:['টেকনাফ থেকে জাহাজে সেন্ট মার্টিন, হোটেলে চেক-ইন','Ship from Teknaf to Saint Martin, check in'],leave:['সকালের জাহাজে টেকনাফ, ফেরা','Morning ship to Teknaf, head home'],
+ plan:[
+  {t:['দ্বীপ ঘোরা','Around the island'],i:[P('m','সাইকেলে দ্বীপ ঘোরা','Cycle around the island'),P('a','সৈকতে সময় ও সামুদ্রিক মাছ','Beach time and fresh seafood'),P('e','ছেড়াদিয়ায় সূর্যাস্ত (ভাটায়)','Sunset at Chheradia (at low tide)')]},
+  {t:['সৈকত ও রাত','Beaches and night'],i:[P('m','সূর্যোদয়ে সৈকত','Sunrise on the beach'),P('a','জেলেদের নৌকায় ঘোরা','Ride with local fishermen'),P('e','খোলা আকাশে তারা দেখা','Stargazing on the beach')]},
+  {t:['বিশ্রামের দিন','Slow day'],i:[P('m','দেরিতে ঘুম, নাস্তা','Late start, breakfast'),P('a','স্মৃতিচিহ্ন ও নারকেল','Souvenirs and coconuts'),P('e','শেষ সন্ধ্যা সৈকতে','Last evening on the beach')]}]},
+
+sundarbans:{n:['সুন্দরবন','Sundarbans'],type:'forest',
+ tag:['ম্যানগ্রোভ বন, হরিণ, পাখি ও বাঘের এলাকা','Mangrove forest, deer, birds and tiger country'],
+ best:['নভেম্বর – মার্চ','Nov – Mar'],peak:[10,11,0,1,2],peakHotel:1.3,closed:[5,6,7],
+ modes:[
+  {id:'bus',fare:900,h:['৮–১০ ঘণ্টা (খুলনা পর্যন্ত)','8–10 h (to Khulna)'],i:['গাবতলী থেকে খুলনার বাস। খুলনা বা মোংলা থেকে ট্যুর শুরু।','Gabtoli to Khulna buses. Tours start from Khulna or Mongla.']},
+  {id:'ac',fare:1400,h:['৭–৯ ঘণ্টা','7–9 h'],i:['এসি কোচ। রাতের বাসে সকালে খুলনা পৌঁছান।','AC coach. A night bus reaches Khulna by morning.']},
+  {id:'train',fare:700,h:['৯–১০ ঘণ্টা','9–10 h'],i:['সুন্দরবন এক্সপ্রেস বা চিত্রা এক্সপ্রেস। টিকিট eticket.railway.gov.bd তে।','Sundarban Express or Chitra Express. Book on eticket.railway.gov.bd.']}],
+ fixedPP:0,local:9000,locI:['বন ভ্রমণে লঞ্চ বা ট্রলার ভাড়া পুরো দলের জন্য। ট্যুর প্যাকেজে খাবার ও গাইড মিলিয়ে পাওয়া যায়।','Launch or trawler charter is for the whole group. Packages often bundle food and guide.'],
+ hotel:[1200,3000,6500],food:[130,350,700],act:[200,500,1000],guide:1000,permit:300,
+ permit_t:['বনে ঢোকার জন্য বন বিভাগের অনুমতি, প্রবেশ ফি ও বন প্রহরী লাগে। ট্যুর অপারেটর সাধারণত সব ব্যবস্থা করে। জুন–আগস্টে সাধারণত বন্ধ থাকে।','Entering the forest needs Forest Department permission, an entry fee and a forest guard. Tour operators usually arrange all of it. Usually closed Jun – Aug.'],
+ safe:['বনে নামার আগে গাইডের কথা মানুন। বাঘ ও কুমির বাস্তব ঝুঁকি।','Follow your guide when going ashore. Tigers and crocodiles are a real risk.','প্লাস্টিক ও আবর্জনা বনে ফেলবেন না।','Do not leave plastic or rubbish in the forest.','মোবাইল নেটওয়ার্ক প্রায়ই থাকে না।','Mobile network is often missing.'],
+ arrive:['খুলনা পৌঁছে লঞ্চে ওঠা বা হোটেলে বিশ্রাম','Reach Khulna, board the launch or rest at a hotel'],leave:['মোংলা বা খুলনা ফিরে বাসে বা ট্রেনে ঢাকা','Back to Mongla or Khulna, bus or train to Dhaka'],
+ plan:[
+  {t:['করমজল ও হিরণ পয়েন্ট','Karamjal and Hiron Point'],i:[P('m','করমজল বন্য প্রাণী কেন্দ্র','Karamjal wildlife centre'),P('a','ট্রলারে হিরণ পয়েন্ট (নীলকমল)','Trawler to Hiron Point (Nilkamal)'),P('e','লঞ্চে রাত, নদীতে সন্ধ্যা','Night on the launch, evening on the river')]},
+  {t:['কটকা ও দুবলার চর','Kotka and Dublar Char'],i:[P('m','কটকা ও কচিখালী সৈকত','Kotka and Kachikhali beach'),P('a','হরিণ ও পাখি দেখা, দুবলার চর','Deer and birdwatching, Dublar Char'),P('e','লঞ্চে ফিরে ডিনার','Back on the launch for dinner')]},
+  {t:['টিন কোনা ও ফেরা','Tin Kona and return'],i:[P('m','টিন কোনা দ্বীপ','Tin Kona island'),P('a','মোংলায় ফিরে আসা','Return to Mongla'),P('e','খুলনায় ডিনার ও বিশ্রাম','Dinner and rest in Khulna')]}]}
+};
+var DEST_IDS=['coxs','sylhet','bandarban','sajek','stmartin','sundarbans'];
+
+var PACK={
+ base:[['nid','জাতীয় পরিচয়পত্র ও কপি','NID and a photocopy'],['cash','নগদ টাকা ও বিকাশ/নগদ চালু','Cash plus bKash/Nagad ready'],['pb','পাওয়ার ব্যাংক ও চার্জার','Power bank and charger'],['med','প্রয়োজনীয় ওষুধ ও ব্যান্ডেজ','Personal medicine and plasters'],['wb','পানির বোতল','Water bottle'],['ts','টিস্যু ও স্যানিটাইজার','Tissues and sanitiser'],['bag','পলিথিন ব্যাগ ভেজা কাপড়ের জন্য','Plastic bags for wet clothes']],
+ sea:[['sw','সুইমসুট বা দ্রুত শুকানো পোশাক','Swimwear or quick-dry clothes'],['tw','তোয়ালে','Towel'],['fl','ফ্লিপ ফ্লপ','Flip-flops'],['sn','সানস্ক্রিন','Sunscreen'],['sg','সানগ্লাস ও টুপি','Sunglasses and hat'],['pp','ফোনের ওয়াটারপ্রুফ পাউচ','Waterproof phone pouch']],
+ hill:[['sh','ভালো গ্রিপের জুতা','Shoes with good grip'],['tc','টর্চ বা হেডল্যাম্প','Torch or headlamp'],['sk','বাড়তি মোজা','Extra socks'],['sc','হালকা স্ন্যাকস','Light snacks'],['bp','ছোট ব্যাকপ্যাক','Small backpack'],['kn','হাঁটুর সাপোর্ট (ট্রেকে)','Knee support (for treks)']],
+ forest:[['ir','মশা ও পোকার স্প্রে','Insect repellent'],['fs','ফুলহাতা পোশাক','Full-sleeve clothes'],['bn','বাইনোকুলার','Binoculars'],['ws','বাড়তি পানি','Extra drinking water'],['cm','ক্যামেরা ও বাড়তি ব্যাটারি','Camera and spare battery'],['hh','টুপি','Hat']],
+ rain:[['rc','ছাতা বা রেইনকোট','Umbrella or raincoat'],['db','ড্রাই ব্যাগ বা ব্যাগ কভার','Dry bag or bag cover'],['qd','দ্রুত শুকানো পোশাক','Quick-dry clothes']],
+ winter:[['jk','হালকা জ্যাকেট বা চাদর','Light jacket or shawl'],['ls','লিপ বাম ও ময়েশ্চারাইজার','Lip balm and moisturiser']]
+};
+
+var DEF={dest:'coxs',adults:3,kids:1,days:3,month:new Date().getMonth(),eid:false,mode:'ac',round:true,localOn:true,hotelTier:1,rooms:null,meals:3,foodTier:1,actTier:1,guide:false,other:1000,buffer:true,budget:0,ov:{},split:{n:null,custom:false,names:[],amts:[]}};
+var S=Object.assign({},DEF,LS.get('bdt.s',{}));S.ov=Object.assign({},S.ov||{});S.split=Object.assign({},DEF.split,S.split||{});
+if(!DEST[S.dest])S.dest='coxs';
+var view=(location.hash||'').replace('#','');
+if(!TABS.some(function(t){return t[0]===view}))view='budget';
+var step=0; // 0-4 wizard stops, 5 result
+var saved=LS.get('bdt.saved',[]);
+var pack=LS.get('bdt.pack',{checked:{},custom:[]});
+
+function save(){LS.set('bdt.s',S)}
+function isPeak(d,m){return d.peak.indexOf(m)>-1}
+function calc(s,dd){
+  var d=dd||DEST[s.dest],ov=s.ov||{},ad=s.adults,pf=ad+s.kids*0.5,peak=isPeak(d,s.month)||s.eid;
+  var m=d.modes.filter(function(x){return x.id===s.mode})[0]||d.modes[0];
+  var fare=ov.fare!=null?ov.fare:m.fare;
+  var local=s.localOn?(ov.local!=null?ov.local:d.local)*s.days*(peak?1.1:1):0;
+  var transport=fare*(s.round?2:1)*pf*(peak?1.15:1)+d.fixedPP*pf+local;
+  var nights=Math.max(s.days-1,0),rooms=s.rooms!=null?s.rooms:Math.max(1,Math.ceil(pf/2));
+  var rate=ov.hotel!=null?ov.hotel:d.hotel[s.hotelTier]*(peak?d.peakHotel:1);
+  var hotel=rate*rooms*nights;
+  var food=(ov.food!=null?ov.food:d.food[s.foodTier])*s.meals*s.days*pf;
+  var gpd=ov.guide!=null?ov.guide:(d.guide||1000);
+  var guide=d.act[s.actTier]*s.days*pf+(s.guide?gpd*s.days:0)+d.permit*pf;
+  var other=s.other||0,sub=transport+hotel+food+guide+other,buf=s.buffer?sub*0.1:0,total=sub+buf,heads=ad+s.kids;
+  return {cats:{transport:transport,hotel:hotel,food:food,guide:guide,other:other},sub:sub,buf:buf,total:total,min:sub*0.9,max:sub*1.2+buf,heads:heads,perHead:total/heads,perAdult:total/ad,rooms:rooms,nights:nights,peak:peak,fare:fare,rate:rate,m:m,pf:pf};
+}
+function variant(ch,keys){var v=Object.assign({},S,ch);v.ov=Object.assign({},S.ov);(keys||[]).forEach(function(k){delete v.ov[k]});return v}
+
+var $app=document.getElementById('app');
+var toastT;
+function toast(msg){var o=document.querySelector('.toast');if(o)o.remove();var t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);clearTimeout(toastT);toastT=setTimeout(function(){t.remove()},2200)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function tog(k,on,label,sub){return '<div class="row"><div class="lbl">'+label+(sub?'<small>'+sub+'</small>':'')+'</div><button class="tog" role="switch" aria-checked="'+(!!on)+'" aria-label="'+esc(label)+'" data-act="tog" data-k="'+k+'"></button></div>'}
+function stepper(k,val,min,max,label,sub){return '<div class="row"><div class="lbl">'+label+(sub?'<small>'+sub+'</small>':'')+'</div><div class="stp"><button data-act="dec" data-k="'+k+'" aria-label="-" '+(val<=min?'disabled':'')+'>−</button><b class="num">'+N(val)+'</b><button data-act="inc" data-k="'+k+'" aria-label="+" '+(val>=max?'disabled':'')+'>+</button></div></div>'}
+function numField(k,val,pre,label){return '<label class="stack" style="gap:6px"><span class="lbl small">'+label+'</span><span class="field"><span>'+pre+'</span><input type="number" inputmode="numeric" min="0" id="f-'+k+'" data-in="'+k+'" value="'+(val==null?'':Math.round(val))+'"></span></label>'}
+function destChips(){return '<div class="chips" role="group">'+DEST_IDS.map(function(id){return '<button class="chip'+(S.dest===id?' on':'')+'" data-act="dest" data-v="'+id+'">'+Lg(DEST[id].n)+'</button>'}).join('')+'</div>'}
+function seasonNote(d){
+  var out='';
+  if(d.closed.indexOf(S.month)>-1)out+='<div class="note bad">'+T('এই মাসে '+Lg(d.n)+' সাধারণত যাওয়া যায় না বা পরিষেবা বন্ধ থাকে। অন্য মাস দেখুন।',Lg(d.n)+' is usually closed or hard to reach in this month. Try another month.')+'</div>';
+  else if(isPeak(d,S.month)||S.eid)out+='<div class="note warn">'+T('ভিড়ের মৌসুম। হোটেল ভাড়া প্রায় '+N((d.peakHotel-1)*100)+'% ও যাতায়াত প্রায় ১৫% বেশি ধরা হয়েছে।','Peak season. Hotels are priced about '+N((d.peakHotel-1)*100)+'% higher and transport about 15% higher.')+'</div>';
+  return out;
+}
+
+/* ---------- Budget wizard ---------- */
+var STEPS=[['ট্রিপ','Trip'],['যাতায়াত','Transport'],['হোটেল','Hotel'],['খাবার','Food'],['গাইড ও আরও','Guide & more']];
+function routeHtml(){return '<ol class="route">'+STEPS.map(function(s,i){return '<li class="'+(i<step?'done':i===step?'on':'')+'"><button class="stop" data-act="step" data-v="'+i+'" aria-label="'+esc(Lg(s))+'"'+(i===step?' aria-current="step"':'')+'>'+N(i+1)+'</button><span>'+Lg(s)+'</span></li>'}).join('')+'</ol>'}
+function navHtml(){return '<div class="nav"><button class="btn ghost" data-act="back" '+(step===0?'disabled style="opacity:.4"':'')+'>← '+T('আগের','Back')+'</button><button class="btn primary" data-act="next">'+(step===4?T('হিসাব দেখো','See my budget'):T('পরের ধাপ','Next')+' →')+'</button></div>'}
+function tierCards(d,key,sel,names,descs,vals){return '<div class="grid3">'+names.map(function(n,i){return '<button class="opt'+(sel===i?' sel':'')+'" data-act="'+key+'" data-v="'+i+'"><b>'+Lg(n)+'</b><small>'+Lg(descs[i])+'</small><span class="pr num">'+TK(vals[i])+'</span></button>'}).join('')+'</div>'}
+function stepHtml(){
+  var d=DEST[S.dest],r=calc(S),h='';
+  if(step===0){
+    h+='<h2 class="sec-h">'+T('কোথায় যাচ্ছেন?','Where are you going?')+'</h2><div class="grid2" style="margin-top:10px">'+DEST_IDS.map(function(id){var x=DEST[id];return '<button class="opt'+(S.dest===id?' sel':'')+'" data-act="dest" data-v="'+id+'"><b>'+Lg(x.n)+'</b><small>'+Lg(x.tag)+'</small></button>'}).join('')+'</div>';
+    h+='<div class="stack" style="margin-top:16px;gap:0">'+stepper('adults',S.adults,1,20,T('প্রাপ্তবয়স্ক','Adults'))+stepper('kids',S.kids,0,10,T('শিশু','Children'),T('খরচ অর্ধেক ধরা হয়','Counted at half cost'))+stepper('days',S.days,1,10,T('কত দিন','Days'),T(N(Math.max(S.days-1,0))+' রাত',N(Math.max(S.days-1,0))+' night(s)'))+'</div>';
+    h+='<div class="stack" style="margin-top:16px"><label class="stack" style="gap:6px"><span class="lbl small">'+T('কোন মাসে যাবেন','Month of travel')+'</span><span class="field"><select id="f-month" data-ch="month">'+MONTHS.map(function(m,i){return '<option value="'+i+'"'+(S.month===i?' selected':'')+'>'+Lg(m)+'</option>'}).join('')+'</select></span></label>'+tog('eid',S.eid,T('ঈদ বা সরকারি ছুটি','Eid or public holiday'),T('দাম বেড়ে যায়','Prices rise'))+seasonNote(d)+'<div class="small muted">'+T('সেরা সময়: ','Best time: ')+Lg(d.best)+'</div></div>';
+  }
+  if(step===1){
+    h+='<h2 class="sec-h">'+T('ঢাকা থেকে '+Lg(d.n)+' কীভাবে যাবেন?','How to get to '+Lg(d.n)+' from Dhaka')+'</h2><p class="lead">'+T('জনপ্রতি এক পথের ভাড়া। নিজের জানা ভাড়া লিখে বদলাতে পারেন।','Fare per person, one way. Type your own fare if you know it.')+'</p><div class="stack" style="margin-top:12px">';
+    d.modes.forEach(function(m){h+='<button class="opt mode'+(r.m.id===m.id?' sel':'')+'" data-act="mode" data-v="'+m.id+'"><span class="h"><b>'+Lg(MODE[m.id])+'</b><span class="pr num">'+TK(m.fare)+'</span></span><small>'+Lg(m.h)+'</small></button>'});
+    h+='</div><div class="note" style="margin-top:12px">'+Lg(r.m.i)+'</div><div class="stack" style="margin-top:14px">'+numField('fare',r.fare,'৳',T('জনপ্রতি এক পথের ভাড়া','Fare per person, one way'))+tog('round',S.round,T('যাওয়া-আসা দুই পথ','Return trip'))+(d.fixedPP?'<div class="note">'+Lg(d.fixedN)+': <b class="num">'+TK(d.fixedPP)+'</b> '+T('জনপ্রতি, হিসাবে যোগ করা হয়েছে।','per person, already included.')+'</div>':'')+tog('localOn',S.localOn,T('গন্তব্যে স্থানীয় যাতায়াত','Local transport there'),Lg(d.locI))+(S.localOn?numField('local',S.ov.local!=null?S.ov.local:d.local,'৳',T('দিনে পুরো দলের জন্য','Per day for the whole group')):'')+'</div>';
+  }
+  if(step===2){
+    var base=[d.hotel[0],d.hotel[1],d.hotel[2]].map(function(x){return x*(r.peak?d.peakHotel:1)});
+    h+='<h2 class="sec-h">'+T('কেমন হোটেলে থাকবেন?','What kind of stay?')+'</h2><p class="lead">'+T('প্রতি রুম, প্রতি রাতের ভাড়া।','Price per room, per night.')+'</p><div style="margin-top:12px">'+tierCards(d,'hotel',S.hotelTier,[['সাশ্রয়ী','Economy'],['মাঝারি','Mid-range'],['প্রিমিয়াম','Premium']],[['সাধারণ রুম, ফ্যান বা এসি','Basic room, fan or AC'],['এসি, নাস্তা সহ, ভালো লোকেশন','AC, breakfast, good location'],['রিসোর্ট বা ভিউ রুম','Resort or view room']],base)+'</div><div class="stack" style="margin-top:14px">'+numField('hotel',r.rate,'৳',T('আপনার রুম ভাড়া (প্রতি রাত)','Your room rate (per night)'))+stepper('rooms',r.rooms,1,15,T('রুম','Rooms'),T('আপনার দলের জন্য আমরা '+N(Math.max(1,Math.ceil(r.pf/2)))+'টি রুম ধরেছি','We suggest '+N(Math.max(1,Math.ceil(r.pf/2)))+' room(s) for your group'))+'<div class="small muted">'+T(N(r.nights)+' রাতের জন্য হোটেল ধরা হয়েছে।','Hotel counted for '+N(r.nights)+' night(s).')+'</div></div>';
+  }
+  if(step===3){
+    h+='<h2 class="sec-h">'+T('খাবারে কত খরচ করবেন?','How will you eat?')+'</h2><p class="lead">'+T('জনপ্রতি প্রতি বেলার গড়।','Average per person, per meal.')+'</p><div style="margin-top:12px">'+tierCards(d,'foodTier',S.foodTier,[['সাশ্রয়ী','Street food'],['সাধারণ রেস্টুরেন্ট','Restaurant'],['প্রিমিয়াম','Premium']],[['ভর্তা-ভাত, নাস্তা, স্ট্রিট ফুড','Rice meals, snacks, street food'],['ভাত-মাছ-মাংস, ভালো রেস্টুরেন্ট','Rice, fish, curry in a good restaurant'],['সি-ফুড, বুফে, হোটেল ডাইনিং','Seafood, buffets, hotel dining']],d.food)+'</div><div class="stack" style="margin-top:14px"><div><div class="lbl small" style="margin-bottom:6px">'+T('দিনে কত বেলা বাইরে খাবেন','Meals out per day')+'</div><div class="chips">'+[2,3,4].map(function(n){return '<button class="chip'+(S.meals===n?' on':'')+'" data-act="meals" data-v="'+n+'">'+N(n)+T(' বেলা',' meals')+'</button>'}).join('')+'</div></div>'+numField('food',S.ov.food!=null?S.ov.food:d.food[S.foodTier],'৳',T('আপনার গড় (জনপ্রতি, প্রতি বেলা)','Your average (per person, per meal)'))+'</div>';
+  }
+  if(step===4){
+    h+='<h2 class="sec-h">'+T('ঘোরাঘুরি, গাইড ও অন্যান্য','Activities, guide and other')+'</h2><p class="lead">'+T('জনপ্রতি প্রতিদিনের ঘোরাঘুরির খরচ।','Per person, per day.')+'</p><div style="margin-top:12px">'+tierCards(d,'actTier',S.actTier,[['কম','Light'],['মাঝারি','Standard'],['বেশি','Full']],[['বিনামূল্যের জায়গা, হাঁটা','Free spots and walks'],['নৌকা, এন্ট্রি ফি, কিছু রাইড','Boat rides, entry fees, a few rides'],['ট্যুর, ওয়াটার স্পোর্টস, ফটোশুট','Tours, water sports, photoshoots']],d.act)+'</div><div class="stack" style="margin-top:14px">'+tog('guide',S.guide,T('গাইড নেবেন','Hire a guide'),d.guide?T('দিনে পুরো দলের জন্য আনুমানিক ','About ')+TK(d.guide)+T('','')+T('',' per day for the group'):T('সাধারণত দরকার হয় না, চাইলে যোগ করুন','Usually optional, add if you want one'))+(S.guide?numField('guide',S.ov.guide!=null?S.ov.guide:(d.guide||1000),'৳',T('গাইডের ভাড়া (প্রতিদিন, পুরো দল)','Guide fee (per day, whole group)')):'')+(d.permit?'<div class="note">'+T('এন্ট্রি ও পারমিট বাবদ জনপ্রতি '+TK(d.permit)+' ধরা হয়েছে।','Entry and permit fees of '+TK(d.permit)+' per person are included.')+'</div>':'')+numField('other',S.other,'৳',T('অন্যান্য খরচ (কেনাকাটা, বকশিশ)','Other costs (shopping, tips)'))+tog('buffer',S.buffer,T('১০% জরুরি বাফার','10% emergency buffer'),T('দাম বাড়লে বা হঠাৎ খরচে কাজে লাগে','Covers price rises and surprises'))+numField('budget',S.budget||'','৳',T('আপনার বাজেট সীমা (ঐচ্ছিক)','Your budget limit (optional)'))+'</div>';
+  }
+  return h+navHtml();
+}
+function liveHtml(){var r=calc(S);return '<div class="live"><div class="in"><div><small>'+T('আনুমানিক মোট','Estimated total')+'</small><b class="num" id="lv-total">'+TK(r.total)+'</b><small id="lv-head">'+T('জনপ্রতি ','Per head ')+TK(r.perHead)+'</small></div><button class="btn primary" data-act="result">'+T('বিস্তারিত','Details')+'</button></div></div>'}
+
+/* ---------- Result ---------- */
+function savings(){
+  var base=calc(S).total,out=[],d=DEST[S.dest];
+  var add=function(label,v){var x=base-calc(v).total;if(x>50)out.push({t:label,v:x})};
+  if(S.hotelTier>0)add(T('একধাপ সাশ্রয়ী হোটেল','One tier cheaper hotel'),variant({hotelTier:S.hotelTier-1},['hotel']));
+  if(S.foodTier>0)add(T('একধাপ সাশ্রয়ী খাবার','One tier cheaper food'),variant({foodTier:S.foodTier-1},['food']));
+  if(S.actTier>0)add(T('ঘোরাঘুরি কমানো','Fewer paid activities'),variant({actTier:S.actTier-1}));
+  var cheap=d.modes.slice().sort(function(a,b){return a.fare-b.fare})[0];
+  if(cheap.id!==S.mode)add(T(Lg(MODE[cheap.id])+' এ যাওয়া','Travel by '+Lg(MODE[cheap.id])),variant({mode:cheap.id},['fare']));
+  if(S.days>2)add(T('এক দিন কম','One day shorter'),variant({days:S.days-1}));
+  if(S.guide)add(T('গাইড ছাড়া','Go without a guide'),variant({guide:false}));
+  return out.sort(function(a,b){return b.v-a.v}).slice(0,3);
+}
+function summaryText(){
+  var d=DEST[S.dest],r=calc(S);
+  var l=['BD Trip: '+Lg(d.n)+', '+N(S.days)+T(' দিন',' days'),T('মোট ','Group: ')+N(r.heads)+T(' জন (',' people (')+N(S.adults)+T(' প্রাপ্তবয়স্ক, ',' adults, ')+N(S.kids)+T(' শিশু)',' children)'),''];
+  CATS.forEach(function(c){l.push(Lg(c[1])+': '+TK(r.cats[c[0]]))});
+  if(r.buf)l.push(T('বাফার ১০%: ','10% buffer: ')+TK(r.buf));
+  l.push('','• '+T('মোট: ','Total: ')+TK(r.total)+' ('+TK(r.min)+' – '+TK(r.max)+')','• '+T('জনপ্রতি: ','Per head: ')+TK(r.perHead));
+  return l.join('\n');
+}
+function splitData(){
+  var r=calc(S),n=S.split.n||S.adults,per=Math.ceil(r.total/n/10)*10;
+  if(!S.split.custom)return {n:n,per:per,paid:per*n,r:r};
+  var amts=[];for(var i=0;i<n;i++)amts.push(Number(S.split.amts[i])||0);
+  return {n:n,per:per,paid:amts.reduce(function(a,b){return a+b},0),r:r,amts:amts};
+}
+function resultHtml(){
+  var d=DEST[S.dest],r=calc(S),h='';
+  h+='<div class="stack"><div class="card"><div class="small muted">'+Lg(d.n)+' · '+N(S.days)+T(' দিন · ',' days · ')+N(r.heads)+T(' জন',' people')+'</div><div style="margin-top:8px"><span class="hero-total num">'+TK(r.total)+'</span></div><div class="muted small" style="margin-top:8px">'+T('সম্ভাব্য সীমা: ','Likely range: ')+TK(r.min)+' – '+TK(r.max)+'</div>';
+  h+='<div class="stackbar" role="img" aria-label="'+esc(T('খরচের ভাগ','Cost breakdown'))+'">'+CATS.map(function(c){var p=r.cats[c[0]]/r.sub*100;return p>0?'<i style="width:'+p+'%;background:var('+c[2]+')"></i>':''}).join('')+'</div><div class="legend">'+CATS.map(function(c){var v=r.cats[c[0]];return '<div><span class="dot" style="background:var('+c[2]+')"></span><span>'+Lg(c[1])+'</span><b class="num">'+TK(v)+'</b><em class="num">'+N(v/r.sub*100)+'%</em></div>'}).join('')+'</div>'+(r.buf?'<div class="small muted" style="margin-top:10px">'+T('জরুরি বাফার ১০%: ','10% emergency buffer: ')+TK(r.buf)+T(' (মোটে যোগ করা)',' (included in total)')+'</div>':'')+'</div>';
+  h+=seasonNote(d);
+  h+='<div class="kv"><div><small>'+T('জনপ্রতি গড়','Average per head')+'</small><b class="num">'+TK(r.perHead)+'</b></div><div><small>'+T('প্রাপ্তবয়স্ক প্রতি (শিশুসহ)','Per adult (kids covered)')+'</small><b class="num">'+TK(r.perAdult)+'</b></div></div>';
+  if(S.budget>0){var diff=S.budget-r.total;
+    h+='<div class="note '+(diff>=0?'good':'bad')+'"><b>'+(diff>=0?T('বাজেটের মধ্যে আছে। ','Within budget. ')+T('বাকি ','Left: ')+TK(diff):T('বাজেটের চেয়ে ','Over budget by ')+TK(-diff)+T(' বেশি।',''))+'</b>'+(diff<0?'<ul class="pl">'+savings().map(function(s){return '<li>'+s.t+' → '+T('বাঁচবে ','saves ')+TK(s.v)+'</li>'}).join('')+'</ul>':'')+'</div>';
+  } else {var sv=savings();if(sv.length)h+='<div class="note"><b>'+T('খরচ কমাতে চাইলে','To spend less')+'</b><ul class="pl">'+sv.map(function(s){return '<li>'+s.t+' → '+T('বাঁচবে ','saves ')+TK(s.v)+'</li>'}).join('')+'</ul></div>'}
+  /* group split */
+  var sp=splitData();
+  h+='<div class="card"><h3 class="sec-h">'+T('গ্রুপে ভাগ করুন','Split between the group')+'</h3><p class="lead">'+T('যারা টাকা দেবেন তাদের সংখ্যা দিন। শিশুদের খরচ অভিভাবকদের ভাগে ধরা আছে।','Set how many people pay. Children\'s costs are covered by the adults.')+'</p><div style="margin-top:8px">'+stepper('splitN',sp.n,1,20,T('কতজন দেবেন','People paying'))+'</div>'+tog('splitCustom',S.split.custom,T('নিজের মতো ভাগ','Custom amounts'),T('কেউ বেশি বা কম দিলে','If some pay more or less'));
+  if(!S.split.custom){h+='<div class="kv" style="margin-top:12px"><div><small>'+T('প্রত্যেকে দেবেন','Each pays')+'</small><b class="num">'+TK(sp.per)+'</b></div><div><small>'+T('মোট জমা','Collected')+'</small><b class="num">'+TK(sp.paid)+'</b></div></div>'}
+  else{h+='<div class="stack" style="margin-top:12px;gap:8px">';for(var i=0;i<sp.n;i++){h+='<div class="row" style="flex-wrap:nowrap"><span class="field" style="flex:1;min-width:0"><input type="text" id="nm'+i+'" data-nm="'+i+'" placeholder="'+esc(T('নাম ','Name ')+N(i+1))+'" value="'+esc(S.split.names[i]||'')+'"></span><span class="field" style="width:130px;flex:none"><span>৳</span><input type="number" inputmode="numeric" min="0" id="am'+i+'" data-am="'+i+'" value="'+(S.split.amts[i]!=null&&S.split.amts[i]!==''?S.split.amts[i]:'')+'"></span></div>'}
+    h+='<div class="row"><button class="btn sm" data-act="eqfill">'+T('সমান ভাগ বসাও','Fill equal shares')+'</button></div><div class="note" id="splitnote"></div></div>'}
+  h+='</div>';
+  /* compare */
+  var rows=DEST_IDS.map(function(id){var dd=DEST[id],v=Object.assign({},S,{dest:id,ov:{},rooms:null});if(!dd.modes.some(function(m){return m.id===v.mode}))v.mode='bus';var c=calc(v,dd);return {id:id,d:dd,c:c,closed:dd.closed.indexOf(S.month)>-1}}).sort(function(a,b){return a.c.perHead-b.c.perHead});
+  var mx=Math.max.apply(null,rows.map(function(x){return x.c.perHead}));
+  h+='<div class="card"><h3 class="sec-h">'+T('অন্য গন্তব্যের সাথে তুলনা','Compare with other destinations')+'</h3><p class="lead">'+T('একই দল, একই দিন ও একই স্তরে জনপ্রতি খরচ।','Per head, same group, days and comfort level.')+'</p><div class="stack" style="margin-top:12px;gap:10px">'+rows.map(function(x){return '<div class="cmp'+(x.id===S.dest?' me':'')+'"><span>'+Lg(x.d.n)+(x.closed?'<span class="badge">'+T('বন্ধ মৌসুম','off season')+'</span>':'')+'</span><span class="tr"><i style="width:'+(x.c.perHead/mx*100)+'%"></i></span><span class="num">'+TK(x.c.perHead)+'</span></div>'}).join('')+'</div></div>';
+  /* actions */
+  h+='<div class="card"><h3 class="sec-h">'+T('শেয়ার ও সেভ','Share and save')+'</h3><div class="btns" style="margin-top:10px"><button class="btn primary" data-act="copy">'+T('সারাংশ কপি','Copy summary')+'</button><a class="btn" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent(summaryText())+'">WhatsApp</a><button class="btn" data-act="saveTrip">'+T('ট্রিপ সেভ করো','Save this trip')+'</button></div><textarea class="share" id="sharebox" readonly hidden aria-label="Summary"></textarea>';
+  if(saved.length){h+='<div class="stack" style="margin-top:14px;gap:8px"><div class="lbl small">'+T('সেভ করা ট্রিপ (এই ব্রাউজারে)','Saved trips (this browser)')+'</div>'+saved.map(function(s){return '<div class="row" style="flex-wrap:nowrap"><span style="min-width:0"><b>'+esc(s.name)+'</b><br><small class="muted num">'+TK(s.total)+'</small></span><span class="btns" style="flex:none;flex-wrap:nowrap"><button class="btn sm" data-act="loadTrip" data-v="'+s.id+'">'+T('খোলো','Open')+'</button><button class="btn sm ghost" data-act="delTrip" data-v="'+s.id+'">'+T('মোছো','Delete')+'</button></span></div>'}).join('')+'</div>'}
+  h+='</div><div class="nav"><button class="btn ghost" data-act="edit">← '+T('হিসাব বদলাও','Edit answers')+'</button><button class="btn" data-act="goplan">'+T('প্ল্যান দেখো','See the plan')+' →</button></div></div>';
+  return h;
+}
+function budgetHtml(){
+  if(step===5)return resultHtml();
+  return '<div class="card">'+routeHtml()+stepHtml()+'</div>';
+}
+
+/* ---------- Transport ---------- */
+function transportHtml(){
+  var d=DEST[S.dest],h='<div class="stack"><div><h2 class="sec-h">'+T('ঢাকা থেকে যাওয়ার উপায়','Getting there from Dhaka')+'</h2><p class="lead">'+T('ভাড়া আনুমানিক, মৌসুম ও কোচ ভেদে বদলায়। কেনার আগে কাউন্টারে নিশ্চিত করুন।','Fares are estimates and vary by season and coach. Confirm at the counter before paying.')+'</p></div>'+destChips();
+  d.modes.forEach(function(m){h+='<div class="card mode"><div class="h"><b>'+Lg(MODE[m.id])+'</b><span class="pr num">'+TK(m.fare*0.85)+' – '+TK(m.fare*1.25)+'</span></div><div class="small muted">'+T('সময়: ','Time: ')+Lg(m.h)+'</div><p>'+Lg(m.i)+'</p></div>'});
+  if(d.fixedPP)h+='<div class="card mode"><div class="h"><b>'+T('জাহাজ','Ship')+'</b><span class="pr num">'+TK(d.fixedPP)+'</span></div><p>'+Lg(d.fixedN)+'</p></div>';
+  h+='<div class="card mode"><div class="h"><b>'+T('গন্তব্যে চলাচল','Getting around there')+'</b><span class="pr num">'+TK(d.local)+T(' / দিন (দল)',' / day (group)')+'</span></div><p>'+Lg(d.locI)+'</p></div>';
+  h+='<div class="card"><h3 class="sec-h">'+T('টিকিট কোথায় কাটবেন','Where to book')+'</h3><div class="btns" style="margin-top:10px"><a class="btn" target="_blank" rel="noopener" href="https://eticket.railway.gov.bd">'+T('রেলওয়ে ই-টিকিট','Railway e-ticket')+'</a><a class="btn" target="_blank" rel="noopener" href="https://www.shohoz.com/bus-tickets">Shohoz '+T('বাস','Bus')+'</a><a class="btn" target="_blank" rel="noopener" href="https://www.biman.gov.bd">Biman</a><a class="btn" target="_blank" rel="noopener" href="https://www.usbair.com">US-Bangla</a></div></div>';
+  h+='<div class="nav"><span></span><button class="btn primary" data-act="tobudget">'+T('এই ভাড়া দিয়ে বাজেট করো','Use this in my budget')+' →</button></div></div>';
+  return h;
+}
+
+/* ---------- Itinerary ---------- */
+var SLOT={m:['সকাল','Morning'],a:['দুপুর','Afternoon'],e:['সন্ধ্যা','Evening']};
+function genPlan(d,days){
+  var C=d.plan,out=[],pick=function(c,s){return c.i.filter(function(x){return x.s===s})};
+  if(days===1)return [{t:['ডে ট্রিপ','Day trip'],items:[P('m',d.arrive[0],d.arrive[1])].concat(pick(C[0],'m'),pick(C[0],'a'),[P('e',d.leave[0],d.leave[1])])}];
+  out.push({t:C[0].t,items:[P('m',d.arrive[0],d.arrive[1])].concat(pick(C[0],'a'),pick(C[0],'e'))});
+  for(var i=1;i<days-1;i++){
+    if(i<C.length)out.push({t:C[i].t,items:C[i].i});
+    else out.push({t:['মুক্ত দিন','Free day'],items:[P('m','দেরিতে ঘুম, নাস্তা','Late start, breakfast'),P('a','পছন্দের জায়গা আবার ঘোরা বা কেনাকাটা','Revisit favourites or shop'),P('e','হালকা ডিনার ও বিশ্রাম','Easy dinner and rest')]});
+  }
+  var li=days-1<C.length?days-1:0;
+  out.push({t:['ফেরার দিন','Heading home'],items:pick(C[li],'m').concat([P('a',d.leave[0],d.leave[1])])});
+  return out;
+}
+function planHtml(){
+  var d=DEST[S.dest],plan=genPlan(d,S.days);
+  var h='<div class="stack"><div><h2 class="sec-h">'+T('দিন অনুযায়ী প্ল্যান','Day-by-day plan')+'</h2><p class="lead">'+T('গন্তব্য ও দিন বদলালে প্ল্যান নিজে নিজে সাজে।','Change the destination or days and the plan rebuilds itself.')+'</p></div>'+destChips()+'<div class="card">'+stepper('days',S.days,1,10,T('কত দিন','Days'),T(N(Math.max(S.days-1,0))+' রাত',N(Math.max(S.days-1,0))+' night(s)'))+'</div>'+seasonNote(d);
+  plan.forEach(function(day,i){h+='<div class="card day"><div class="hd"><span class="dn">'+T('দিন ','Day ')+N(i+1)+'</span><h3>'+Lg(day.t)+'</h3></div>'+day.items.map(function(it){return '<div class="slot"><span>'+Lg(SLOT[it.s])+'</span><div>'+Lg(it.t)+'</div></div>'}).join('')+'</div>'});
+  h+='<div class="nav"><button class="btn" data-act="tobudget">'+T('এই প্ল্যানের বাজেট','Budget for this plan')+' →</button><button class="btn primary" data-act="topack">'+T('প্যাকিং লিস্ট','Packing list')+' →</button></div></div>';
+  return h;
+}
+
+/* ---------- Packing ---------- */
+function packItems(){
+  var d=DEST[S.dest],groups=[['base',['সবসময় দরকার','Always','']]];
+  var m=S.month;
+  groups.push([d.type,[d.type==='sea'?['সমুদ্র ভ্রমণ','Sea trip']:d.type==='hill'?['পাহাড় ভ্রমণ','Hill trip']:['বন ভ্রমণ','Forest trip']][0]]);
+  if(m>=4&&m<=8)groups.push(['rain',['বর্ষার জন্য','For the rains']]);
+  if(m>=10||m<=1)groups.push(['winter',['শীতের জন্য','For the cool season']]);
+  return groups;
+}
+function packHtml(){
+  var d=DEST[S.dest],groups=packItems(),all=[],h='<div class="stack"><div><h2 class="sec-h">'+T('প্যাকিং লিস্ট','Packing list')+'</h2><p class="lead">'+T(Lg(d.n)+' ও '+Lg(MONTHS[S.month])+' মাসের জন্য। টিক দিলে এই ব্রাউজারে মনে থাকবে।','For '+Lg(d.n)+' in '+Lg(MONTHS[S.month])+'. Ticks are remembered in this browser.')+'</p></div>'+destChips();
+  var secs='';
+  groups.forEach(function(g){var items=PACK[g[0]];secs+='<div class="card"><h3 class="sec-h">'+Lg(g[1])+'</h3>'+items.map(function(it){var id=g[0]+'.'+it[0];all.push(id);var on=!!pack.checked[id];return '<label class="check'+(on?' done':'')+'"><input type="checkbox" data-pk="'+id+'"'+(on?' checked':'')+'><span>'+Lg([it[1],it[2]])+'</span></label>'}).join('')+'</div>'});
+  var cu='<div class="card"><h3 class="sec-h">'+T('আমার নিজের আইটেম','My own items')+'</h3>'+pack.custom.map(function(c){all.push(c.id);var on=!!pack.checked[c.id];return '<label class="check'+(on?' done':'')+'"><input type="checkbox" data-pk="'+c.id+'"'+(on?' checked':'')+'><span style="flex:1">'+esc(c.t)+'</span><button class="btn sm ghost" data-act="delItem" data-v="'+c.id+'" aria-label="'+esc(T('মোছো','Delete'))+'">×</button></label>'}).join('')+'<div class="row" style="flex-wrap:nowrap;margin-top:10px"><span class="field" style="flex:1;min-width:0"><input type="text" id="newitem" placeholder="'+esc(T('যেমন: ক্যামেরা চার্জার','e.g. camera charger'))+'"></span><button class="btn" data-act="addItem">'+T('যোগ','Add')+'</button></div></div>';
+  var done=all.filter(function(id){return pack.checked[id]}).length,pct=all.length?done/all.length*100:0;
+  h+='<div class="card"><div class="row"><b>'+N(done)+' / '+N(all.length)+T(' গোছানো হয়েছে',' packed')+'</b><button class="btn sm ghost" data-act="clearTicks">'+T('টিক মুছো','Clear ticks')+'</button></div><div class="prog" role="progressbar" aria-valuenow="'+Math.round(pct)+'" aria-valuemin="0" aria-valuemax="100"><i style="width:'+pct+'%"></i></div></div>'+secs+cu+'</div>';
+  return h;
+}
+
+/* ---------- Safety ---------- */
+function safetyHtml(){
+  var d=DEST[S.dest],h='<div class="stack"><div><h2 class="sec-h">'+T('নিরাপত্তা, পারমিট ও টাকা-পয়সা','Safety, permits and payments')+'</h2><p class="lead">'+T('নিয়ম বদলায়। যাত্রার আগে হোটেল, ট্যুর অপারেটর বা স্থানীয় প্রশাসনের সাথে নিশ্চিত করুন।','Rules change. Confirm with your hotel, tour operator or local administration before you travel.')+'</p></div>'+destChips();
+  h+='<div class="card"><h3 class="sec-h">'+Lg(d.n)+': '+T('পারমিট ও নিয়ম','permits and rules')+'</h3><p style="margin-top:6px">'+Lg(d.permit_t)+'</p><ul class="pl">';
+  for(var i=0;i<d.safe.length;i+=2)h+='<li>'+(lang==='bn'?d.safe[i]:d.safe[i+1])+'</li>';
+  h+='</ul></div>';
+  h+='<div class="card stack" style="gap:10px"><h3 class="sec-h">'+T('জরুরি নম্বর','Emergency numbers')+'</h3><div class="helpline"><b class="num">৯৯৯</b><span>'+T('জাতীয় জরুরি সেবা (পুলিশ, ফায়ার, অ্যাম্বুলেন্স)','National emergency service (police, fire, ambulance)')+'</span></div><div class="helpline"><b class="num">১০৯</b><span>'+T('নারী ও শিশু নির্যাতন প্রতিরোধ হেল্পলাইন','Women and children helpline')+'</span></div><div class="helpline"><b class="num">১৬১৬৩</b><span>'+T('ফায়ার সার্ভিস ও সিভিল ডিফেন্স','Fire Service and Civil Defence')+'</span></div><div class="small muted">'+T('জনপ্রিয় ভ্রমণ এলাকায় ট্যুরিস্ট পুলিশের বুথ থাকে। নম্বর লিখে রাখুন, নেটওয়ার্ক না থাকলেও কাজে লাগবে।','Tourist Police booths operate in popular areas. Write numbers down in case you lose network.')+'</div></div>';
+  h+='<div class="card"><h3 class="sec-h">'+T('টাকা ও পেমেন্ট','Money and payments')+'</h3><ul class="pl"><li>'+T('শহর ও বড় হোটেলে বিকাশ, নগদ ও কার্ড চলে। পাহাড়, দ্বীপ ও বনে নগদ টাকা লাগবে।','bKash, Nagad and cards work in towns and bigger hotels. In hills, islands and forests you need cash.')+'</li><li>'+T('সাজেক, বান্দরবানের দূরের জায়গা ও সেন্ট মার্টিনে এটিএম নেই বা কম। আগে টাকা তুলে নিন।','ATMs are missing or rare in Sajek, remote Bandarban and Saint Martin. Withdraw before you go.')+'</li><li>'+T('ছোট নোট রাখুন। নৌকা, চা ও রিকশায় ভাংতি পাওয়া কঠিন।','Carry small notes. Change is hard to find for boats, tea and rickshaws.')+'</li></ul></div>';
+  h+='<div class="card"><h3 class="sec-h">'+T('ঠকে না যেতে','Avoiding overcharging')+'</h3><ul class="pl"><li>'+T('ওঠার আগে ভাড়া ঠিক করুন, বিশেষ করে সিএনজি, নৌকা ও জিপে।','Agree the fare before you get in, especially for CNG, boats and jeeps.')+'</li><li>'+T('হোটেল রুম ও খাবারের দাম আগে জিজ্ঞেস করুন। বুকিংয়ের সময় লিখিত বা মেসেজে নিন।','Ask room and meal prices first. Get the booking in writing or by message.')+'</li><li>'+T('অচেনা দালালের হাতে সম্পূর্ণ টাকা আগাম দেবেন না।','Do not pay the full amount in advance to an unknown agent.')+'</li><li>'+T('ঈদ ও শীতের ছুটিতে ভাড়া অনেক বাড়ে, তাই আগে বুক করুন।','Fares jump at Eid and in winter holidays, so book early.')+'</li></ul></div></div>';
+  return h;
+}
+
+/* ---------- Render ---------- */
+function topHtml(){
+  return '<div class="app-langrow"><div class="lang" role="group" aria-label="Language"><button data-act="lang" data-v="bn" class="'+(lang==='bn'?'on':'')+'">বাংলা</button><button data-act="lang" data-v="en" class="'+(lang==='en'?'on':'')+'">EN</button></div></div><nav class="tabs" aria-label="Sections">'+TABS.map(function(t){return '<button class="tab'+(view===t[0]?' on':'')+'" data-act="tab" data-v="'+t[0]+'"'+(view===t[0]?' aria-current="page"':'')+'>'+Lg(t[1])+'</button>'}).join('')+'</nav>';
+}
+function render(keepScroll){
+  var body={budget:budgetHtml,transport:transportHtml,plan:planHtml,pack:packHtml,safety:safetyHtml}[view]();
+  var live=view==='budget'&&step<5;
+  document.body.classList.toggle('has-live',live);
+  $app.innerHTML=topHtml()+'<main>'+body+'</main><p class="muted small" style="margin-top:18px">'+T('সব দাম আনুমানিক। ভাড়া বদলালে নিজের জানা দাম লিখে ঠিক করে নিন।','All prices are estimates. Update any fare you know has changed.')+'</p>'+(live?liveHtml():'');
+  document.documentElement.lang=lang==='bn'?'bn':'en';
+  if(!keepScroll)window.scrollTo(0,0);
+  if(view==='budget'&&step===5)splitNote();
+}
+function live(){
+  var r=calc(S),a=document.getElementById('lv-total'),b=document.getElementById('lv-head');
+  if(a)a.textContent=TK(r.total);if(b)b.textContent=T('জনপ্রতি ','Per head ')+TK(r.perHead);
+}
+function splitNote(){
+  var el=document.getElementById('splitnote');if(!el||!S.split.custom)return;
+  var sp=splitData(),diff=sp.r.total-sp.paid;
+  el.className='note '+(diff<=0?'good':'warn');
+  el.textContent=diff>0?T('এখনো বাকি ','Still to collect ')+TK(diff):T('পুরো টাকা জমা হয়েছে'+(diff<-10?'। বাড়তি '+TK(-diff):''),'Fully covered'+(diff<-10?'. Extra '+TK(-diff):''));
+}
+function setHash(v){try{history.replaceState(null,'','#'+v)}catch(e){}}
+function copyText(txt){
+  var box=document.getElementById('sharebox');
+  var fallback=function(){if(box){box.hidden=false;box.value=txt;box.focus();box.select()}toast(T('নিচের লেখাটি কপি করুন','Select the text below to copy'))};
+  try{navigator.clipboard.writeText(txt).then(function(){toast(T('কপি হয়েছে','Copied'))},fallback)}catch(e){fallback()}
+}
+
+/* ---------- Events ---------- */
+var LIM={adults:[1,20],kids:[0,10],days:[1,10]};
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el)return;
+  var a=el.dataset.act,v=el.dataset.v,k=el.dataset.k;
+  if(a==='lang'){lang=v;LS.set('bdt.lang',lang);render(true);return}
+  if(a==='tab'){view=v;setHash(v);render();return}
+  if(a==='step'){step=+v;render();return}
+  if(a==='next'){if(step<4){step++;render()}else{step=5;render()}return}
+  if(a==='back'){if(step>0){step--;render()}return}
+  if(a==='result'){step=5;render();return}
+  if(a==='edit'){step=0;render();return}
+  if(a==='tobudget'){view='budget';setHash('budget');step=5;render();return}
+  if(a==='goplan'){view='plan';setHash('plan');render();return}
+  if(a==='topack'){view='pack';setHash('pack');render();return}
+  if(a==='dest'){S.dest=v;S.ov={};S.rooms=null;var dd=DEST[v];if(!dd.modes.some(function(m){return m.id===S.mode}))S.mode='bus';S.guide=false;save();render(true);return}
+  if(a==='mode'){S.mode=v;delete S.ov.fare;save();render(true);return}
+  if(a==='hotel'){S.hotelTier=+v;delete S.ov.hotel;save();render(true);return}
+  if(a==='foodTier'){S.foodTier=+v;delete S.ov.food;save();render(true);return}
+  if(a==='actTier'){S.actTier=+v;save();render(true);return}
+  if(a==='meals'){S.meals=+v;save();render(true);return}
+  if(a==='tog'&&k==='splitCustom'){S.split.custom=!S.split.custom;save();render(true);return}
+  if(a==='tog'){S[k]=!S[k];if(k==='guide'&&!S.guide)delete S.ov.guide;if(k==='localOn'&&!S.localOn)delete S.ov.local;save();render(true);return}
+  if(a==='inc'||a==='dec'){
+    var dl=a==='inc'?1:-1;
+    if(k==='rooms'){S.rooms=Math.min(15,Math.max(1,calc(S).rooms+dl))}
+    else if(k==='splitN'){S.split.n=Math.min(20,Math.max(1,(S.split.n||S.adults)+dl))}
+    else{var lm=LIM[k];S[k]=Math.min(lm[1],Math.max(lm[0],S[k]+dl));if(k==='adults'||k==='kids')S.rooms=null}
+    save();render(true);return}
+  if(a==='splitCustom'){S.split.custom=!S.split.custom;save();render(true);return}
+  if(a==='eqfill'){var sp=splitData();S.split.amts=[];for(var i=0;i<sp.n;i++)S.split.amts.push(sp.per);save();render(true);return}
+  if(a==='copy'){copyText(summaryText());return}
+  if(a==='saveTrip'){var r=calc(S);saved.unshift({id:'t'+Date.now(),name:Lg(DEST[S.dest].n)+' · '+N(S.days)+T(' দিন',' days')+' · '+N(r.heads)+T(' জন',' people'),total:r.total,s:JSON.parse(JSON.stringify(S))});saved=saved.slice(0,10);LS.set('bdt.saved',saved);toast(T('ট্রিপ সেভ হয়েছে','Trip saved'));render(true);return}
+  if(a==='loadTrip'){var f=saved.filter(function(x){return x.id===v})[0];if(f){S=Object.assign({},DEF,f.s);S.ov=Object.assign({},S.ov);S.split=Object.assign({},DEF.split,S.split);save();step=5;render()}return}
+  if(a==='delTrip'){saved=saved.filter(function(x){return x.id!==v});LS.set('bdt.saved',saved);render(true);return}
+  if(a==='addItem'){var inp=document.getElementById('newitem');if(inp&&inp.value.trim()){pack.custom.push({id:'c'+Date.now(),t:inp.value.trim()});LS.set('bdt.pack',pack);render(true)}return}
+  if(a==='delItem'){e.preventDefault();pack.custom=pack.custom.filter(function(c){return c.id!==v});delete pack.checked[v];LS.set('bdt.pack',pack);render(true);return}
+  if(a==='clearTicks'){pack.checked={};LS.set('bdt.pack',pack);render(true);return}
+});
+document.addEventListener('input',function(e){
+  var t=e.target,k=t.dataset.in;
+  if(k){var val=t.value===''?null:Math.max(0,Number(t.value));
+    if(k==='other'){S.other=val||0}
+    else if(k==='budget'){S.budget=val||0}
+    else if(k==='rooms'){S.rooms=val}
+    else{if(val==null)delete S.ov[k];else S.ov[k]=val}
+    save();live();return}
+  if(t.dataset.am!=null){S.split.amts[+t.dataset.am]=t.value===''?'':Number(t.value);save();splitNote();return}
+  if(t.dataset.nm!=null){S.split.names[+t.dataset.nm]=t.value;save();return}
+});
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.dataset.ch==='month'){S.month=+t.value;save();render(true);return}
+  if(t.dataset.pk){pack.checked[t.dataset.pk]=t.checked;LS.set('bdt.pack',pack);render(true)}
+});
+window.addEventListener('hashchange',function(){var h=(location.hash||'').replace('#','');if(TABS.some(function(t){return t[0]===h})&&h!==view){view=h;render()}});
+render(true);
 })();
 </script>
-</body></html>
+</body>
+</html>
