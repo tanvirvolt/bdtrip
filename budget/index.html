@@ -6,7 +6,8 @@
 <title>BDTrip — ট্রিপ বাজেট ও প্ল্যানার</title>
 <meta name="description" content="বাংলাদেশের জনপ্রিয় গন্তব্যের ভ্রমণ বাজেট, যাতায়াত, দিনভিত্তিক প্ল্যান, প্যাকিং ও নিরাপত্তা গাইড।">
 <link rel="canonical" href="https://bdtrip.vercel.app/budget/">
-<link rel="stylesheet" href="/style.css">\n<link rel="stylesheet" href="/navbar.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/navbar.css">
 <link rel="stylesheet" href="/design-tokens.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -688,7 +689,8 @@ function summaryText(){
   CATS.forEach(function(c){l.push(Lg(c[1])+': '+TK(r.cats[c[0]]))});
   if(r.buf)l.push(T('বাফার ১০%: ','10% buffer: ')+TK(r.buf));
   l.push('','• '+T('মোট: ','Total: ')+TK(r.total)+' ('+TK(r.min)+' – '+TK(r.max)+')','• '+T('জনপ্রতি: ','Per head: ')+TK(r.perHead));
-  return l.join('\n');
+  return l.join('
+');
 }
 function splitData(){
   var r=calc(S),n=S.split.n||S.adults,per=Math.ceil(r.total/n/10)*10;
