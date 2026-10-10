@@ -14,25 +14,34 @@ const tags=d=>{const text=(d.bn+' '+d.en+' '+places(d).join(' ')+' '+food(d)+' '
 const tagLabel={beach:'🌊 Beach',mountain:'⛰ Mountain',nature:'🌿 Nature',history:'🏛 History',food:'🍛 Food',monsoon:'🌧 Monsoon'};
 const tagClass=t=>'<span class="dc-tag">'+tagLabel[t]+'</span>';
 const photoCache=new Map();
-function findPhoto(name){
- if(photoCache.has(name))return photoCache.get(name);
- const task=fetch('https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(name+' Bangladesh')+'&gsrnamespace=6&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=900&format=json&origin=*')
+function findPhoto(name,place){
+ const key=name+'|'+place;
+ if(photoCache.has(key))return photoCache.get(key);
+ const query=place&&place!==name?place+' '+name+' Bangladesh':name+' Bangladesh travel attraction';
+ const task=fetch('https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(query)+'&gsrnamespace=6&gsrlimit=15&prop=imageinfo&iiprop=url|mime&iiurlwidth=900&format=json&origin=*')
   .then(r=>{if(!r.ok)throw new Error('photo lookup failed');return r.json()})
   .then(data=>{
    const pages=Object.values(data.query?.pages||{});
-   const usable=pages.filter(p=>p.imageinfo?.[0]?.thumburl&&!/logo|flag|map|icon|coat of arms/i.test(p.title||''));
-   return usable[0]?.imageinfo?.[0]?.thumburl||'';
+   const reject=/\b(map|maps|location|locator|administrative|districts?|division|outline|blank|svg|flag|logo|icon|coat of arms|emblem|seal|diagram|geography)\b/i;
+   const usable=pages.filter(p=>{
+    const title=p.title||'',info=p.imageinfo?.[0]||{};
+    return info.thumburl&&/^image\/(jpeg|png|webp)$/i.test(info.mime||'')&&!reject.test(title);
+   });
+   if(!usable.length)return '';
+   const placeWords=String(place||'').toLowerCase().split(/[^a-z0-9\u0980-\u09ff]+/).filter(x=>x.length>3);
+   const scored=usable.map(p=>({url:p.imageinfo[0].thumburl,score:placeWords.reduce((n,w)=>n+((p.title||'').toLowerCase().includes(w)?3:0),0)+(/temple|beach|lake|hill|waterfall|garden|forest|tea|river|palace|fort|monastery|landscape|tourism|tourist/i.test(p.title||'')?1:0)})).sort((a,b)=>b.score-a.score);
+   return scored[0]?.url||'';
   }).catch(()=> '');
- photoCache.set(name,task);return task;
+ photoCache.set(key,task);return task;
 }
 function hydratePhotos(root=document){
  root.querySelectorAll('[data-photo-id][data-photo-name]').forEach(async el=>{
   if(el.dataset.photoLoaded)return;
   el.dataset.photoLoaded='1';
-  const url=await findPhoto(el.dataset.photoName);
+  const url=await findPhoto(el.dataset.photoName,el.dataset.photoPlace||'');
   if(!url||!el.isConnected)return;
   const img=document.createElement('img');
-  img.className='district-photo';img.src=url;img.alt=el.dataset.photoName+' district travel photo';img.loading='lazy';img.decoding='async';
+  img.className='district-photo';img.src=url;img.alt=(el.dataset.photoPlace||el.dataset.photoName)+' travel photo';img.loading='lazy';img.decoding='async';
   img.addEventListener('error',()=>img.remove(),{once:true});
   el.prepend(img);el.classList.add('has-photo');
  });
@@ -40,8 +49,8 @@ function hydratePhotos(root=document){
 
 function matches(d){if(div&&d.div!==div)return false;if(experience&&!tags(d).includes(experience))return false;if(q){const text=[d.bn,d.en,...places(d),food(d),season(d)].join(' ');if(window.BDTripSearch){/* unified search is used for the hero/top result UI */}const n=window.BDTripSearch?.norm||((x)=>String(x).toLowerCase().replace(/\s+/g,''));const terms=n(q).split('').length? [n(q)]:[];if(!terms.some(t=>n(text).includes(t)))return false}return true}
 function list(){let a=D.districts.filter(matches);if(sort==='name')a.sort((x,y)=>x.bn.localeCompare(y.bn,'bn'));if(sort==='places')a.sort((x,y)=>places(y).length-places(x).length||x.id-y.id);return a}
-function card(d){const st=status(d.id),ps=places(d),ts=tags(d);const grad=['#0b5d4b','#1f7891','#6b7d3b','#8b5e34','#5a4b86'][d.id%5];return '<article class="district-card" data-id="'+d.id+'"><a href="/district/'+slug(d.en)+'/" aria-label="'+esc(d.bn)+' জেলা গাইড"><div class="dc-visual" data-photo-id="'+d.id+'" data-photo-name="'+esc(d.en)+'" style="background:linear-gradient(145deg,'+grad+',#073b36)"><span class="dc-label">'+esc(d.bn)+'</span></div></a><div class="dc-status"><button class="status-btn '+(st==='v'?'active':'')+'" data-status="v" data-id="'+d.id+'" title="Visited" aria-label="'+esc(d.bn)+' visited">✓</button><button class="status-btn '+(st==='w'?'active':'')+'" data-status="w" data-id="'+d.id+'" title="Wishlist" aria-label="'+esc(d.bn)+' wishlist">★</button></div><div class="dc-body"><h3>'+esc(d.bn)+'</h3><div class="dc-en">'+esc(d.en)+'</div><div class="dc-place">'+esc(ps[0]||'জেলার ভ্রমণ গাইড দেখুন')+'</div><div class="dc-meta"><span>📍 '+ps.length+' স্থান</span><span>'+esc(season(d).split(';')[0]||'সেরা সময় দেখুন')+'</span></div><div class="dc-tags">'+ts.slice(0,3).map(tagClass).join('')+'</div></div></article>'}
-function renderFeatured(){const picks=['coxsbazar','sajek','sylhet','bandarban'];const ds=picks.map(sl=>D.districts.find(d=>slug(d.en)===sl)).filter(Boolean);$('#featuredGrid').innerHTML=ds.map(d=>'<a class="featured-card" href="/district/'+slug(d.en)+'/" data-featured="'+d.id+'" data-photo-id="'+d.id+'" data-photo-name="'+esc(d.en)+'"><div><h3>'+esc(d.bn)+'</h3><p>'+esc(places(d)[0]||'জনপ্রিয় ভ্রমণ গন্তব্য')+'</p><span>গাইড দেখুন →</span></div></a>').join('');hydratePhotos($('#featuredGrid'))}
+function card(d){const st=status(d.id),ps=places(d),ts=tags(d);const grad=['#0b5d4b','#1f7891','#6b7d3b','#8b5e34','#5a4b86'][d.id%5];return '<article class="district-card" data-id="'+d.id+'"><a href="/district/'+slug(d.en)+'/" aria-label="'+esc(d.bn)+' জেলা গাইড"><div class="dc-visual" data-photo-id="'+d.id+'" data-photo-name="'+esc(d.en)+'" data-photo-place="'+esc(ps[0]||d.en)" style="background:linear-gradient(145deg,'+grad+',#073b36)"><span class="dc-label">'+esc(d.bn)+'</span></div></a><div class="dc-status"><button class="status-btn '+(st==='v'?'active':'')+'" data-status="v" data-id="'+d.id+'" title="Visited" aria-label="'+esc(d.bn)+' visited">✓</button><button class="status-btn '+(st==='w'?'active':'')+'" data-status="w" data-id="'+d.id+'" title="Wishlist" aria-label="'+esc(d.bn)+' wishlist">★</button></div><div class="dc-body"><h3>'+esc(d.bn)+'</h3><div class="dc-en">'+esc(d.en)+'</div><div class="dc-place">'+esc(ps[0]||'জেলার ভ্রমণ গাইড দেখুন')+'</div><div class="dc-meta"><span>📍 '+ps.length+' স্থান</span><span>'+esc(season(d).split(';')[0]||'সেরা সময় দেখুন')+'</span></div><div class="dc-tags">'+ts.slice(0,3).map(tagClass).join('')+'</div></div></article>'}
+function renderFeatured(){const picks=['coxsbazar','sajek','sylhet','bandarban'];const ds=picks.map(sl=>D.districts.find(d=>slug(d.en)===sl)).filter(Boolean);$('#featuredGrid').innerHTML=ds.map(d=>'<a class="featured-card" href="/district/'+slug(d.en)+'/" data-featured="'+d.id+'" data-photo-id="'+d.id+'" data-photo-name="'+esc(d.en)+'" data-photo-place="'+esc(places(d)[0]||d.en)"><div><h3>'+esc(d.bn)+'</h3><p>'+esc(places(d)[0]||'জনপ্রিয় ভ্রমণ গন্তব্য')+'</p><span>গাইড দেখুন →</span></div></a>').join('');hydratePhotos($('#featuredGrid'))}
 function renderDivisions(){const wrap=$('#divisionChips'),filters=$('#divFilters');wrap.innerHTML='<button class="division-chip '+(!div?'active':'')+'" data-div="0">সব বিভাগ · '+D.districts.length+'</button>';filters.innerHTML='<button class="filter-btn '+(!div?'active':'')+'" data-div="0">সব বিভাগ · '+D.districts.length+'</button>';D.divisions.forEach(x=>{const n=D.districts.filter(d=>d.div===x.id).length;wrap.insertAdjacentHTML('beforeend','<button class="division-chip '+(div===x.id?'active':'')+'" data-div="'+x.id+'">'+esc(x.bn)+' · '+n+'</button>');filters.insertAdjacentHTML('beforeend','<button class="filter-btn '+(div===x.id?'active':'')+'" data-div="'+x.id+'">'+esc(x.bn)+' · '+n+'</button>')})}
 function syncInputs(value){['topGuideSearch','heroSearch'].forEach(id=>{const e=$('#'+id);if(e&&e.value!==value)e.value=value})}
 function render(){const all=list(),shown=all.slice(0,visible);$('#grid').classList.toggle('list-mode',view==='list');$('#grid').innerHTML=shown.map(card).join('')||'<div class="empty"><strong>কোনো জেলা পাওয়া যায়নি</strong><small>অন্য search term বা filter দিয়ে আবার চেষ্টা করুন।</small></div>';hydratePhotos($('#grid'));$('#countLabel').textContent='· '+all.length+'টি';$('#resultHint').textContent=q?'Search: '+q:experience?'Experience: '+tagLabel[experience]:div?'Division filter active':'সব জেলা দেখানো হচ্ছে';$('#more').hidden=shown.length>=all.length;$('#more').textContent='আরও '+Math.min(12,Math.max(0,all.length-shown.length))+' জেলা দেখুন ↓';bindCards();updateProgress();if(selected)highlightMap(selected)}
