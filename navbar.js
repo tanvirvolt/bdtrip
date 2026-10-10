@@ -26,7 +26,7 @@
   });
   const lang=qs('[data-bn-lang]'), langMenu=qs('[data-bn-lang-menu]');
   lang?.addEventListener('click',e=>{e.stopPropagation();langMenu?.classList.toggle('open')});
-  const drawer=qs('.bdnav-drawer'), menuBtn=qs('[data-bn-menu]');
+  const drawer=document.querySelector('.bdnav-drawer'), menuBtn=qs('[data-bn-menu]');
   const closeDrawer=()=>drawer?.classList.remove('open');
   menuBtn?.addEventListener('click',()=>drawer?.classList.add('open'));
   drawer?.addEventListener('click',e=>{if(e.target===drawer||e.target.closest('[data-bn-close]'))closeDrawer()});
@@ -40,7 +40,7 @@
   addEventListener('scroll',onScroll,{passive:true});onScroll();
 
   const panel=document.querySelector('.bdnav-search-panel'), input=panel?.querySelector('[data-bn-search]'), results=panel?.querySelector('[data-bn-results]');
-  const openSearch=()=>{searchFilter='all';qsa('[data-search-filter]').forEach((b,i)=>b.classList.toggle('active',i===0));panel?.classList.add('open');document.body.style.overflow='hidden';setTimeout(()=>input?.focus(),30);render('');};
+  const openSearch=()=>{searchFilter='all';document.querySelectorAll('[data-search-filter]').forEach((b,i)=>b.classList.toggle('active',i===0));panel?.classList.add('open');document.body.style.overflow='hidden';setTimeout(()=>input?.focus(),30);render('');};
   const closeSearch=()=>{if(!panel)return;panel.classList.remove('open');document.body.style.overflow='';};
   qs('[data-bn-search-open]')?.addEventListener('click',openSearch);
   qs('[data-bn-mobile-search]')?.addEventListener('click',()=>{closeDrawer();openSearch()});
@@ -93,9 +93,9 @@
   }
   const districtIcon=()=>'<svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
   const escapeHtml=v=>String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  qsa('[data-search-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('[data-search-filter]').forEach(btn=>btn.addEventListener('click',()=>{
     searchFilter=btn.dataset.searchFilter||'all';
-    qsa('[data-search-filter]').forEach(b=>b.classList.toggle('active',b===btn));
+    document.querySelectorAll('[data-search-filter]').forEach(b=>b.classList.toggle('active',b===btn));
     render(input?.value||'');
   }));
     input?.addEventListener('input',e=>render(e.target.value));
