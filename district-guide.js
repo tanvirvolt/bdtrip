@@ -17,22 +17,42 @@ const photoCache=new Map();
 function findPhoto(name,place){
  const key=name+'|'+place;
  if(photoCache.has(key))return photoCache.get(key);
- const query=place&&place!==name?place+' '+name+' Bangladesh':name+' Bangladesh travel attraction';
- const task=fetch('https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(query)+'&gsrnamespace=6&gsrlimit=15&prop=imageinfo&iiprop=url|mime&iiurlwidth=900&format=json&origin=*')
-  .then(r=>{if(!r.ok)throw new Error('photo lookup failed');return r.json()})
-  .then(data=>{
-   const pages=Object.values(data.query?.pages||{});
-   const reject=/\b(map|maps|location|locator|administrative|districts?|division|outline|blank|svg|flag|logo|icon|coat of arms|emblem|seal|diagram|geography)\b/i;
-   const usable=pages.filter(p=>{
-    const title=p.title||'',info=p.imageinfo?.[0]||{};
-    return info.thumburl&&/^image\/(jpeg|png|webp)$/i.test(info.mime||'')&&!reject.test(title);
-   });
-   if(!usable.length)return '';
-   const placeWords=String(place||'').toLowerCase().split(/[^a-z0-9\u0980-\u09ff]+/).filter(x=>x.length>3);
-   const scored=usable.map(p=>({url:p.imageinfo[0].thumburl,score:placeWords.reduce((n,w)=>n+((p.title||'').toLowerCase().includes(w)?3:0),0)+(/temple|beach|lake|hill|waterfall|garden|forest|tea|river|palace|fort|monastery|landscape|tourism|tourist/i.test(p.title||'')?1:0)})).sort((a,b)=>b.score-a.score);
-   return scored[0]?.url||'';
-  }).catch(()=> '');
- photoCache.set(key,task);return task;
+ const cleanName=String(name||'').replace(/[^a-z0-9 ]/gi,' ').trim();
+ const cleanPlace=String(place||'').replace(/[^a-z0-9 \u0980-\u09ff]/gi,' ').trim();
+ const queries=[
+  'filetype:bitmap intitle:"'+cleanPlace+'" Bangladesh',
+  'filetype:bitmap '+cleanPlace+' '+cleanName+' Bangladesh tourism',
+  'filetype:bitmap '+cleanName+' Bangladesh tourist attraction'
+ ].filter((q,i,a)=>q.length>12&&a.indexOf(q)===i);
+ const task=(async()=>{
+  for(const query of queries){
+   try{
+    const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(query)+'&gsrnamespace=6&gsrlimit=20&prop=imageinfo&iiprop=url|mime&iiurlwidth=900&format=json&origin=*';
+    const response=await fetch(url);
+    if(!response.ok)continue;
+    const data=await response.json();
+    const pages=Object.values(data.query?.pages||{});
+    const reject=/\b(map|maps|location|locator|administrative|districts?|division|outline|blank|svg|flag|logo|icon|coat of arms|emblem|seal|diagram|geography|boundary|political|province|municipal|ward)\b/i;
+    const usable=pages.filter(p=>{
+     const title=p.title||'',info=p.imageinfo?.[0]||{};
+     return info.thumburl&&/^image\/(jpeg|png|webp)$/i.test(info.mime||'')&&!reject.test(title);
+    });
+    if(!usable.length)continue;
+    const words=(cleanPlace+' '+cleanName).toLowerCase().split(/[^a-z0-9\u0980-\u09ff]+/).filter(w=>w.length>3);
+    const scored=usable.map(p=>{
+     const title=(p.title||'').toLowerCase();
+     let score=words.reduce((n,w)=>n+(title.includes(w)?4:0),0);
+     if(/tour|travel|landscape|beach|hill|lake|waterfall|garden|forest|tea|river|palace|fort|temple|monastery|mosque|park|island|bridge/i.test(title))score+=2;
+     if(/map|location|district|division|boundary|administrative|flag|coat of arms|logo|icon/i.test(title))score-=20;
+     return {url:p.imageinfo[0].thumburl,score};
+    }).sort((a,b)=>b.score-a.score);
+    if(scored[0]&&scored[0].score>=1)return scored[0].url;
+   }catch(e){}
+  }
+  return '';
+ })();
+ photoCache.set(key,task);
+ return task;
 }
 function hydratePhotos(root=document){
  root.querySelectorAll('[data-photo-id][data-photo-name]').forEach(async el=>{
@@ -41,12 +61,16 @@ function hydratePhotos(root=document){
   const url=await findPhoto(el.dataset.photoName,el.dataset.photoPlace||'');
   if(!url||!el.isConnected)return;
   const img=document.createElement('img');
-  img.className='district-photo';img.src=url;img.alt=(el.dataset.photoPlace||el.dataset.photoName)+' travel photo';img.loading='lazy';img.decoding='async';
-  img.addEventListener('error',()=>img.remove(),{once:true});
-  el.prepend(img);el.classList.add('has-photo');
+  img.className='district-photo';
+  img.src=url;
+  img.alt=(el.dataset.photoPlace||el.dataset.photoName)+' travel photo';
+  img.loading='lazy';
+  img.decoding='async';
+  img.addEventListener('error',()=>{img.remove();el.classList.remove('has-photo')},{once:true});
+  el.prepend(img);
+  el.classList.add('has-photo');
  });
 }
-
 function matches(d){if(div&&d.div!==div)return false;if(experience&&!tags(d).includes(experience))return false;if(q){const text=[d.bn,d.en,...places(d),food(d),season(d)].join(' ');if(window.BDTripSearch){/* unified search is used for the hero/top result UI */}const n=window.BDTripSearch?.norm||((x)=>String(x).toLowerCase().replace(/\s+/g,''));const terms=n(q).split('').length? [n(q)]:[];if(!terms.some(t=>n(text).includes(t)))return false}return true}
 function list(){let a=D.districts.filter(matches);if(sort==='name')a.sort((x,y)=>x.bn.localeCompare(y.bn,'bn'));if(sort==='places')a.sort((x,y)=>places(y).length-places(x).length||x.id-y.id);return a}
 function card(d){const st=status(d.id),ps=places(d),ts=tags(d);const grad=['#0b5d4b','#1f7891','#6b7d3b','#8b5e34','#5a4b86'][d.id%5];return '<article class="district-card" data-id="'+d.id+'"><a href="/district/'+slug(d.en)+'/" aria-label="'+esc(d.bn)+' জেলা গাইড"><div class="dc-visual" data-photo-id="'+d.id+'" data-photo-name="'+esc(d.en)+'" data-photo-place="'+esc(ps[0]||d.en)+'" style="background:linear-gradient(145deg,'+grad+',#073b36)"><span class="dc-label">'+esc(d.bn)+'</span></div></a><div class="dc-status"><button class="status-btn '+(st==='v'?'active':'')+'" data-status="v" data-id="'+d.id+'" title="Visited" aria-label="'+esc(d.bn)+' visited">✓</button><button class="status-btn '+(st==='w'?'active':'')+'" data-status="w" data-id="'+d.id+'" title="Wishlist" aria-label="'+esc(d.bn)+' wishlist">★</button></div><div class="dc-body"><h3>'+esc(d.bn)+'</h3><div class="dc-en">'+esc(d.en)+'</div><div class="dc-place">'+esc(ps[0]||'জেলার ভ্রমণ গাইড দেখুন')+'</div><div class="dc-meta"><span>📍 '+ps.length+' স্থান</span><span>'+esc(season(d).split(';')[0]||'সেরা সময় দেখুন')+'</span></div><div class="dc-tags">'+ts.slice(0,3).map(tagClass).join('')+'</div></div></article>'}
