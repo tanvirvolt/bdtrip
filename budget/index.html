@@ -689,8 +689,7 @@ function summaryText(){
   CATS.forEach(function(c){l.push(Lg(c[1])+': '+TK(r.cats[c[0]]))});
   if(r.buf)l.push(T('বাফার ১০%: ','10% buffer: ')+TK(r.buf));
   l.push('','• '+T('মোট: ','Total: ')+TK(r.total)+' ('+TK(r.min)+' – '+TK(r.max)+')','• '+T('জনপ্রতি: ','Per head: ')+TK(r.perHead));
-  return l.join('
-');
+  return l.join('\n');
 }
 function splitData(){
   var r=calc(S),n=S.split.n||S.adults,per=Math.ceil(r.total/n/10)*10;
