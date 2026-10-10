@@ -6,7 +6,7 @@
 <title>BDTrip — ট্রিপ বাজেট ও প্ল্যানার</title>
 <meta name="description" content="বাংলাদেশের জনপ্রিয় গন্তব্যের ভ্রমণ বাজেট, যাতায়াত, দিনভিত্তিক প্ল্যান, প্যাকিং ও নিরাপত্তা গাইড।">
 <link rel="canonical" href="https://bdtrip.vercel.app/budget/">
-<link rel="stylesheet" href="/navbar.css">
+<link rel="stylesheet" href="/style.css">\n<link rel="stylesheet" href="/navbar.css">
 <link rel="stylesheet" href="/design-tokens.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,15 +21,7 @@
   --font-display:'Anek Bangla','Hind Siliguri',system-ui,sans-serif;
   --font-body:'Hind Siliguri','Anek Bangla',system-ui,sans-serif;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0B1612; --surface:#12231C; --surface2:#172B23; --ink:#E7F1EB; --muted:#9DB4A8; --line:#25392F;
-    --brand:#53C493; --brand-ink:#052015; --accent:#F2B33D; --accent-ink:#2A1D00;
-    --good:#5ED197; --good-bg:#15301F; --warn:#E8B04A; --warn-bg:#3A2D10; --bad:#FF8A78; --bad-bg:#3A1C18;
-    --c1:#5DA8E0; --c2:#4DC594; --c3:#F0A049; --c4:#A98BE6; --c5:#8FA498; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
+body.dark{
   --bg:#0B1612; --surface:#12231C; --surface2:#172B23; --ink:#E7F1EB; --muted:#9DB4A8; --line:#25392F;
   --brand:#53C493; --brand-ink:#052015; --accent:#F2B33D; --accent-ink:#2A1D00;
   --good:#5ED197; --good-bg:#15301F; --warn:#E8B04A; --warn-bg:#3A2D10; --bad:#FF8A78; --bad-bg:#3A1C18;
@@ -49,7 +41,7 @@ button{cursor:pointer}
 .num{font-variant-numeric:tabular-nums}
 
 .top{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding-block:12px 8px}
-.app-langrow{display:flex;justify-content:flex-end;padding-top:10px}
+.app-langrow{display:flex;justify-content:flex-end;padding-top:10px}\n/* Keep one language switch on this page; the tool toggle controls its Bengali/English content. */\n#bdtrip-nav .bdnav-tools > div:has(> [data-bn-lang]){display:none}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .mark{flex:none;width:38px;height:38px;border-radius:11px;background:var(--brand);position:relative}
 .mark::before{content:"";position:absolute;left:9px;right:9px;top:18px;border-top:2.5px dashed var(--brand-ink);opacity:.85}
@@ -178,6 +170,7 @@ footer{margin-top:22px;font-size:13px;color:var(--muted);text-align:center}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
+<script>(function(){try{var saved=localStorage.getItem('bdtrip_theme');var dark=saved==='dark'||(!saved&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.addEventListener('DOMContentLoaded',function(){document.body.classList.add('dark')},{once:true});}catch(e){}})();</script>
 </head>
 <body>
 <div id="bdtrip-nav"></div><div class="wrap" id="app"></div>
