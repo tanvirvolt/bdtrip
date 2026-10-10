@@ -309,6 +309,40 @@ button:disabled{opacity:.45;cursor:not-allowed}
   .app-subnav .app-langrow{align-self:flex-end}
   .app-subnav .tabs{width:100%;flex:none}
 }
+
+/* Final full-page width override — all planner sections share the viewport width */
+body .wrap#app{
+  width:calc(100% - 40px);
+  max-width:none;
+  margin-left:auto;
+  margin-right:auto;
+}
+body .app-subnav{
+  width:calc(100% - 40px);
+  max-width:none;
+  margin-left:auto;
+  margin-right:auto;
+}
+body .live .in{
+  width:calc(100% - 40px);
+  max-width:none;
+  margin-left:auto;
+  margin-right:auto;
+}
+body footer.budget-footer{
+  width:calc(100% - 40px);
+  max-width:none;
+  margin-left:auto;
+  margin-right:auto;
+}
+@media(max-width:760px){
+  body .wrap#app,body .app-subnav,body footer.budget-footer{width:calc(100% - 28px)}
+  body .live .in{width:100%}
+}
+@media(max-width:520px){
+  body .wrap#app,body .app-subnav,body footer.budget-footer{width:calc(100% - 24px)}
+  body .live .in{width:100%}
+}
 </style>
 
 <script>(function(){try{var saved=localStorage.getItem('bdtrip_theme');var dark=saved==='dark'||(!saved&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.addEventListener('DOMContentLoaded',function(){document.body.classList.add('dark')},{once:true});}catch(e){}})();</script>
