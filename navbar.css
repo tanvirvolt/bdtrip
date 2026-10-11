@@ -88,3 +88,11 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
   .bdnav-lang{min-width:74px!important;padding-inline:8px!important}
   .bdnav-cta{padding-inline:11px!important}
 }
+
+/* Match the homepage's unified 1280px content container */
+@media(min-width:921px){
+  .bdnav{width:min(1280px,calc(100% - 2 * clamp(16px,2.4vw,32px)))}
+}
+@media(min-width:1600px){
+  .bdnav{width:min(1360px,calc(100% - 64px))}
+}
