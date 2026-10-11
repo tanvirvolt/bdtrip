@@ -1,3 +1,4 @@
+@import url('/site-layout.css');
 /* BDTrip Design Tokens — shared across the entire product */
 :root{
   --color-primary:#0B5D4B;--color-primary-dark:#073B36;--color-secondary:#159A78;--color-accent:#FFC107;
