@@ -72,3 +72,53 @@ body>footer.foot .foot-bottom{gap:12px;flex-wrap:wrap}
   body>footer.foot .foot-bottom{align-items:flex-start!important;flex-direction:column!important}
 }
 @media(prefers-reduced-motion:reduce){body *{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* Hard override for district-page legacy inline max-width and nested content width */
+html body main.district-page,
+html body>main.district-page{
+  display:block!important;
+  box-sizing:border-box!important;
+  width:calc(100% - clamp(24px,4vw,64px))!important;
+  max-width:1600px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  padding-left:0!important;
+  padding-right:0!important;
+}
+html body main.district-page>*{
+  box-sizing:border-box;
+  max-width:none;
+}
+html body main.district-page>.district-hero,
+html body main.district-page>.district-grid,
+html body main.district-page>.breadcrumbs,
+html body main.district-page>.district-content,
+html body main.district-page>section,
+html body main.district-page>.district-gallery,
+html body main.district-page>.district-info{
+  width:100%!important;
+  max-width:none!important;
+}
+html body main.district-page>.district-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.65fr) minmax(280px,.8fr)!important;
+  gap:clamp(16px,2vw,28px)!important;
+}
+html body main.district-page .district-card,
+html body main.district-page .district-side{
+  box-sizing:border-box;
+  min-width:0;
+  max-width:none;
+}
+@media(max-width:760px){
+  html body main.district-page,
+  html body>main.district-page{
+    width:calc(100% - 24px)!important;
+    padding-top:16px!important;
+    padding-bottom:36px!important;
+  }
+  html body main.district-page>.district-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+}
