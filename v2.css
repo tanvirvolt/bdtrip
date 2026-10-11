@@ -369,3 +369,57 @@ main{width:min(var(--container),calc(100% - 32px));max-width:var(--container);pa
   .level-celebration-card{padding:26px 20px 21px}
 }
 
+
+/* BDTrip footer refinement: compact, rounded, aligned with the new wide page */
+body > footer.foot{
+  box-sizing:border-box!important;
+  width:min(1600px,calc(100% - clamp(24px,4vw,64px)))!important;
+  max-width:1600px!important;
+  margin:30px auto 24px!important;
+  padding:0!important;
+}
+body > footer.foot .foot-card{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  border-radius:26px!important;
+  overflow:hidden!important;
+  box-shadow:0 14px 38px rgba(7,59,54,.10)!important;
+}
+body > footer.foot .foot-scene{display:none!important}
+body > footer.foot .foot-content{
+  padding:30px clamp(22px,3vw,42px) 18px!important;
+}
+body > footer.foot .foot-grid{
+  grid-template-columns:minmax(0,1.35fr) minmax(150px,.7fr) minmax(170px,.8fr)!important;
+  gap:clamp(22px,4vw,56px)!important;
+  min-height:0!important;
+  padding-bottom:24px!important;
+}
+body > footer.foot .foot-brand h2{
+  font-size:clamp(24px,2vw,32px)!important;
+  line-height:1.2!important;
+}
+body > footer.foot .foot-brand p{font-size:14px!important;margin:8px 0 14px!important}
+body > footer.foot .foot-stats span{padding:7px 11px!important}
+body > footer.foot .foot-col{gap:5px!important}
+body > footer.foot .foot-col a{max-width:none!important;padding:6px 0!important;font-size:13px!important}
+body > footer.foot .foot-bottom{padding-top:14px!important;font-size:12px!important}
+@media(max-width:900px){
+ body > footer.foot{width:calc(100% - 32px)!important;margin-top:24px!important}
+ body > footer.foot .foot-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:24px!important}
+ body > footer.foot .foot-brand{grid-column:1/-1!important}
+}
+@media(max-width:600px){
+ body > footer.foot{width:calc(100% - 24px)!important;margin:22px auto 16px!important}
+ body > footer.foot .foot-card{border-radius:20px!important}
+ body > footer.foot .foot-content{padding:24px 18px 16px!important}
+ body > footer.foot .foot-grid{grid-template-columns:minmax(0,1fr)!important;gap:20px!important;padding-bottom:20px!important}
+ body > footer.foot .foot-brand{grid-column:auto!important}
+ body > footer.foot .foot-bottom{align-items:flex-start!important;flex-direction:column!important;gap:7px!important}
+ body > footer.foot .foot-col a{width:100%!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body > footer.foot *{transition:none!important}
+}
