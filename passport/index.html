@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>আপনার ভ্রমণ পাসপোর্ট | BDTrip</title>
+<meta name="description" content="বাংলাদেশের ৬৪ জেলার ভ্রমণ পাসপোর্ট তৈরি করুন। ঘোরা জেলা চিহ্নিত করুন, নিজের পাসপোর্ট সাজান এবং ছবি বা PDF হিসেবে সংরক্ষণ করুন।">
+<meta name="theme-color" content="#f8f6f0">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/navbar.css">
+<link rel="stylesheet" href="/design-tokens.css">
+<style>
+:root{--paper:#faf8f2;--ink:#15251f;--muted:#7d857e;--line:#e8e1d4;--green:#087456;--deep:#064b3a;--gold:#d9a944;--passport:#07583f;--passport2:#0e7654}
+*{box-sizing:border-box}html{background:var(--paper)}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;line-height:1.5}button,input{font:inherit}button{cursor:pointer}.passport-shell{width:min(1440px,calc(100% - 44px));margin:0 auto 64px}.intro{text-align:center;padding:26px 0 28px}.intro h1{font-size:clamp(30px,4vw,48px);line-height:1.15;letter-spacing:-1.3px;margin:0;font-weight:900}.intro h1 span{color:#14815f}.intro p{max-width:580px;margin:12px auto 14px;color:#85877f;font-size:14px}.saved-pill{display:inline-flex;align-items:center;gap:8px;background:white;border:1px solid var(--line);border-radius:30px;padding:7px 13px;font-size:12px;color:#47665a}.saved-pill i{width:7px;height:7px;border-radius:50%;background:#39c78b;display:inline-block}.workspace{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(340px,.9fr);gap:18px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;min-width:0}.panel-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panel-top h2{font-size:15px;margin:0;font-weight:800}.muted{color:var(--muted);font-size:12px}.editor-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end;margin-bottom:13px}.field label{display:block;font-size:11px;font-weight:800;margin:0 0 6px}.field input{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;padding:10px 12px;outline:none;background:#fff;color:var(--ink)}.field input:focus,.searchbox:focus{border-color:#0b8b65;box-shadow:0 0 0 3px #0b8b6518}.swatches{display:flex;gap:7px}.swatch{border:1px solid var(--line);background:white;padding:5px 9px;border-radius:9px;font-size:11px;display:flex;align-items:center;gap:6px}.swatch span{width:14px;height:18px;border-radius:3px;border:1px solid #0002;display:inline-block}.swatch[aria-pressed=true]{border-color:#137d5d;background:#f1faf5}.preview-wrap{background:#f8f8f3;border-radius:12px;padding:12px;overflow:hidden}.passport-card{--passport:#07583f;--passport2:#0e7654;background:linear-gradient(145deg,var(--passport),var(--passport2));color:#fff;border-radius:13px;position:relative;overflow:hidden;padding:16px 17px 14px;box-shadow:0 8px 18px #123b2b26;isolation:isolate;min-height:305px}.passport-card:before,.passport-card:after{content:"";position:absolute;border:1px solid #ffffff22;border-radius:50%;width:250px;height:250px;right:-90px;top:-135px;z-index:-1}.passport-card:after{width:340px;height:340px;right:-140px;top:-180px}.pass-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #ffffff30;padding-bottom:10px}.pass-brand{display:flex;align-items:center;gap:8px}.pass-emblem{width:29px;height:29px;display:grid;place-items:center;background:#fff;border-radius:8px;color:var(--passport);font-size:17px}.pass-brand strong{font-size:14px;display:block;line-height:1.2}.pass-brand small{font-size:8px;letter-spacing:1.2px;opacity:.76}.pass-count{font-size:10px;background:#ffffff1b;border:1px solid #ffffff36;border-radius:30px;padding:5px 8px;white-space:nowrap}.pass-main{display:grid;grid-template-columns:1fr 112px;gap:10px;padding-top:14px;align-items:center}.pass-kicker{font-size:9px;letter-spacing:1.2px;color:#b6e6d3;font-weight:800}.pass-name{font-size:clamp(19px,2.4vw,30px);font-weight:900;line-height:1.15;overflow-wrap:anywhere;margin:4px 0 5px}.pass-meta{font-size:10px;color:#d5f0e5}.passport-map{width:100%;max-width:105px;justify-self:end;opacity:.95}.passport-map svg{width:100%;height:auto;filter:drop-shadow(0 2px 3px #003a2a40)}.stamp-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:14px 0 7px;font-size:10px;color:#d9f2e7}.stamp-heading span:last-child{opacity:.75;font-size:9px}.stamp-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.stamp{min-height:37px;border:1px dashed #ffffff58;border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 2px;color:#ffffff79;font-size:9px;line-height:1.15;position:relative;overflow:hidden}.stamp.done{border:1px solid #f6d88a;background:#fff4cf;color:#155943;transform:rotate(-1deg);font-weight:900;box-shadow:inset 0 0 0 2px #fff8}.stamp.done:after{content:"✓";position:absolute;right:2px;top:0;font-size:8px;color:#b17b15}.pass-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #ffffff32;margin-top:12px;padding-top:9px;font-size:8px;color:#d6eee4;letter-spacing:.4px}.pass-footer strong{background:#fff;color:var(--passport);border-radius:30px;padding:4px 9px;font-size:9px;letter-spacing:.3px}.preview-actions{display:flex;gap:8px;margin-top:12px}.btn{border:0;border-radius:9px;padding:11px 13px;font-weight:800;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none}.btn.primary{background:var(--green);color:#fff;flex:1}.btn.secondary{background:white;color:#245343;border:1px solid var(--line)}.btn:hover{filter:brightness(.97);transform:translateY(-1px)}.tipline{font-size:11px;color:#8b8d83;text-align:center;margin:10px 0 0}.side-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.count-chip{border-radius:20px;background:#eaf7f0;color:#087456;font-size:11px;padding:4px 8px;font-weight:900;white-space:nowrap}.tabs{display:flex;gap:5px;padding:4px;background:#f3f0e8;border-radius:30px;width:max-content;margin:0 0 13px}.tab{border:0;border-radius:30px;padding:7px 13px;background:transparent;color:#77766d;font-size:11px;font-weight:800}.tab.active{background:#15251f;color:white;box-shadow:0 2px 5px #0001}.tools-row{display:flex;gap:7px;margin-bottom:10px}.searchbox{min-width:0;flex:1;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:12px;outline:none}.text-btn{border:0;background:transparent;color:#7d857e;font-size:10px;text-decoration:underline;padding:4px;white-space:nowrap}.district-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:490px;overflow:auto;padding:1px 2px 2px 0;scrollbar-width:thin}.district-item{border:1px solid var(--line);background:white;border-radius:9px;padding:8px 8px;display:flex;align-items:center;gap:8px;text-align:left;min-width:0;color:var(--ink);transition:.15s}.district-item:hover{border-color:#6cb59a;background:#f7fcf9}.district-item[aria-pressed=true]{border-color:#11835f;background:#eff9f3}.check{width:15px;height:15px;flex:0 0 15px;border:1.5px solid #d3cbbd;border-radius:50%;display:grid;place-items:center;color:white;font-size:10px}.district-item[aria-pressed=true] .check{background:#087456;border-color:#087456}.district-label{font-size:11px;font-weight:800;line-height:1.2;display:block;overflow-wrap:anywhere}.district-sub{display:block;font-size:9px;color:#99978e;margin-top:2px}.empty-state{grid-column:1/-1;text-align:center;padding:28px 10px;color:#8b8d83;font-size:12px}.lower-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.lower-actions .btn{width:100%}.status-msg{min-height:17px;margin-top:8px;color:#0b7958;font-size:11px}.country-mode{display:none}.country-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.country-chip{border:1px solid var(--line);border-radius:9px;background:white;padding:9px;text-align:left;font-size:11px;font-weight:800}.country-chip[aria-pressed=true]{border-color:#11835f;background:#eff9f3;color:#087456}.hidden{display:none!important}.privacy-note{font-size:11px;color:#898c82;margin:12px 0 0}.footnote{text-align:center;color:#99978e;font-size:11px;margin:22px 0 0}
+@media(min-width:1100px){.stamp-grid{grid-template-columns:repeat(8,minmax(0,1fr))}.passport-card{min-height:360px}.stamp{min-height:42px;font-size:10px}}
+@media(max-width:850px){.passport-shell{width:calc(100% - 24px)}.workspace{grid-template-columns:1fr}.intro{padding:22px 0}.district-list{max-height:420px}.pass-main{grid-template-columns:1fr 94px}}
+@media(max-width:480px){.panel{padding:12px}.editor-row{grid-template-columns:1fr}.swatches{flex-wrap:wrap}.passport-card{padding:13px;min-height:0}.pass-main{grid-template-columns:1fr 76px}.stamp-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.stamp{min-height:35px;font-size:8px}.preview-wrap{padding:7px}.preview-actions{flex-direction:column}.district-list{grid-template-columns:1fr 1fr}.district-item{padding:7px 6px;gap:6px}.district-label{font-size:10px}.lower-actions{grid-template-columns:1fr}}
+@media print{body{background:white}.bdnav,.intro,.editor-row,.preview-actions,.tipline,.right-panel,.footnote{display:none!important}.passport-shell{width:100%;margin:0}.workspace{display:block}.left-panel{border:0;padding:0}.preview-wrap{background:white;padding:0}.passport-card{box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}.panel-top{display:none}}
+</style>
+</head>
+<body>
+<div id="bdtrip-nav"></div>
+<main class="passport-shell">
+<section class="intro">
+<h1>আপনার <span>ভ্রমণ পাসপোর্ট</span></h1>
+<p>যেসব জায়গায় ঘুরেছেন সেগুলো চিহ্নিত করুন। প্রতিটি গন্তব্যে আপনার ডিজিটাল স্ট্যাম্প জমবে—আপনার বাংলাদেশের ভ্রমণ গল্পটি নিজের মতো সাজান।</p>
+<div class="saved-pill"><i></i><span id="savedStatus">আপনার পাসপোর্ট প্রস্তুত</span></div>
+</section>
+<div class="workspace">
+<section class="panel left-panel">
+<div class="panel-top"><h2>✦ আপনার ডিজিটাল পাসপোর্ট</h2><span class="muted">লাইভ প্রিভিউ</span></div>
+<div class="editor-row">
+<div class="field"><label for="travelerName">আপনার নাম</label><input id="travelerName" maxlength="36" placeholder="নাম লিখুন (ঐচ্ছিক)" autocomplete="name"></div>
+<div class="field"><label>পাসপোর্টের কালার</label><div class="swatches" role="group" aria-label="পাসপোর্টের রং">
+<button class="swatch" type="button" data-theme="green" aria-pressed="true"><span style="background:#07583f"></span>সবুজ</button>
+<button class="swatch" type="button" data-theme="blue" aria-pressed="false"><span style="background:#123b70"></span>নীল</button>
+<button class="swatch" type="button" data-theme="maroon" aria-pressed="false"><span style="background:#762b2e"></span>মেরুন</button>
+</div></div>
+</div>
+<div class="preview-wrap">
+<article class="passport-card" id="passportCard" aria-label="আপনার ভ্রমণ পাসপোর্টের প্রিভিউ">
+<div class="pass-head"><div class="pass-brand"><span class="pass-emblem">✦</span><div><strong>BDTrip Travel Passport</strong><small>UNSEEN BANGLADESH · MY JOURNEY</small></div></div><span class="pass-count" id="passportCount">০/৬৪ জেলা</span></div>
+<div class="pass-main"><div><div class="pass-kicker">MY TRAVEL PASSPORT · BANGLADESH</div><div class="pass-name" id="passportName">আপনার নাম</div><div class="pass-meta">বাংলাদেশ ভ্রমণকারী · <span id="passPercent">০%</span> সম্পন্ন</div></div>
+<div class="passport-map" aria-hidden="true"><svg viewBox="0 0 120 145" role="img"><path d="M50 7 63 12 69 23 83 26 90 38 84 49 96 58 89 69 95 80 82 91 78 105 65 112 57 132 46 124 43 109 32 101 36 87 25 79 30 66 21 57 29 46 27 35 39 29 39 17Z" fill="#e4c978" stroke="#fff4cf" stroke-width="2"/><path d="M43 24 60 32 55 47 70 54 60 70 70 86 56 103 54 121" fill="none" stroke="#07583f" stroke-width="2" opacity=".45"/><circle cx="58" cy="67" r="5" fill="#fff4cf"/><circle cx="58" cy="67" r="2" fill="#07583f"/></svg></div></div>
+<div class="stamp-heading"><span>TRAVEL STAMPS · আপনার ঘোরা জেলা</span><span id="stampCaption">প্রথম স্ট্যাম্পের অপেক্ষায়</span></div>
+<div class="stamp-grid" id="stampGrid"><div class="stamp">জেলা নির্বাচন করুন</div><div class="stamp">নতুন স্মৃতি</div><div class="stamp">নতুন গন্তব্য</div><div class="stamp">চলুন ঘুরি</div></div>
+<div class="pass-footer"><span>দেশ: বাংলাদেশ · ৬৪ জেলা</span><strong>BDTRIP.COM</strong><span id="passDate">TRAVEL EDITION</span></div>
+</article>
+</div>
+<div class="preview-actions"><button class="btn primary" id="downloadPng" type="button">⬇ পাসপোর্ট PNG ডাউনলোড</button><button class="btn secondary" id="printPdf" type="button">▣ PDF / প্রিন্ট করুন</button></div>
+<p class="tipline">আপনার পছন্দ ও নির্বাচিত জেলাগুলো এই ডিভাইসেই সেভ থাকবে।</p>
+</section>
+<aside class="panel right-panel">
+<div class="panel-top side-head"><h2>যেসব জায়গায় গিয়েছি</h2><span class="count-chip" id="selectedCount">০/৬৪</span></div>
+<div class="tabs" role="tablist" aria-label="গন্তব্যের ধরন"><button class="tab active" id="districtTab" type="button" role="tab" aria-selected="true">জেলার পাতা</button><button class="tab" id="countryTab" type="button" role="tab" aria-selected="false">দেশ যোগ করুন</button></div>
+<div id="districtMode">
+<div class="tools-row"><input class="searchbox" id="districtSearch" placeholder="জেলা খুঁজুন..." aria-label="জেলা খুঁজুন"><button class="text-btn" id="selectAll" type="button">সব মুছুন</button></div>
+<div class="district-list" id="districtList"><div class="empty-state">জেলার তালিকা লোড হচ্ছে…</div></div>
+</div>
+<div id="countryMode" class="country-mode">
+<p class="muted" style="margin:0 0 10px">বাংলাদেশের বাইরে ঘোরা দেশও আপনার পাসপোর্টে যোগ করতে পারেন।</p>
+<div class="tools-row"><input class="searchbox" id="countryInput" maxlength="35" placeholder="দেশের নাম লিখুন..."><button class="btn primary" id="addCountry" type="button" style="flex:0 0 auto">＋ যোগ</button></div>
+<div id="countryList" class="country-list"></div>
+</div>
+<div class="lower-actions"><button class="btn primary" id="savePassport" type="button">✓ পাসপোর্ট সেভ করুন</button><button class="btn secondary" id="resetPassport" type="button">রিসেট করুন</button></div>
+<div class="status-msg" id="statusMsg" role="status" aria-live="polite"></div>
+<p class="privacy-note">🔒 কোনো অ্যাকাউন্ট দরকার নেই। ডেটা আপনার ব্রাউজারেই সংরক্ষিত হয়।</p>
+</aside>
+</div>
+<p class="footnote">BDTrip · বাংলাদেশের প্রতিটি জেলা, একটি নতুন গল্প।</p>
+</main>
+<script src="/navbar.js" defer></script>
+<script src="/data.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const KEY='bdtrip-travel-passport-v1';
+const themes={green:['#07583f','#0e7654'],blue:['#123b70','#1d5e99'],maroon:['#762b2e','#a64b4b']};
+const defaults={name:'',theme:'green',visited:[],countries:[]};
+let state={...defaults};
+const bnNum=n=>Number(n).toLocaleString('bn-BD');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function save(silent=false){try{localStorage.setItem(KEY,JSON.stringify(state));$('savedStatus').textContent='আপনার পাসপোর্ট সেভ আছে';if(!silent)message('পাসপোর্ট সেভ হয়েছে ✓')}catch(e){if(!silent)message('এই ব্রাউজারে সেভ করা যায়নি।')} }
+function message(text){$('statusMsg').textContent=text}
+function districtData(){return window.BD_DATA&&Array.isArray(window.BD_DATA.districts)?window.BD_DATA.districts:[]}
+function renderDistricts(){const q=$('districtSearch').value.trim().toLocaleLowerCase('bn');const arr=districtData().filter(d=>(d.bn+' '+d.en).toLocaleLowerCase('bn').includes(q));$('districtList').innerHTML=arr.length?arr.map(d=>{const yes=state.visited.includes(Number(d.id));return '<button type="button" class="district-item" data-id="'+Number(d.id)+'" aria-pressed="'+yes+'"><span class="check">'+(yes?'✓':'')+'</span><span><span class="district-label">'+esc(d.bn)+'</span><span class="district-sub">'+esc(d.en)+'</span></span></button>'}).join(''):'<div class="empty-state">এই নামে কোনো জেলা পাওয়া যায়নি।</div>'}
+function renderCountries(){const common=['ভারত','নেপাল','ভুটান','থাইল্যান্ড','মালয়েশিয়া','সিঙ্গাপুর','সৌদি আরব','সংযুক্ত আরব আমিরাত','মালদ্বীপ','শ্রীলঙ্কা'];$('countryList').innerHTML=common.map(c=>'<button type="button" class="country-chip" data-country="'+esc(c)+'" aria-pressed="'+state.countries.includes(c)+'">'+(state.countries.includes(c)?'✓ ':'＋ ')+esc(c)+'</button>').join('')+state.countries.filter(c=>!common.includes(c)).map(c=>'<button type="button" class="country-chip" data-country="'+esc(c)+'" aria-pressed="true">✓ '+esc(c)+'</button>').join('')}
+function renderPreview(){const districts=districtData();const visited=districts.filter(d=>state.visited.includes(Number(d.id)));const total=visited.length;const percent=Math.round(total/Math.max(1,districts.length)*100);$('passportName').textContent=state.name.trim()||'আপনার নাম';$('passportCount').textContent=bnNum(total)+'/'+bnNum(districts.length)+' জেলা';$('selectedCount').textContent=bnNum(total)+'/'+bnNum(districts.length);$('passPercent').textContent=bnNum(percent)+'%';$('stampCaption').textContent=total?bnNum(total)+'টি স্মৃতি জমা হয়েছে':'প্রথম স্ট্যাম্পের অপেক্ষায়';$('passDate').textContent=new Date().getFullYear()+' · TRAVEL EDITION';const stamps=visited.slice(0,16).map((d,i)=>'<div class="stamp done" title="'+esc(d.bn)+'">'+esc(d.bn)+'</div>');const blanks=Math.max(0,Math.min(8,8-stamps.length));for(let i=0;i<blanks;i++)stamps.push('<div class="stamp">'+['নতুন স্মৃতি','নতুন গন্তব্য','চলুন ঘুরি','বাংলাদেশ'][i%4]+'</div>');$('stampGrid').innerHTML=stamps.join('');const theme=themes[state.theme]||themes.green;$('passportCard').style.setProperty('--passport',theme[0]);$('passportCard').style.setProperty('--passport2',theme[1]);document.querySelectorAll('[data-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme===state.theme)));$('savedStatus').textContent='আপনার পাসপোর্ট প্রস্তুত';}
+function render(){renderDistricts();renderCountries();renderPreview()}
+$('districtList').addEventListener('click',e=>{const b=e.target.closest('[data-id]');if(!b)return;const id=Number(b.dataset.id);state.visited=state.visited.includes(id)?state.visited.filter(n=>n!==id):state.visited.concat(id);render();save(true)});
+$('districtSearch').addEventListener('input',renderDistricts);
+$('travelerName').addEventListener('input',e=>{state.name=e.target.value;renderPreview();save(true)});
+document.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>{state.theme=b.dataset.theme;renderPreview();save(true)}));
+$('districtTab').addEventListener('click',()=>{ $('districtMode').style.display='block';$('countryMode').style.display='none';$('districtTab').classList.add('active');$('countryTab').classList.remove('active');$('districtTab').setAttribute('aria-selected','true');$('countryTab').setAttribute('aria-selected','false')});
+$('countryTab').addEventListener('click',()=>{ $('districtMode').style.display='none';$('countryMode').style.display='block';$('countryTab').classList.add('active');$('districtTab').classList.remove('active');$('countryTab').setAttribute('aria-selected','true');$('districtTab').setAttribute('aria-selected','false')});
+$('countryList').addEventListener('click',e=>{const b=e.target.closest('[data-country]');if(!b)return;const c=b.dataset.country;state.countries=state.countries.includes(c)?state.countries.filter(x=>x!==c):state.countries.concat(c);renderCountries();save(true);message('দেশের তালিকা আপডেট হয়েছে')});
+$('addCountry').addEventListener('click',()=>{const input=$('countryInput');const c=input.value.trim();if(!c)return message('আগে দেশের নাম লিখুন।');if(!state.countries.includes(c))state.countries.push(c);input.value='';renderCountries();save(true);message(c+' যোগ হয়েছে ✓')});
+$('countryInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('addCountry').click()});
+$('selectAll').addEventListener('click',()=>{state.visited=[];render();save(true);message('জেলা নির্বাচন মুছে দেওয়া হয়েছে')});
+$('savePassport').addEventListener('click',()=>{save();});
+$('resetPassport').addEventListener('click',()=>{if(!confirm('আপনার পাসপোর্টের সব তথ্য মুছে ফেলবেন?'))return;state={...defaults,visited:[],countries:[]};$('travelerName').value='';render();save(true);message('পাসপোর্ট রিসেট হয়েছে')});
+$('printPdf').addEventListener('click',()=>window.print());
+$('downloadPng').addEventListener('click',async()=>{const btn=$('downloadPng');const original=btn.textContent;btn.disabled=true;btn.textContent='ছবি তৈরি হচ্ছে…';try{if(!window.html2canvas){await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';script.onload=resolve;script.onerror=()=>reject(new Error('png library unavailable'));document.head.appendChild(script)})}const canvas=await window.html2canvas($('passportCard'),{scale:2,backgroundColor:null,useCORS:true,logging:false});const link=document.createElement('a');link.download='bdtrip-travel-passport.png';link.href=canvas.toDataURL('image/png');link.click();message('পাসপোর্ট PNG ডাউনলোড হয়েছে ✓')}catch(e){message('PNG তৈরি করা যায়নি। PDF / প্রিন্ট অপশনটি ব্যবহার করুন।')}finally{btn.disabled=false;btn.textContent=original}});
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object'){state={...defaults,...saved};state.visited=Array.isArray(state.visited)?state.visited.map(Number):[];state.countries=Array.isArray(state.countries)?state.countries.filter(x=>typeof x==='string'):[];if(!themes[state.theme])state.theme='green'}}catch(e){}
+$('travelerName').value=state.name||'';
+render();
+})();
+</script>
+</body>
+</html>
