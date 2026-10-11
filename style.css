@@ -435,3 +435,81 @@ main > .hero{margin-top:8px}
 @media(min-width:1600px){
   :root{--bdtrip-container:1360px}
 }
+
+/* BDTrip professional wide layout v3 — consistent width across all homepage sections */
+:root{
+  --bdtrip-container:1600px;
+  --bdtrip-gutter:clamp(12px,2vw,32px);
+  --bdtrip-content-width:min(var(--bdtrip-container),calc(100% - 2 * var(--bdtrip-gutter)));
+}
+body > main{
+  box-sizing:border-box;
+  width:var(--bdtrip-content-width)!important;
+  max-width:var(--bdtrip-container)!important;
+  margin-inline:auto!important;
+  padding-inline:0!important;
+}
+body > main > section,
+body > main > .hero,
+body > main > .progress-dashboard,
+body > main > .achievements-section,
+body > main > .tool,
+body > main > .block,
+body > main > .faq{
+  box-sizing:border-box;
+  width:100%!important;
+  max-width:none!important;
+}
+body > main > .hero{
+  margin:8px 0 0!important;
+  padding:clamp(28px,3.2vw,56px)!important;
+}
+body > main > .hero .hero-grid{
+  grid-template-columns:minmax(0,1.45fr) minmax(260px,.65fr);
+  gap:clamp(24px,3.5vw,56px);
+}
+body > main > .hero .hero-copy{min-width:0}
+body > main > .hero h1{max-width:900px}
+body > main > .progress-dashboard{
+  margin:24px 0 8px!important;
+}
+body > main > .achievements-section{
+  margin:28px 0 36px!important;
+  padding:0!important;
+}
+body > main > .tool{
+  grid-template-columns:clamp(270px,23vw,340px) minmax(0,1fr);
+  gap:clamp(14px,1.5vw,22px)!important;
+  margin-top:24px!important;
+}
+body > main > .block,
+body > main > .faq{
+  margin-inline:0!important;
+}
+body > .foot{
+  box-sizing:border-box;
+  width:var(--bdtrip-content-width)!important;
+  max-width:var(--bdtrip-container)!important;
+  margin:32px auto 24px!important;
+}
+@media(min-width:1600px){
+  body > main > .hero .hero-grid{grid-template-columns:minmax(0,1.55fr) minmax(300px,.65fr)}
+}
+@media(max-width:900px){
+  :root{--bdtrip-gutter:20px}
+  body > main > .hero .hero-grid{grid-template-columns:minmax(0,1fr) minmax(220px,.7fr);gap:22px}
+  body > main > .tool{grid-template-columns:260px minmax(0,1fr)}
+}
+@media(max-width:680px){
+  :root{--bdtrip-gutter:12px}
+  body > main > .hero{padding:24px 20px!important}
+  body > main > .hero .hero-grid{grid-template-columns:1fr;gap:22px}
+  body > main > .hero h1{font-size:clamp(30px,8vw,42px)}
+  body > main > .tool{grid-template-columns:minmax(0,1fr);gap:14px!important}
+  body > main > .progress-dashboard{margin-top:18px!important}
+  body > main > .achievements-section{margin-top:22px!important}
+  body > .foot{margin-top:24px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  body > main *{scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
