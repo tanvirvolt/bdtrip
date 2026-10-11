@@ -1,3 +1,4 @@
+@import url('/site-layout.css');
 :root{
   --bg:#fbf7ef; --card:#ffffff; --ink:#11302f; --mut:#62706d; --line:#e8e1d2;
   --deep:#0b3d3a; --deep2:#0f5550; --sun:#ffb703; --coral:#ff6b4a;
