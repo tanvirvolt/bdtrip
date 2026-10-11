@@ -96,3 +96,19 @@ body.dark .bdnav{--bn-bg:rgba(15,28,27,.88);--bn-line:rgba(220,241,234,.13);--bn
 @media(min-width:1600px){
   .bdnav{width:min(1360px,calc(100% - 64px))}
 }
+
+/* Professional shared navbar alignment with the global page container */
+body #bdtrip-nav,
+body .bdtrip-nav-host{width:100%;box-sizing:border-box}
+body .bdnav{
+  box-sizing:border-box;
+  width:min(1600px,calc(100% - clamp(24px,4vw,64px)))!important;
+  max-width:1600px!important;
+  margin-inline:auto!important;
+}
+@media(max-width:760px){
+  body .bdnav{width:calc(100% - 24px)!important}
+}
+@media(min-width:1600px){
+  body .bdnav{width:min(1600px,calc(100% - 64px))!important}
+}
