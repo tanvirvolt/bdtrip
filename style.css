@@ -397,3 +397,41 @@ body{background:var(--bg);color:var(--ink)}
  .progress-dashboard{grid-template-columns:1fr 1fr;padding:17px;margin-top:18px}.progress-stat{padding:4px 8px}.progress-number strong{font-size:29px}
  .achievement-grid{grid-template-columns:repeat(2,1fr)}.section-heading{align-items:start;flex-direction:column}.level-badge{align-self:flex-start}
 }
+
+/* Unified responsive container system for homepage sections */
+:root{--bdtrip-container:1280px;--bdtrip-gutter:clamp(16px,2.4vw,32px)}
+main{
+  width:min(var(--bdtrip-container),calc(100% - 2 * var(--bdtrip-gutter)));
+  max-width:var(--bdtrip-container);
+  margin-inline:auto;
+  padding-inline:0;
+}
+main > .hero,
+main > .tool,
+main > .progress-dashboard,
+main > .achievements-section{width:100%;max-width:none}
+.progress-dashboard{
+  width:100%;
+  max-width:none;
+  margin:28px 0 8px;
+}
+.achievements-section{
+  width:100%;
+  max-width:none;
+  margin:28px 0 38px;
+  padding:0;
+}
+main > .hero{margin-top:8px}
+@media(max-width:900px){
+  :root{--bdtrip-gutter:20px}
+  .progress-dashboard{margin-top:22px}
+}
+@media(max-width:600px){
+  :root{--bdtrip-gutter:12px}
+  main{width:calc(100% - 24px);padding-inline:0}
+  .progress-dashboard{margin-top:18px}
+  .achievements-section{margin-top:22px}
+}
+@media(min-width:1600px){
+  :root{--bdtrip-container:1360px}
+}
