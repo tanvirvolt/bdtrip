@@ -1,0 +1,74 @@
+/* BDTrip shared professional page layout — consistent across all routes */
+:root{
+  --site-content-max:1600px;
+  --site-page-gutter:clamp(12px,2.2vw,32px);
+}
+html{scroll-padding-top:90px}
+body{overflow-x:clip}
+#bdtrip-nav{width:100%;box-sizing:border-box}
+#bdtrip-nav .bdnav,
+body .bdnav{
+  box-sizing:border-box!important;
+  width:min(var(--site-content-max),calc(100% - 2 * var(--site-page-gutter)))!important;
+  max-width:var(--site-content-max)!important;
+  margin-left:auto!important;margin-right:auto!important;
+}
+/* Shared content width; keep each page's internal grid and visual style intact */
+body>main,
+body main.wrap,
+body main.jr,
+body main.dg-results,
+body main.district-page,
+body main.container,
+body main.page-container{
+  box-sizing:border-box;
+  width:min(var(--site-content-max),calc(100% - 2 * var(--site-page-gutter)));
+  max-width:var(--site-content-max);
+  margin-left:auto;
+  margin-right:auto;
+}
+/* Consistent footer alignment and spacing across pages */
+body>footer.foot,
+body>footer.footer,
+body>footer.dg-footer,
+body>footer.budget-footer,
+body>footer.site-footer{
+  box-sizing:border-box!important;
+  width:min(var(--site-content-max),calc(100% - 2 * var(--site-page-gutter)))!important;
+  max-width:var(--site-content-max)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+body>footer.foot{
+  margin-top:30px!important;
+  margin-bottom:24px!important;
+  padding:0!important;
+}
+body>footer.foot .foot-card{
+  box-sizing:border-box!important;width:100%!important;max-width:none!important;margin:0!important;
+  border-radius:26px!important;overflow:hidden!important;
+}
+body>footer.foot .foot-scene{pointer-events:none}
+body>footer.foot .foot-content{padding:clamp(24px,3vw,42px) clamp(18px,3.2vw,48px) 18px!important}
+body>footer.foot .foot-grid{min-height:0!important;gap:clamp(20px,3.5vw,52px)!important;padding-bottom:22px}
+body>footer.foot .foot-bottom{gap:12px;flex-wrap:wrap}
+@media(max-width:900px){
+  :root{--site-page-gutter:16px}
+  body>footer.foot .foot-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+  body>footer.foot .foot-brand{grid-column:1/-1!important}
+}
+@media(max-width:600px){
+  :root{--site-page-gutter:12px}
+  body>main,body main.wrap,body main.jr,body main.dg-results,body main.district-page,body main.container,body main.page-container{
+    width:calc(100% - 24px);
+  }
+  body>footer.foot,body>footer.footer,body>footer.dg-footer,body>footer.budget-footer,body>footer.site-footer{
+    width:calc(100% - 24px)!important;margin-top:22px!important;margin-bottom:16px!important;
+  }
+  body>footer.foot .foot-card{border-radius:20px!important}
+  body>footer.foot .foot-content{padding:24px 18px 16px!important}
+  body>footer.foot .foot-grid{grid-template-columns:minmax(0,1fr)!important;gap:20px!important}
+  body>footer.foot .foot-brand{grid-column:auto!important}
+  body>footer.foot .foot-bottom{align-items:flex-start!important;flex-direction:column!important}
+}
+@media(prefers-reduced-motion:reduce){body *{scroll-behavior:auto!important;transition-duration:.01ms!important}}
