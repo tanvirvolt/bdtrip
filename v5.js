@@ -27,8 +27,20 @@
     }
   };
 
+  const skip = document.createElement('a');
+  skip.id = 'bdtrip-skip-link';
+  skip.href = '#tool';
+  skip.textContent = 'মূল কনটেন্টে যান';
+  document.body.prepend(skip);
+
   const top = makeButton('bdtrip-back-top','', 'পাতার শুরুতে যান','↑', () => window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
-  const updateTop = () => top.classList.toggle('is-visible', window.scrollY > 650);
+  top.tabIndex = -1;
+  const updateTop = () => {
+    const visible = window.scrollY > 650;
+    top.classList.toggle('is-visible', visible);
+    top.tabIndex = visible ? 0 : -1;
+    top.setAttribute('aria-hidden', String(!visible));
+  };
   window.addEventListener('scroll', updateTop, {passive:true});
   updateTop();
 
