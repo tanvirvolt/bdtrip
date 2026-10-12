@@ -175,56 +175,92 @@
 
   const homeSearch = $('#search');
   const homeSearchResults = $('#homeSearchResults');
+  let homeSearchRequest = 0;
+  let homeSearchTimer = 0;
+  const closeHomeSearch = () => {
+    if (!homeSearchResults) return;
+    homeSearchResults.hidden = true;
+    homeSearch?.setAttribute('aria-expanded', 'false');
+  };
   const renderHomeSearch = async (value) => {
     const q = value.trim();
-    if(!homeSearchResults) return;
-    if(!q){
-      homeSearchResults.hidden=true;
-      homeSearch?.setAttribute('aria-expanded','false');
-      $('#noResult').hidden=true;
-      groupEls.forEach(g=>{g.hidden=false;g.querySelectorAll('.chip').forEach(c=>c.hidden=false);});
+    const requestId = ++homeSearchRequest;
+    if (!homeSearchResults) return;
+    if (!q) {
+      closeHomeSearch();
+      $('#noResult').hidden = true;
+      groupEls.forEach(g => {
+        g.hidden = false;
+        g.querySelectorAll('.chip').forEach(c => c.hidden = false);
+      });
       return;
     }
-    if(!window.BDTripSearch){
-      homeSearchResults.hidden=false;
-      homeSearchResults.innerHTML='<div class="home-search-empty">Search engine লোড হচ্ছে…</div>';
+    if (!window.BDTripSearch) {
+      homeSearchResults.hidden = false;
+      homeSearchResults.innerHTML = '<div class="home-search-empty">Search engine লোড হচ্ছে…</div>';
+      homeSearch?.setAttribute('aria-expanded', 'true');
       return;
     }
-    homeSearchResults.hidden=false;
-    homeSearchResults.innerHTML='<div class="home-search-empty">খুঁজছি…</div>';
-    homeSearch.setAttribute('aria-expanded','true');
-    try{
-      const items=await window.BDTripSearch.query(q);
-      if(!items.length){
-        homeSearchResults.innerHTML='<div class="home-search-empty"><b>কোনো ফলাফল পাওয়া যায়নি</b><small>জেলা, tourist place, খাবার বা division-এর নাম দিয়ে চেষ্টা করুন</small></div>';
-        $('#noResult').hidden=true;
+    homeSearchResults.hidden = false;
+    homeSearchResults.innerHTML = '<div class="home-search-empty"><span class="hsr-spinner" aria-hidden="true"></span> খুঁজছি…</div>';
+    homeSearch?.setAttribute('aria-expanded', 'true');
+    try {
+      const items = await window.BDTripSearch.query(q);
+      if (requestId !== homeSearchRequest || q !== homeSearch?.value.trim()) return;
+      if (!items.length) {
+        homeSearchResults.innerHTML = '<div class="home-search-empty"><b>কোনো ফলাফল পাওয়া যায়নি</b><small>জেলা, দর্শনীয় স্থান, খাবার বা বিভাগের নাম দিয়ে চেষ্টা করুন</small></div>';
+        $('#noResult').hidden = true;
         return;
       }
-      homeSearchResults.innerHTML=items.map(item=>{
-        const id=item.district.id;
-        return '<button type="button" class="home-search-result" data-id="'+id+'" data-url="'+item.url+'"><span class="hsr-icon">'+(item.type==='place'?'🏛':item.type==='food'?'🍛':item.type==='division'?'🗺':item.type==='guide'?'📖':'📍')+'</span><span><b>'+escapeHtml(item.title)+'</b><small>'+escapeHtml(item.label)+' · '+escapeHtml(item.subtitle)+'</small></span><span class="hsr-arrow">›</span></button>';
+      homeSearchResults.innerHTML = items.map(item => {
+        const id = item.district.id;
+        const icon = item.type === 'place' ? '🏛' : item.type === 'food' ? '🍛' : item.type === 'division' ? '🗺' : item.type === 'guide' ? '📖' : '📍';
+        return '<button type="button" class="home-search-result" role="option" aria-selected="false" data-id="' + id + '" data-url="' + item.url + '"><span class="hsr-icon" aria-hidden="true">' + icon + '</span><span class="hsr-copy"><b>' + escapeHtml(item.title) + '</b><small>' + escapeHtml(item.label) + ' · ' + escapeHtml(item.subtitle) + '</small></span><span class="hsr-arrow" aria-hidden="true">↗</span></button>';
       }).join('');
-      homeSearchResults.querySelectorAll('[data-id]').forEach(btn=>btn.addEventListener('click',()=>{
-        const id=Number(btn.dataset.id);
-        state.cur=id; window.BDTripCurrentDistrict=id;
-        homeSearch.value=byId.get(id)?.bn||'';
-        homeSearchResults.hidden=true;
-        homeSearch.setAttribute('aria-expanded','false');
+      homeSearchResults.querySelectorAll('[data-id]').forEach(btn => btn.addEventListener('click', () => {
+        const id = Number(btn.dataset.id);
+        state.cur = id;
+        window.BDTripCurrentDistrict = id;
+        homeSearch.value = byId.get(id)?.bn || '';
+        closeHomeSearch();
         update();
-        const target=btn.dataset.url;
-        if(target) window.location.href=target;
+        const target = btn.dataset.url;
+        if (target) window.location.href = target;
       }));
-    }catch(_){
-      homeSearchResults.innerHTML='<div class="home-search-empty">Search error — আবার চেষ্টা করুন</div>';
+    } catch (_) {
+      if (requestId !== homeSearchRequest) return;
+      homeSearchResults.innerHTML = '<div class="home-search-empty"><b>সার্চ করা যাচ্ছে না</b><small>ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।</small></div>';
     }
   };
-  homeSearch?.addEventListener('input',e=>renderHomeSearch(e.target.value));
-  homeSearch?.addEventListener('focus',e=>{if(e.target.value.trim())renderHomeSearch(e.target.value);});
-  document.addEventListener('click',e=>{
-    if(homeSearchResults && !homeSearchResults.contains(e.target) && e.target!==homeSearch){
-      homeSearchResults.hidden=true;
-      homeSearch?.setAttribute('aria-expanded','false');
+  homeSearch?.addEventListener('input', e => {
+    window.clearTimeout(homeSearchTimer);
+    const value = e.target.value;
+    homeSearchTimer = window.setTimeout(() => renderHomeSearch(value), 110);
+  });
+  homeSearch?.addEventListener('focus', e => {
+    if (e.target.value.trim()) renderHomeSearch(e.target.value);
+  });
+  homeSearch?.addEventListener('keydown', e => {
+    if (!homeSearchResults || homeSearchResults.hidden) {
+      if (e.key === 'Escape') homeSearch.value = '';
+      return;
     }
+    const options = [...homeSearchResults.querySelectorAll('.home-search-result')];
+    const activeIndex = options.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown' && options.length) {
+      e.preventDefault();
+      options[Math.min(activeIndex + 1, options.length - 1)].focus();
+    } else if (e.key === 'ArrowUp' && options.length) {
+      e.preventDefault();
+      if (activeIndex <= 0) homeSearch.focus();
+      else options[activeIndex - 1].focus();
+    } else if (e.key === 'Escape') {
+      closeHomeSearch();
+      homeSearch.focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (homeSearchResults && !homeSearchResults.contains(e.target) && e.target !== homeSearch) closeHomeSearch();
   });
 
   // ---------- controls ----------
