@@ -90,21 +90,69 @@ function profileFor(d, info) {
 }
 
 const HOTEL_GUIDES = {
-  Coxsbazar: [{n:'Hotel Sea Palace',a:'কলাতলী রোড',t:'সৈকত/শহরকেন্দ্রের কাছাকাছি'},{n:'Hotel Sea Crown',a:'মেরিন ড্রাইভ রোড, কলাতলী',t:'সৈকত এলাকার বিকল্প'}],
-  Chattogram: [{n:'Hotel Agrabad',a:'আগ্রাবাদ',t:'ব্যবসায়িক এলাকা'},{n:'Radisson Blu Chattogram Bay View',a:'এসএস খালেদ রোড',t:'উচ্চ বাজেট'},{n:'Hotel Shaikat (Bangladesh Parjatan Corporation)',a:'রেলওয়ে স্টেশন রোড',t:'সরকারি পর্যটন আবাসন'}],
-  Dhaka: [{n:'Hotel 71',a:'বিজয়নগর',t:'শহরকেন্দ্র'},{n:'Hotel Purbani International',a:'দিলকুশা',t:'মতিঝিল/দিলকুশা এলাকা'},{n:'Hotel Abakash (Bangladesh Parjatan Corporation)',a:'মহাখালী',t:'সরকারি পর্যটন আবাসন'}],
-  Sylhet: [{n:'Hotel Star Pacific',a:'দরগাহ গেট এলাকা',t:'শহরকেন্দ্র'},{n:'Hotel Noorjahan Grand',a:'দরগাহ গেট',t:'শহরকেন্দ্র'},{n:'Grand Sylhet Hotel & Resort',a:'এয়ারপোর্ট রোড',t:'বিমানবন্দর এলাকার বিকল্প'}],
-  Bandarban: [{n:'Hotel Hill View',a:'বান্দরবান শহর',t:'শহরভিত্তিক থাকার বিকল্প'},{n:'Hotel Plaza Bandarban',a:'বান্দরবান শহর',t:'শহরকেন্দ্র'},{n:'পর্যটন মোটেল, বান্দরবান',a:'বান্দরবান শহর',t:'সরকারি পর্যটন আবাসন—প্রাপ্যতা যাচাই করুন'}],
-  Rangamati: [{n:'Parjatan Holiday Complex, Rangamati',a:'রাঙামাটি শহর/কাপ্তাই লেক এলাকা',t:'সরকারি পর্যটন আবাসন'},{n:'Hotel Sufia International',a:'রাঙামাটি শহর',t:'শহরকেন্দ্রের বিকল্প'}],
-  Khagrachhari: [{n:'Parjatan Motel, Khagrachhari',a:'খাগড়াছড়ি শহর',t:'সরকারি পর্যটন আবাসন'},{n:'Hotel Gairing',a:'খাগড়াছড়ি শহর',t:'শহরকেন্দ্রের বিকল্প'}],
-  Rajshahi: [{n:'Hotel Nice International',a:'রাজশাহী শহর',t:'শহরকেন্দ্রের বিকল্প'},{n:'Hotel X',a:'রাজশাহী শহর',t:'বুকিংয়ের আগে নাম/ঠিকানা যাচাই করুন'}],
-  Khulna: [{n:'Hotel Castle Salam',a:'খুলনা শহর',t:'শহরকেন্দ্র'},{n:'Hotel Royal International',a:'খুলনা শহর',t:'শহরের আবাসন বিকল্প'}],
-  Bagerhat: [{n:'Hotel/মোটেল in Mongla',a:'মোংলা শহর',t:'সুন্দরবন/করমজল যাওয়ার আগে অবস্থান অনুযায়ী বুক করুন'}],
-  Patuakhali: [{n:'Kuakata Hotel-Motel Zone',a:'কুয়াকাটা সৈকত এলাকা',t:'সৈকত এলাকার আবাসন; নাম ও রুমের অবস্থা যাচাই করুন'}],
-  Sunamganj: [{n:'শহরকেন্দ্রের হোটেল/গেস্টহাউস',a:'সুনামগঞ্জ সদর',t:'টাঙ্গুয়ার হাওর ট্রিপের নৌযাত্রা ও ফেরার সময়ের সঙ্গে মিলিয়ে বুক করুন'}],
-  Bogura: [{n:'Hotel Naz Garden',a:'ছিলিমপুর, বগুড়া',t:'শহরের আবাসন বিকল্প'}],
-  Cumilla: [{n:'শহরকেন্দ্রের হোটেল/গেস্টহাউস',a:'কুমিল্লা সদর',t:'কান্দিরপাড়/শহরকেন্দ্রের কাছাকাছি থাকার বিকল্প'}]
+  'কক্সবাজার': [
+    {n:'Parjatan Motel Upal',a:'Motel Road, Cox’s Bazar',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'},
+    {n:'Parjatan Motel Labonee',a:'Motel Road, Cox’s Bazar',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'},
+    {n:'Parjatan Hotel Shaibal',a:'Motel Road, Cox’s Bazar',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'চট্টগ্রাম': [
+    {n:'Hotel Shaikat',a:'Station Road, Chattogram',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'ঢাকা': [
+    {n:'Hotel Abakash',a:'83–88 Bir Uttom A.K. Khandakar Sarak, Mohakhali',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'বান্দরবান': [
+    {n:'Parjatan Motel Bandarban',a:'Maghla Talukdarpara, Bandarban',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'রাঙামাটি': [
+    {n:'Parjatan Holiday Complex, Rangamati',a:'Rangamati',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'খাগড়াছড়ি': [
+    {n:'Parjatan Motel Khagrachhari',a:'Main Road, adjacent to Chengi Bridge, Khagrachhari Sadar',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'সিলেট': [
+    {n:'Parjatan Motel Sylhet',a:'Airport Road, Borosola, Sylhet',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'},
+    {n:'Parjatan Motel Jaflong',a:'Jaflong, Sylhet',t:'জাফলং ভ্রমণের জন্য; আগে অবস্থান ও প্রাপ্যতা যাচাই করুন'}
+  ],
+  'বগুড়া': [
+    {n:'Parjatan Motel Bogura',a:'Banani, Sherpur Road, Bogura',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'রাজশাহী': [
+    {n:'Parjatan Motel Rajshahi',a:'Abdul Mojid Road, Rajshahi',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'বাগেরহাট': [
+    {n:'Parjatan Motel & Youth Inn, Bagerhat',a:'Ronobijoypur, Bagerhat',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'},
+    {n:'Hotel Pashur',a:'Mongla Port Area, Mongla, Bagerhat',t:'মোংলা/সুন্দরবন ভ্রমণের আগে অবস্থান মিলিয়ে নিন'}
+  ],
+  'পটুয়াখালী': [
+    {n:'Kuakata Holiday Homes & Youth Inn',a:'Kuakata, Kalapara, Patuakhali',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'চাঁপাইনবাবগঞ্জ': [
+    {n:'Parjatan Motel Sonamosjid',a:'Sonamosjid, Shibganj, Chapainawabganj',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'যশোর': [
+    {n:'Parjatan Motel Benapole',a:'Benapole, Sharsha, Jashore',t:'বেনাপোল এলাকার সরকারি পর্যটন আবাসন'}
+  ],
+  'গোপালগঞ্জ': [
+    {n:'Hotel Modhumoti',a:'Tungipara, Gopalganj',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'রংপুর': [
+    {n:'Parjatan Motel Rangpur',a:'R.K. Road, Rangpur',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'দিনাজপুর': [
+    {n:'Parjatan Motel Dinajpur',a:'Housing More, Dinajpur',t:'বাংলাদেশ পর্যটন করপোরেশনের আবাসন'}
+  ],
+  'নেত্রকোনা': [
+    {n:'Ahdorshonagar Parjatan Kendro',a:'Mohongonj, Netrokona',t:'সরকারি পর্যটন কেন্দ্র; বুকিংয়ের আগে যোগাযোগ যাচাই করুন'}
+  ],
+  'গাজীপুর': [
+    {n:'Salna Parjatan Resort & Picnic Spot',a:'South Salna, Gazipur',t:'বাংলাদেশ পর্যটন করপোরেশনের রিসোর্ট/পিকনিক স্পট'}
+  ]
 };
+
+function hotelGuideFor(d) {
+  return HOTEL_GUIDES[d.bn] || [];
+}
 
 function dhakaRoute(d, division, profile) {
   const bn = d.bn;
@@ -269,9 +317,9 @@ ${places.map((p) => `<div class="place"><b>${esc(p)}</b><small>দর্শন�
 <div class="info-row"><span class="ico">🚌</span><div><b>কীভাবে যাবেন</b><p>${esc(transport[d.div] || transport[6])}</p></div></div>
 </section>
 
-<section class="section"><h2>🚌 ঢাকা থেকে কীভাবে যাবেন</h2><div class="route-grid">${profile.travelSteps.map((step,i)=>`<div class="plan-item"><b>${['১. ঢাকা থেকে মূল যাত্রা','২. কোথায় নামবেন','৩. শেষ অংশের যাত্রা'][i]}</b><span>${esc(step)}</span></div>`).join('')}</div><div class="tip"><b>টিকিট ও রুট যাচাই</b><br><span>সময়সূচি/ভাড়া পরিবর্তনশীল। ট্রেনের জন্য <a href="https://eticket.railway.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ রেলওয়ে e-ticket</a>, আর বাস/লঞ্চের জন্য সংশ্লিষ্ট অপারেটরের অফিসিয়াল চ্যানেল দেখুন।</span><br><a href="https://www.google.com/maps/dir/Dhaka/${encodeURIComponent(d.bn+' Bangladesh')}" target="_blank" rel="noopener">ঢাকা থেকে Google Maps route দেখুন ↗</a></div></section>
+<section class="section"><h2>🚌 ঢাকা থেকে কীভাবে যাবেন</h2><div class="route-grid">${profile.travelSteps.map((step,i)=>`<div class="plan-item"><b>${['১. ঢাকা থেকে মূল যাত্রা','২. কোথায় নামবেন','৩. শেষ অংশের যাত্রা'][i]}</b><span>${esc(step)}</span></div>`).join('')}</div><div class="tip"><b>টিকিট ও রুট যাচাই</b><br><span>সময়সূচি/ভাড়া পরিবর্তনশীল। ট্রেনের জন্য <a href="https://eticket.railway.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ রেলওয়ে e-ticket</a>, আর বাস/লঞ্চের জন্য সংশ্লিষ্ট অপারেটরের অফিসিয়াল চ্যানেল দেখুন।</span><br><a href="https://www.google.com/maps/dir/Dhaka/${encodeURIComponent(d.bn+' Bangladesh')}" target="_blank" rel="noopener">ঢাকা থেকে Google Maps route দেখুন ↗</a><br><a href="https://eticket.railway.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ রেলওয়ের অফিসিয়াল টিকিট ↗</a></div><div class="overview"><b>যাত্রার আগে আপনার রুট ঠিক করুন</b><br><span>১) ঢাকা থেকে সরাসরি বাস/ট্রেন/লঞ্চ আছে কি না যাচাই করুন। ২) টিকিটে নামার স্টপেজ মিলিয়ে নিন। ৩) জেলা সদরে পৌঁছে গন্তব্যের দূরত্ব ও ফেরার সময় ধরে লোকাল যান/নৌযান ঠিক করুন। ৪) জনপ্রিয় স্পট হলে দিনের আলোয় পৌঁছানোর পরিকল্পনা করুন।</span></div></section>
 
-<section class="section"><h2>🏨 কোথায় থাকবেন — হোটেল গাইড</h2><p>নিচের নামগুলো সম্ভাব্য শুরু করার তালিকা, রিয়েল-টাইম availability বা endorsement নয়। বুকিংয়ের আগে বর্তমান ঠিকানা, ফোন, রুমের দাম, রিভিউ ও বাতিল নীতি নিজে যাচাই করুন।</p><div class="hotel-list">${(HOTEL_GUIDES[d.en] || []).map(h=>`<div class="plan-item"><b>${esc(h.n)}</b><span>📍 ${esc(h.a)} · ${esc(h.t)}</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.n+' '+h.a+' '+d.bn+' Bangladesh')}" target="_blank" rel="noopener">ম্যাপে খুঁজুন ↗</a></div>`).join('') || `<div class="plan-item"><b>${esc(d.bn)} সদরের আবাসন</b><span>নির্দিষ্ট হোটেল ও সাম্প্রতিক রিভিউ দেখতে ম্যাপ সার্চ ব্যবহার করুন।</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('hotels in '+d.bn+' Bangladesh')}" target="_blank" rel="noopener">এই জেলার হোটেল খুঁজুন ↗</a></div>`}<div class="plan-item"><b>সরকারি পর্যটন আবাসন</b><span>সরকারি হোটেল/মোটেলের নাম ও বুকিং তথ্য যাচাই করুন।</span><a href="https://hotels.gov.bd/" target="_blank" rel="noopener">সরকারি বুকিং পোর্টাল ↗</a></div></div><div class="tip"><b>বুকিং চেকলিস্ট</b><br><span>রুমের মোট দাম ও VAT/সার্ভিস চার্জ, AC/non-AC, পরিবার/শিশু নীতি, check-in time, cancellation policy এবং সাম্প্রতিক রিভিউ নিশ্চিত করুন। কোনো অগ্রিম পাঠানোর আগে হোটেলের অফিসিয়াল নম্বর যাচাই করুন।</span></div></section>
+<section class="section"><h2>🏨 কোথায় থাকবেন — হোটেল গাইড</h2><p>যেখানে সরকারি পর্যটন করপোরেশনের আবাসনের নাম পাওয়া গেছে, সেখানে সেই তালিকা দেখানো হচ্ছে। এগুলো live availability বা endorsement নয়; বুকিংয়ের আগে অফিসিয়াল পোর্টালে জেলা ও তারিখ দিয়ে প্রাপ্যতা, ঠিকানা, ফোন, রুমের দাম ও নীতিমালা যাচাই করুন। অন্য জেলায় নির্দিষ্ট হোটেল যাচাই না থাকলে ম্যাপ সার্চ দেখানো হবে—ভুল হোটেলের নাম অনুমান করে দেওয়া হয়নি।</p><div class="hotel-list">${hotelGuideFor(d).map(h=>`<div class="plan-item"><b>${esc(h.n)}</b><span>📍 ${esc(h.a)} · ${esc(h.t)}</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.n+' '+h.a+' '+d.bn+' Bangladesh')}" target="_blank" rel="noopener">ম্যাপে খুঁজুন ↗</a></div>`).join('') || `<div class="plan-item"><b>${esc(d.bn)} সদরের আবাসন</b><span>নির্দিষ্ট হোটেল ও সাম্প্রতিক রিভিউ দেখতে ম্যাপ সার্চ ব্যবহার করুন।</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('hotels in '+d.bn+' Bangladesh')}" target="_blank" rel="noopener">এই জেলার হোটেল খুঁজুন ↗</a></div>`}<div class="plan-item"><b>সরকারি পর্যটন আবাসন</b><span>সরকারি হোটেল/মোটেলের নাম ও বুকিং তথ্য যাচাই করুন।</span><a href="https://hotels.gov.bd/" target="_blank" rel="noopener">সরকারি বুকিং পোর্টাল ও availability ↗</a><br><small>হটলাইন: +880 1991-139439 / +880 1969-910222 (পোর্টালে প্রকাশিত নম্বর; কলের আগে সাইটে মিলিয়ে নিন)</small></div></div><div class="tip"><b>বুকিং চেকলিস্ট</b><br><span>রুমের মোট দাম ও VAT/সার্ভিস চার্জ, AC/non-AC, পরিবার/শিশু নীতি, check-in time, cancellation policy এবং সাম্প্রতিক রিভিউ নিশ্চিত করুন। কোনো অগ্রিম পাঠানোর আগে হোটেলের অফিসিয়াল নম্বর যাচাই করুন।</span></div></section>
 
 <section class="section"><h2>🛏️ কোথায় থাকবেন</h2><div class="overview"><b>আবাসন বেছে নেওয়ার সহজ উপায়</b><br><span>${esc(profile.stayArea)}</span></div><div class="tips"><div class="tip-item"><b>💸 বাজেট</b><br>সাধারণ হোটেল/গেস্টহাউস; রুম দেখেই বুকিং ও অতিরিক্ত চার্জ নিশ্চিত করুন।</div><div class="tip-item"><b>👨‍👩‍👧 পরিবার</b><br>পরিবারবান্ধব, নিরাপদ প্রবেশপথ ও রিভিউ আছে এমন আবাসন বেছে নিন।</div><div class="tip-item"><b>📍 লোকেশন</b><br>বাসস্ট্যান্ড/স্টেশন বা আপনার প্রধান স্পটের কাছে থাকলে যাতায়াত খরচ কমতে পারে।</div><div class="tip-item"><b>✅ বুকিং টিপ</b><br>সাপ্তাহিক ছুটি ও মৌসুমে আগে বুক করুন; সাম্প্রতিক রিভিউ ও বাতিল নীতি পড়ুন।</div></div></section>
 
