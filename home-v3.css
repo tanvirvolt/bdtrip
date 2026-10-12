@@ -1,0 +1,161 @@
+/* BDTrip Homepage UI v3 — clearer hierarchy, map-first workflow */
+:root{
+  --v3-surface:#fff;
+  --v3-border:#dce8e2;
+  --v3-muted:#60756f;
+  --v3-green:#073b36;
+  --v3-accent:#ffc107;
+}
+body{background:#f5f8f6}
+body > main > .hero{
+  margin-top:10px!important;
+  padding:clamp(26px,4vw,54px)!important;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:28px!important;
+  box-shadow:0 18px 42px -30px rgba(7,59,54,.6);
+}
+body > main > .hero .hero-grid{
+  grid-template-columns:minmax(0,1.35fr) minmax(235px,.65fr);
+  align-items:center;
+  gap:clamp(22px,3vw,48px);
+}
+body > main > .hero h1{
+  max-width:780px;
+  font-size:clamp(32px,4.2vw,52px);
+  line-height:1.16;
+  letter-spacing:-.7px;
+  text-wrap:balance;
+}
+body > main > .hero h1 em{color:#ffd45c!important}
+body > main > .hero .tag{margin-bottom:13px}
+body > main > .hero .hero-features{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px 14px;
+  margin:17px 0 21px;
+  font-size:14px;
+}
+body > main > .hero .hero-features li{white-space:normal}
+body > main > .hero .hero-cta{gap:10px}
+body > main > .hero .cta{
+  min-height:46px;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  padding:11px 20px;
+  border-radius:13px;
+  font-size:14px;
+  font-weight:800;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+body > main > .hero .cta:hover{transform:translateY(-2px);box-shadow:0 8px 20px #0002!important}
+body > main > .hero .score{
+  width:100%;
+  max-width:340px;
+  justify-self:end;
+  padding:24px 18px;
+  border-radius:22px;
+  background:rgba(255,255,255,.075)!important;
+}
+body > main > .hero .ring{width:136px;height:136px}
+body > main > .hero .ring-in{width:108px;height:108px}
+body > main > .hero .ring-in b{font-size:36px}
+body > main > .tool{
+  margin-top:20px!important;
+  align-items:start;
+  scroll-margin-top:86px;
+}
+body > main > .tool .picker,
+body > main > .tool .controls,
+body > main > .tool .mapcard-wrap,
+body > main > .tool .dl{
+  border:1px solid var(--v3-border)!important;
+  border-radius:20px!important;
+  box-shadow:0 8px 24px rgba(7,59,54,.045)!important;
+}
+body > main > .tool .controls{gap:13px}
+body > main > .tool .mapcard-wrap{padding:12px}
+body > main > .tool .canvas-card{
+  border:1px solid rgba(7,59,54,.05);
+  border-radius:16px;
+  padding:clamp(14px,2vw,24px);
+}
+body > main > .tool .mc-top{margin-bottom:10px}
+body > main > .tool .mc-top small{font-weight:700;letter-spacing:.04em}
+body > main > .tool .mc-count b{font-size:clamp(34px,4vw,50px)}
+body > main > .tool #map{max-height:700px}
+body > main > .tool .dl{padding:18px}
+body > main > .tool .share-card-head{margin-bottom:14px}
+body > main > .tool .share-card-head p{color:var(--v3-muted);font-size:13px}
+body > main > .progress-dashboard{
+  margin:20px 0 0!important;
+  padding:18px 20px;
+  grid-template-columns:minmax(180px,1.25fr) repeat(3,minmax(0,.8fr));
+  gap:8px;
+  border:1px solid var(--v3-border);
+  border-radius:18px;
+  box-shadow:none;
+}
+body > main > .progress-dashboard .progress-main{padding-right:18px}
+body > main > .progress-dashboard .progress-number strong{font-size:29px}
+body > main > .progress-dashboard .progress-stat{padding-inline:12px}
+body > main > .progress-dashboard .progress-stat b{font-size:18px;overflow-wrap:anywhere}
+body > main > .progress-dashboard .next-goal{padding:10px 12px}
+body > main > .achievements-section{margin:24px 0 32px!important}
+body > main > .achievements-section .section-heading{align-items:center}
+body > main > .achievements-section .section-heading h2{font-size:clamp(21px,2.5vw,27px)}
+body > main > .achievements-section .achievement-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+body > main > .achievements-section .achievement{
+  min-height:112px;
+  padding:14px;
+  border-radius:16px;
+  box-shadow:none;
+}
+body > main > .achievements-section .achievement.active{box-shadow:0 8px 22px rgba(11,93,75,.07)}
+body > main > .block{margin-top:42px}
+body > main > .block .block-head{max-width:780px}
+body > main > .block .block-head h2{letter-spacing:-.3px}
+body > main > .block .guide-card,
+body > main > .block .divs,
+body > main > .block .wish{border-radius:20px}
+body > main > .faq{margin-top:42px}
+body > main > .faq details{border-color:var(--v3-border)}
+body > main > .district-seo-index{border-color:var(--v3-border)}
+body.dark{background:#071c19}
+body.dark > main > .progress-dashboard{background:#0b2925;border-color:#21453e;color:#dff5ed}
+body.dark > main > .progress-dashboard .progress-main{border-color:#21453e}
+body.dark > main > .progress-dashboard .progress-number strong,
+body.dark > main > .progress-dashboard .progress-stat b{color:#dff5ed}
+body.dark > main > .progress-dashboard .next-goal{background:#10352f}
+@media(max-width:1000px){
+  body > main > .progress-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body > main > .progress-dashboard .progress-main{grid-column:1/-1;border-right:0;border-bottom:1px solid var(--v3-border);padding:0 0 14px}
+  body > main > .achievements-section .achievement-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  body > main > .hero{margin:5px 0 0!important;padding:23px 18px!important;border-radius:22px!important}
+  body > main > .hero .hero-grid{grid-template-columns:minmax(0,1fr);gap:18px}
+  body > main > .hero h1{font-size:clamp(29px,8vw,40px);line-height:1.18}
+  body > main > .hero .hero-features{grid-template-columns:1fr;gap:5px;margin:14px 0 18px;font-size:13.5px}
+  body > main > .hero .hero-cta{display:grid;grid-template-columns:1fr}
+  body > main > .hero .cta{width:100%;min-height:46px}
+  body > main > .hero .score{max-width:none;display:flex;flex-direction:row;justify-content:center;gap:18px;padding:16px}
+  body > main > .hero .ring{width:106px;height:106px}
+  body > main > .hero .ring-in{width:84px;height:84px}
+  body > main > .hero .ring-in b{font-size:28px}
+  body > main > .hero .score-txt{text-align:left}
+  body > main > .tool{margin-top:12px!important}
+  body > main > .tool .mapcard-wrap{padding:7px}
+  body > main > .tool .canvas-card{padding:10px}
+  body > main > .tool .dl{padding:14px}
+  body > main > .progress-dashboard{margin-top:14px!important;padding:14px;gap:8px}
+  body > main > .progress-dashboard .progress-stat{padding:6px}
+  body > main > .progress-dashboard .progress-stat b{font-size:16px}
+  body > main > .achievements-section{margin:20px 0 26px!important}
+  body > main > .achievements-section .section-heading{gap:10px}
+  body > main > .achievements-section .achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  body > main > .achievements-section .achievement{padding:12px;min-height:102px}
+  body > main > .block{margin-top:30px}
+}
+@media(prefers-reduced-motion:reduce){
+  body > main > .hero .cta{transition:none}
+}
