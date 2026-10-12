@@ -1,0 +1,67 @@
+/* BDTrip V5 — cohesive premium travel workspace */
+:root{
+  --v5-green:#0b5d4b;--v5-deep:#073b36;--v5-mint:#eaf6ef;
+  --v5-gold:#ffc107;--v5-border:#dce8e2;--v5-muted:#627871;
+  --v5-shadow:0 14px 36px rgba(7,59,54,.07);
+}
+html{scroll-behavior:smooth;scroll-padding-top:94px}
+body{background:radial-gradient(ellipse at 12% 4%,rgba(21,154,120,.055),transparent 30%),#f5f8f6}
+#bdtrip-skip-link{position:fixed;z-index:2000;top:8px;left:8px;transform:translateY(-160%);padding:11px 16px;border-radius:12px;background:#073b36;color:white;font-weight:800;box-shadow:0 8px 24px #0002}
+#bdtrip-skip-link:focus{transform:translateY(0)}
+body>main{isolation:isolate}
+body>main>.hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#073b36 0%,#0b5d4b 58%,#147b61 100%)!important}
+body>main>.hero:after{content:"";position:absolute;pointer-events:none;width:340px;height:340px;border:1px solid #ffffff18;border-radius:50%;right:-115px;top:-180px;box-shadow:0 0 0 35px #ffffff08,0 0 0 70px #ffffff05}
+body>main>.hero .hero-grid,body>main>.hero .score{position:relative;z-index:1}
+body>main>.hero .score{backdrop-filter:blur(14px);border:1px solid #ffffff20!important}
+body>main>.hero .cta:focus-visible,body>main button:focus-visible,body>main a:focus-visible{outline:3px solid #e0a900;outline-offset:3px}
+body>main>.tool .picker,body>main>.tool .controls,body>main>.tool .mapcard-wrap,body>main>.tool .dl,
+body>main>.progress-dashboard,body>main>.achievements-section .achievement,
+body>main>.block .guide-card,body>main>.block .wish{
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+body>main>.tool .picker:focus-within{border-color:#b9d8c9!important}
+body>main>.tool .mapcard-wrap{scroll-margin-top:90px}
+body>main>.tool .controls .hint{line-height:1.65}
+body>main>.tool .chip{transition:background .15s ease,border-color .15s ease,transform .15s ease}
+body>main>.tool .chip:hover{transform:translateY(-1px)}
+body>main>.tool .themes .theme{transition:transform .15s ease,box-shadow .15s ease}
+body>main>.tool .themes .theme:hover{transform:translateY(-2px)}
+body>main>.tool .canvas-card{background:linear-gradient(180deg,#fff 0%,#fbfdfb 100%)}
+body>main>.block .block-head{margin-bottom:17px}
+body>main>.block .block-head h2{line-height:1.25;text-wrap:balance}
+body>main>.block .guide-card,body>main>.block .wish{box-shadow:0 10px 28px rgba(7,59,54,.045)}
+#bdtrip-back-top{
+  position:fixed;right:20px;bottom:20px;z-index:900;width:46px;height:46px;
+  display:grid;place-items:center;border:1px solid #ffffff40;border-radius:15px;
+  background:#073b36;color:#fff;box-shadow:0 10px 25px #073b3630;
+  font-size:22px;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(8px);
+  transition:opacity .2s ease,transform .2s ease;
+}
+#bdtrip-back-top.is-visible{opacity:1;pointer-events:auto;transform:translateY(0)}
+#bdtrip-mobile-dock{display:none}
+body.dark{background:radial-gradient(ellipse at 12% 4%,#0c3b302b,transparent 30%),#071c19}
+body.dark>main>.hero{background:linear-gradient(125deg,#052d29 0%,#08473d 58%,#0c604b 100%)!important}
+body.dark>main>.tool .canvas-card{background:linear-gradient(180deg,#0c2925,#0a211e)}
+body.dark #bdtrip-back-top{background:#159a78;color:#052d29}
+@media(max-width:680px){
+  html{scroll-padding-top:78px}
+  body>main>.hero:after{width:230px;height:230px;right:-115px;top:-125px}
+  body>main>.tool .picker{scroll-margin-top:82px}
+  #bdtrip-back-top{right:13px;bottom:78px;width:42px;height:42px;border-radius:14px}
+  #bdtrip-mobile-dock{
+    position:fixed;left:12px;right:12px;bottom:max(10px,env(safe-area-inset-bottom));z-index:850;
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:7px;
+    border:1px solid #dce8e2;border-radius:17px;background:rgba(255,255,255,.94);
+    box-shadow:0 12px 34px rgba(7,59,54,.16);backdrop-filter:blur(18px);
+  }
+  #bdtrip-mobile-dock button{min-height:43px;border:0;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:7px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+  #bdtrip-mobile-dock .dock-map{background:#0b5d4b;color:#fff}
+  #bdtrip-mobile-dock .dock-search{background:#eaf6ef;color:#073b36}
+  body.dark #bdtrip-mobile-dock{background:rgba(8,35,31,.94);border-color:#21453e}
+  body.dark #bdtrip-mobile-dock .dock-search{background:#153e34;color:#e1f5ed}
+  body{padding-bottom:68px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
