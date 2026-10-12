@@ -89,6 +89,68 @@ function profileFor(d, info) {
   return { type, duration, plan, tips, route, stayArea, foodGuide, travelSteps, budget };
 }
 
+const HOTEL_GUIDES = {
+  Coxsbazar: [{n:'Hotel Sea Palace',a:'কলাতলী রোড',t:'সৈকত/শহরকেন্দ্রের কাছাকাছি'},{n:'Hotel Sea Crown',a:'মেরিন ড্রাইভ রোড, কলাতলী',t:'সৈকত এলাকার বিকল্প'}],
+  Chattogram: [{n:'Hotel Agrabad',a:'আগ্রাবাদ',t:'ব্যবসায়িক এলাকা'},{n:'Radisson Blu Chattogram Bay View',a:'এসএস খালেদ রোড',t:'উচ্চ বাজেট'},{n:'Hotel Shaikat (Bangladesh Parjatan Corporation)',a:'রেলওয়ে স্টেশন রোড',t:'সরকারি পর্যটন আবাসন'}],
+  Dhaka: [{n:'Hotel 71',a:'বিজয়নগর',t:'শহরকেন্দ্র'},{n:'Hotel Purbani International',a:'দিলকুশা',t:'মতিঝিল/দিলকুশা এলাকা'},{n:'Hotel Abakash (Bangladesh Parjatan Corporation)',a:'মহাখালী',t:'সরকারি পর্যটন আবাসন'}],
+  Sylhet: [{n:'Hotel Star Pacific',a:'দরগাহ গেট এলাকা',t:'শহরকেন্দ্র'},{n:'Hotel Noorjahan Grand',a:'দরগাহ গেট',t:'শহরকেন্দ্র'},{n:'Grand Sylhet Hotel & Resort',a:'এয়ারপোর্ট রোড',t:'বিমানবন্দর এলাকার বিকল্প'}],
+  Bandarban: [{n:'Hotel Hill View',a:'বান্দরবান শহর',t:'শহরভিত্তিক থাকার বিকল্প'},{n:'Hotel Plaza Bandarban',a:'বান্দরবান শহর',t:'শহরকেন্দ্র'},{n:'পর্যটন মোটেল, বান্দরবান',a:'বান্দরবান শহর',t:'সরকারি পর্যটন আবাসন—প্রাপ্যতা যাচাই করুন'}],
+  Rangamati: [{n:'Parjatan Holiday Complex, Rangamati',a:'রাঙামাটি শহর/কাপ্তাই লেক এলাকা',t:'সরকারি পর্যটন আবাসন'},{n:'Hotel Sufia International',a:'রাঙামাটি শহর',t:'শহরকেন্দ্রের বিকল্প'}],
+  Khagrachhari: [{n:'Parjatan Motel, Khagrachhari',a:'খাগড়াছড়ি শহর',t:'সরকারি পর্যটন আবাসন'},{n:'Hotel Gairing',a:'খাগড়াছড়ি শহর',t:'শহরকেন্দ্রের বিকল্প'}],
+  Rajshahi: [{n:'Hotel Nice International',a:'রাজশাহী শহর',t:'শহরকেন্দ্রের বিকল্প'},{n:'Hotel X',a:'রাজশাহী শহর',t:'বুকিংয়ের আগে নাম/ঠিকানা যাচাই করুন'}],
+  Khulna: [{n:'Hotel Castle Salam',a:'খুলনা শহর',t:'শহরকেন্দ্র'},{n:'Hotel Royal International',a:'খুলনা শহর',t:'শহরের আবাসন বিকল্প'}],
+  Bagerhat: [{n:'Hotel/মোটেল in Mongla',a:'মোংলা শহর',t:'সুন্দরবন/করমজল যাওয়ার আগে অবস্থান অনুযায়ী বুক করুন'}],
+  Patuakhali: [{n:'Kuakata Hotel-Motel Zone',a:'কুয়াকাটা সৈকত এলাকা',t:'সৈকত এলাকার আবাসন; নাম ও রুমের অবস্থা যাচাই করুন'}],
+  Sunamganj: [{n:'শহরকেন্দ্রের হোটেল/গেস্টহাউস',a:'সুনামগঞ্জ সদর',t:'টাঙ্গুয়ার হাওর ট্রিপের নৌযাত্রা ও ফেরার সময়ের সঙ্গে মিলিয়ে বুক করুন'}],
+  Bogura: [{n:'Hotel Naz Garden',a:'ছিলিমপুর, বগুড়া',t:'শহরের আবাসন বিকল্প'}],
+  Cumilla: [{n:'শহরকেন্দ্রের হোটেল/গেস্টহাউস',a:'কুমিল্লা সদর',t:'কান্দিরপাড়/শহরকেন্দ্রের কাছাকাছি থাকার বিকল্প'}]
+};
+
+function dhakaRoute(d, division, profile) {
+  const bn = d.bn;
+  const div = division?.bn || '';
+  if (/কক্সবাজার|চট্টগ্রাম|বান্দরবান|রাঙামাটি|খাগড়াছড়ি|ফেনী|নোয়াখালী|লক্ষ্মীপুর|চাঁদপুর|কুমিল্লা|ব্রাহ্মণবাড়িয়া/.test(bn)) {
+    return [
+      'ঢাকা থেকে সরাসরি দূরপাল্লার বাসে যাওয়ার অপশন আগে দেখুন; চট্টগ্রাম/কুমিল্লা করিডরে কিছু গন্তব্যে ট্রেনও সুবিধাজনক হতে পারে।',
+      'গন্তব্যভেদে বাসের কাউন্টার ও নামার স্থান আলাদা—টিকিটে লেখা স্টপেজ নিশ্চিত করুন।',
+      'বান্দরবান/রাঙামাটি/খাগড়াছড়ির মতো পাহাড়ি গন্তব্যে শেষ অংশে স্থানীয় জিপ/চাঁদের গাড়ি বা অনুমোদিত পরিবহন লাগতে পারে; আবহাওয়া ও স্থানীয় বিধিনিষেধ যাচাই করুন।'
+    ];
+  }
+  if (/সিলেট|মৌলভীবাজার|হবিগঞ্জ|সুনামগঞ্জ/.test(bn)) {
+    return [
+      'ঢাকা থেকে সিলেটগামী ট্রেন বা বাস বিবেচনা করুন; ট্রেনের টিকিট বাংলাদেশ রেলওয়ের অফিসিয়াল চ্যানেলে যাচাই করুন।',
+      'জেলার নাম অনুযায়ী সিলেট শহর বা সংশ্লিষ্ট জেলা সদরে নামার রুট বাছুন; সব গন্তব্যে সিলেট শহর হয়ে যাওয়া সবচেয়ে দ্রুত নাও হতে পারে।',
+      'শেষ অংশে লোকাল বাস/সিএনজি/জিপ বা হাওর এলাকায় নৌকা লাগতে পারে; মৌসুম, আবহাওয়া ও ফেরার নৌযান আগে নিশ্চিত করুন।'
+    ];
+  }
+  if (/বরিশাল|পটুয়াখালী|ভোলা|বরগুনা|পিরোজপুর|ঝালকাঠি/.test(bn)) {
+    return [
+      'ঢাকা থেকে গন্তব্য অনুযায়ী বাস অথবা বরিশাল/দক্ষিণাঞ্চলগামী লঞ্চের রুট তুলনা করুন।',
+      'লঞ্চের ঘাট, কেবিন/ডেক, ছাড়ার সময় ও পৌঁছানোর ঘাট টিকিট কেনার আগে নিশ্চিত করুন।',
+      'জেলা সদর থেকে উপকূল/দ্বীপে গেলে বাস, স্থানীয় যান বা নৌযানের আলাদা সংযোগ লাগতে পারে।'
+    ];
+  }
+  if (/খুলনা|বাগেরহাট|সাতক্ষীরা|যশোর|ঝিনাইদহ|কুষ্টিয়া|চুয়াডাঙ্গা|মেহেরপুর|নড়াইল|মাগুরা/.test(bn)) {
+    return [
+      'ঢাকা থেকে খুলনা/যশোর করিডরে বাস বা ট্রেনের রুট তুলনা করুন; নির্দিষ্ট জেলার জন্য কোন স্টেশন সুবিধাজনক তা আগে দেখুন।',
+      'টিকিটে উল্লেখিত স্টেশন/বাসস্ট্যান্ডে নামার পর জেলা সদরের সংযোগ পরিবহন নিন।',
+      'সুন্দরবন/মোংলা/উপকূলীয় স্পটে গেলে অনুমোদিত ট্যুর অপারেটর, নৌযান ও প্রবেশ-অনুমতির প্রয়োজন আগেই যাচাই করুন।'
+    ];
+  }
+  if (/রাজশাহী|চাঁপাইনবাবগঞ্জ|নওগাঁ|নাটোর|পাবনা|সিরাজগঞ্জ|বগুড়া|জয়পুরহাট/.test(bn)) {
+    return [
+      'ঢাকা থেকে গন্তব্য অনুযায়ী আন্তঃনগর ট্রেন বা দূরপাল্লার বাস বেছে নিন; গন্তব্যের নিকটতম স্টেশন/বাসস্ট্যান্ড তুলনা করুন।',
+      'ট্রেনের টিকিট ও সময়সূচি বাংলাদেশ রেলওয়ের অফিসিয়াল চ্যানেলে এবং বাসের সময় সংশ্লিষ্ট অপারেটরের কাছে যাচাই করুন।',
+      'জেলা সদরে নেমে স্থানীয় বাস/সিএনজি/অটোরিকশায় দর্শনীয় স্থানে যান; দূরের স্পট এক দিনে বেশি গুঁজে দেবেন না।'
+    ];
+  }
+  return [
+    'ঢাকা থেকে গন্তব্যের জন্য সরাসরি বাস/ট্রেন আছে কি না যাচাই করুন; না থাকলে বিভাগীয় শহর বা কাছের বড় টার্মিনাল হয়ে সংযোগ নিন।',
+    'টিকিট কেনার আগে নামার স্টপেজ, যাত্রার সময়, লাগেজের নিয়ম ও ফেরার টিকিট নিশ্চিত করুন।',
+    'জেলা সদরে পৌঁছে স্থানীয় বাস/সিএনজি/অটোরিকশা বা প্রয়োজনমতো নৌযান নিন; ভাড়া ওঠার আগে ঠিক করুন।'
+  ];
+}
+
 const css = `
 :root{--g:#0f7a5a;--d:#0b3d3a;--y:#ffb703;--bg:#f4f7f5;--ink:#102c29;--muted:#687a75;--line:#dfe9e4}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Siliguri","Noto Sans Bengali",sans-serif;font-size:16px;line-height:1.65}
@@ -102,11 +164,11 @@ const css = `
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:15px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 25px #103c3510}.content h2,.side h2{font-size:20px;margin:0 0 13px;color:var(--d)}
 .section{padding:0 0 21px;margin-bottom:21px;border-bottom:1px solid #edf1ef}.section:last-child{border-bottom:0;margin-bottom:0}.places{display:grid;grid-template-columns:1fr 1fr;gap:9px}.place{padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#f8faf9}.place b{font-size:14px}.place small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
 .info-row{display:grid;grid-template-columns:42px 1fr;gap:11px;align-items:start;margin:9px 0}.ico{width:38px;height:38px;border-radius:11px;background:#e7f5ef;color:var(--g);display:grid;place-items:center;font-weight:800}.info-row b{display:block;font-size:14px}.info-row p{margin:1px 0;color:#61716c;font-size:13px}
-.gallery{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:8px;margin-bottom:20px}.gallery figure{margin:0;position:relative;overflow:hidden;border-radius:15px;background:#eaf2ef;min-height:145px}.gallery figure:first-child{grid-row:span 2;min-height:300px}.gallery img{width:100%;height:100%;object-fit:cover;display:block}.gallery figcaption{position:absolute;left:8px;right:8px;bottom:8px;padding:6px 9px;border-radius:9px;background:#0b3d3acc;color:#fff;font-size:10px}.overview{background:#eef8f4;border:1px solid #d6ebe3;border-radius:15px;padding:15px;margin-bottom:20px}.overview b{color:var(--d)}.plan{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.plan-item{padding:12px;border-radius:13px;background:#f4f8f6;border:1px solid var(--line);font-size:13px}.plan-item span{display:block;color:var(--muted);font-size:11px;margin-top:2px}.tips{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tip-item{padding:11px 12px;background:#f8faf9;border-radius:12px;font-size:12px;color:#536760}
+.gallery{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:8px;margin-bottom:20px}.gallery figure{margin:0;position:relative;overflow:hidden;border-radius:15px;background:#eaf2ef;min-height:145px}.gallery figure:first-child{grid-row:span 2;min-height:300px}.gallery img{width:100%;height:100%;object-fit:cover;display:block}.gallery figcaption{position:absolute;left:8px;right:8px;bottom:8px;padding:6px 9px;border-radius:9px;background:#0b3d3acc;color:#fff;font-size:10px}.overview{background:#eef8f4;border:1px solid #d6ebe3;border-radius:15px;padding:15px;margin-bottom:20px}.overview b{color:var(--d)}.plan,.route-grid,.hotel-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.plan-item{padding:12px;border-radius:13px;background:#f4f8f6;border:1px solid var(--line);font-size:13px}.plan-item span{display:block;color:var(--muted);font-size:11px;margin-top:2px}.tips{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tip-item{padding:11px 12px;background:#f8faf9;border-radius:12px;font-size:12px;color:#536760}
 .cover-art{height:220px;margin:-22px -22px 18px;border-radius:20px 20px 0 0;position:relative;overflow:hidden}.cover-glow{position:absolute;width:190px;height:190px;right:12%;top:-65px;border-radius:50%;background:#ffffff28}.cover-title{position:absolute;left:25px;top:24px;color:#fff;z-index:2}.cover-title span{font-size:32px;display:block}.cover-title small{display:block;font-size:10px;letter-spacing:.14em;font-weight:800;color:#ffffffc7;margin-top:4px}.cover-title strong{display:block;font-family:"Noto Sans Bengali","Hind Siliguri",sans-serif;font-size:38px;line-height:1.05;margin-top:2px}.cover-title em{font-style:normal;font-size:12px;color:#ffffffbd}.cover-land{position:absolute;left:-5%;right:-5%;bottom:-8px;height:100px}.cover-land span,.cover-land i,.cover-land b{position:absolute;bottom:0;display:block;background:#ffffff18;border-radius:100% 100% 0 0}.cover-land span{left:4%;width:35%;height:70px;transform:skewX(-18deg)}.cover-land i{left:33%;width:32%;height:105px;transform:skewX(22deg)}.cover-land b{right:5%;width:38%;height:75px;transform:skewX(-14deg)}
 .mapbox{background:#f7faf8;border-radius:15px;padding:10px}.mapbox svg{width:100%;height:310px}.mapbox path{fill:#cce8de;stroke:#fff;stroke-width:1}.mapbox path.sel{fill:var(--g);stroke:var(--d);stroke-width:2}.side .btn{width:100%;justify-content:center;margin-top:10px}.near{display:grid;gap:7px;margin-top:8px}.near a{padding:9px 10px;background:#f3f7f5;border-radius:9px;color:#3d554e;text-decoration:none;font-size:13px}.source{font-size:12px}.source a{color:var(--g)}.tip{background:#fff8e6;border:1px solid #f2dda2;border-radius:15px;padding:14px;margin-top:15px}.tip b{color:#9b6a00}.foot{margin-top:15px;padding:16px 20px;background:var(--d);color:#cde0da;border-radius:17px;display:flex;justify-content:space-between;font-size:12px}
 @media(max-width:850px){.dlinks{display:none}.hero{padding:30px;min-height:300px}.hero-map{width:230px;height:230px;right:-20px;top:30px}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;gap:15px}.side .mapbox{grid-column:1/-1}.places{grid-template-columns:1fr}.guide-strip{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.dp{width:calc(100% - 24px);padding:9px 0 30px}.dpnav{position:static}.hero{border-radius:22px;padding:25px 20px}.hero h1{font-size:42px}.hero-map{opacity:.1}.actions{flex-wrap:wrap}.actions .btn{flex:1;justify-content:center}.card{padding:17px;border-radius:17px}.side{display:block}.plan,.tips,.guide-strip{grid-template-columns:1fr}.cover-art{margin:-17px -17px 18px}.foot{flex-direction:column;gap:5px}}
+@media(max-width:560px){.dp{width:calc(100% - 24px);padding:9px 0 30px}.dpnav{position:static}.hero{border-radius:22px;padding:25px 20px}.hero h1{font-size:42px}.hero-map{opacity:.1}.actions{flex-wrap:wrap}.actions .btn{flex:1;justify-content:center}.card{padding:17px;border-radius:17px}.side{display:block}.plan,.route-grid,.hotel-list,.tips,.guide-strip{grid-template-columns:1fr}.cover-art{margin:-17px -17px 18px}.foot{flex-direction:column;gap:5px}}
 `;
 
 const pages = D.districts.map((d) => {
@@ -207,7 +269,9 @@ ${places.map((p) => `<div class="place"><b>${esc(p)}</b><small>দর্শন�
 <div class="info-row"><span class="ico">🚌</span><div><b>কীভাবে যাবেন</b><p>${esc(transport[d.div] || transport[6])}</p></div></div>
 </section>
 
-<section class="section"><h2>🚌 কীভাবে যাবেন — ধাপে ধাপে</h2><div class="info-row"><span class="ico">🚍</span><div><b>১. জেলা সদরে পৌঁছান</b><p>${esc(profile.travelSteps[0])}</p></div></div><div class="info-row"><span class="ico">🧭</span><div><b>২. রুট বেছে নিন</b><p>${esc(profile.travelSteps[1])}</p></div></div><div class="info-row"><span class="ico">🛺</span><div><b>৩. স্থানীয় যাতায়াত</b><p>${esc(profile.travelSteps[2])}</p></div></div><div class="tip"><b>যাত্রার আগে যাচাই করুন</b><br><span>বাস/ট্রেন/লঞ্চের সময়সূচি, ভাড়া, সড়কের অবস্থা এবং প্রয়োজনে স্থানীয় অনুমতি। এগুলো পরিবর্তিত হতে পারে।</span></div></section>
+<section class="section"><h2>🚌 ঢাকা থেকে কীভাবে যাবেন</h2><div class="route-grid">${profile.travelSteps.map((step,i)=>`<div class="plan-item"><b>${['১. ঢাকা থেকে মূল যাত্রা','২. কোথায় নামবেন','৩. শেষ অংশের যাত্রা'][i]}</b><span>${esc(step)}</span></div>`).join('')}</div><div class="tip"><b>টিকিট ও রুট যাচাই</b><br><span>সময়সূচি/ভাড়া পরিবর্তনশীল। ট্রেনের জন্য <a href="https://eticket.railway.gov.bd/" target="_blank" rel="noopener">বাংলাদেশ রেলওয়ে e-ticket</a>, আর বাস/লঞ্চের জন্য সংশ্লিষ্ট অপারেটরের অফিসিয়াল চ্যানেল দেখুন।</span><br><a href="https://www.google.com/maps/dir/Dhaka/${encodeURIComponent(d.bn+' Bangladesh')}" target="_blank" rel="noopener">ঢাকা থেকে Google Maps route দেখুন ↗</a></div></section>
+
+<section class="section"><h2>🏨 কোথায় থাকবেন — হোটেল গাইড</h2><p>নিচের নামগুলো সম্ভাব্য শুরু করার তালিকা, রিয়েল-টাইম availability বা endorsement নয়। বুকিংয়ের আগে বর্তমান ঠিকানা, ফোন, রুমের দাম, রিভিউ ও বাতিল নীতি নিজে যাচাই করুন।</p><div class="hotel-list">${(HOTEL_GUIDES[d.en] || []).map(h=>`<div class="plan-item"><b>${esc(h.n)}</b><span>📍 ${esc(h.a)} · ${esc(h.t)}</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.n+' '+h.a+' '+d.bn+' Bangladesh')}" target="_blank" rel="noopener">ম্যাপে খুঁজুন ↗</a></div>`).join('') || `<div class="plan-item"><b>${esc(d.bn)} সদরের আবাসন</b><span>নির্দিষ্ট হোটেল ও সাম্প্রতিক রিভিউ দেখতে ম্যাপ সার্চ ব্যবহার করুন।</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('hotels in '+d.bn+' Bangladesh')}" target="_blank" rel="noopener">এই জেলার হোটেল খুঁজুন ↗</a></div>`}<div class="plan-item"><b>সরকারি পর্যটন আবাসন</b><span>সরকারি হোটেল/মোটেলের নাম ও বুকিং তথ্য যাচাই করুন।</span><a href="https://hotels.gov.bd/" target="_blank" rel="noopener">সরকারি বুকিং পোর্টাল ↗</a></div></div><div class="tip"><b>বুকিং চেকলিস্ট</b><br><span>রুমের মোট দাম ও VAT/সার্ভিস চার্জ, AC/non-AC, পরিবার/শিশু নীতি, check-in time, cancellation policy এবং সাম্প্রতিক রিভিউ নিশ্চিত করুন। কোনো অগ্রিম পাঠানোর আগে হোটেলের অফিসিয়াল নম্বর যাচাই করুন।</span></div></section>
 
 <section class="section"><h2>🛏️ কোথায় থাকবেন</h2><div class="overview"><b>আবাসন বেছে নেওয়ার সহজ উপায়</b><br><span>${esc(profile.stayArea)}</span></div><div class="tips"><div class="tip-item"><b>💸 বাজেট</b><br>সাধারণ হোটেল/গেস্টহাউস; রুম দেখেই বুকিং ও অতিরিক্ত চার্জ নিশ্চিত করুন।</div><div class="tip-item"><b>👨‍👩‍👧 পরিবার</b><br>পরিবারবান্ধব, নিরাপদ প্রবেশপথ ও রিভিউ আছে এমন আবাসন বেছে নিন।</div><div class="tip-item"><b>📍 লোকেশন</b><br>বাসস্ট্যান্ড/স্টেশন বা আপনার প্রধান স্পটের কাছে থাকলে যাতায়াত খরচ কমতে পারে।</div><div class="tip-item"><b>✅ বুকিং টিপ</b><br>সাপ্তাহিক ছুটি ও মৌসুমে আগে বুক করুন; সাম্প্রতিক রিভিউ ও বাতিল নীতি পড়ুন।</div></div></section>
 
